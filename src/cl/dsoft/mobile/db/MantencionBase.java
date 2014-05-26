@@ -60,7 +60,7 @@ public class MantencionBase {
         "    ma.accion AS accion," +
         "    ma.url AS url," +
         "    ma.descripcion_item AS descripcion_item," +
-        "    strftime(ma.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', ma.fecha_modificacion) AS fecha_modificacion," +
         "    ma.id_modelo_anio AS id_modelo_anio," +
         "    ma.id_mantencion_base AS id," +
         "    ma.item AS item," +
@@ -363,7 +363,7 @@ public class MantencionBase {
                     array_clauses.add("ma.id_modelo_anio = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ma.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("ma.fecha_modificacion > " + p.getValue());
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -523,6 +523,7 @@ public class MantencionBase {
             "    accion, " +
             "    url, " +
             "    descripcion_item, " +
+            "    fecha_modificacion, " +
             "    id_modelo_anio, " +
             "    id_mantencion_base, " +
             "    item, " +
@@ -538,6 +539,7 @@ public class MantencionBase {
             "    " + (_accion != null ? "'" + _accion + "'" : "null") + "," +
             "    " + (_url != null ? "'" + _url + "'" : "null") + "," +
             "    " + (_descripcionItem != null ? "'" + _descripcionItem + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_idModeloAnio != null ? "'" + _idModeloAnio + "'" : "null") + "," +
             "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
             "    " + (_item != null ? "'" + _item + "'" : "null") + "," +

@@ -59,7 +59,7 @@ public class MantencionUsuario {
         "    ma.DependeKm AS DependeKm," +
         "    ma.mantecion_base AS mantecion_base," +
         "    ma.nombre AS nombre," +
-        "    strftime(ma.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', ma.fecha_modificacion) AS fecha_modificacion," +
         "    ma.id_usuario AS id_usuario," +
         "    ma.id_mantencion_base AS id_mantencion_base," +
         "    ma.id_vehiculo AS id_vehiculo," +
@@ -366,7 +366,7 @@ public class MantencionUsuario {
                     array_clauses.add("ma.id_vehiculo = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ma.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("ma.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("ma.borrado = 0");
@@ -524,12 +524,14 @@ public class MantencionUsuario {
         String str_sql =
             "    INSERT INTO mantencion_usuario" +
             "    (" +
+            "    borrado, " +
             "    KmEntreMantenciones, " +
             "    descripcion, " +
             "    id_mantencion_usuario, " +
             "    DependeKm, " +
             "    mantecion_base, " +
             "    nombre, " +
+            "    fecha_modificacion, " +
             "    id_usuario, " +
             "    id_mantencion_base, " +
             "    id_vehiculo, " +
@@ -538,12 +540,14 @@ public class MantencionUsuario {
             "    beneficios)" +
             "    VALUES" +
             "    (" +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
             "    " + (_kmentremantenciones != null ? "'" + _kmentremantenciones + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_idMantencionUsuario != null ? "'" + _idMantencionUsuario + "'" : "null") + "," +
             "    " + (_dependekm != null ? "'" + _dependekm + "'" : "null") + "," +
             "    " + (_mantecionBase != null ? "'" + _mantecionBase + "'" : "null") + "," +
             "    " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
             "    " + (_idMantencionBase != null ? "'" + _idMantencionBase + "'" : "null") + "," +
             "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +

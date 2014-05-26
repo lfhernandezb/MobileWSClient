@@ -40,13 +40,13 @@ public class InfoSincro {
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    strftime(in.fecha, '%Y-%m-%d %H:%M:%S') AS fecha," +
+        "    strftime('%Y-%m-%d %H:%M:%S', in.fecha) AS fecha," +
         "    in.sentido AS sentido," +
-        "    strftime(in.fecha_lectura, '%Y-%m-%d %H:%M:%S') AS fecha_lectura," +
+        "    strftime('%Y-%m-%d %H:%M:%S', in.fecha_lectura) AS fecha_lectura," +
         "    in.archivo_md5 AS archivo_md5," +
         "    in.archivo_tamano AS archivo_tamano," +
         "    in.id_info_sincro AS id," +
-        "    strftime(in.fecha_fin_procesamiento, '%Y-%m-%d %H:%M:%S') AS fecha_fin_procesamiento," +
+        "    strftime('%Y-%m-%d %H:%M:%S', in.fecha_fin_procesamiento) AS fecha_fin_procesamiento," +
         "    in.archivo_nombre AS archivo_nombre" +
         "    FROM info_sincro in";
 

@@ -40,13 +40,13 @@ public class MantencionUsuarioHecha {
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    strftime(ma.fecha, '%Y-%m-%d %H:%M:%S') AS fecha," +
+        "    strftime('%Y-%m-%d %H:%M:%S', ma.fecha) AS fecha," +
         "    ma.id_mantencion_usuario_hecha AS id_mantencion_usuario_hecha," +
         "    ma.borrado AS borrado," +
         "    ma.id_mantencion_usuario AS id_mantencion_usuario," +
         "    ma.costo AS costo," +
         "    ma.km AS km," +
-        "    strftime(ma.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', ma.fecha_modificacion) AS fecha_modificacion," +
         "    ma.id_usuario AS id_usuario" +
         "    FROM mantencion_usuario_hecha ma";
 
@@ -264,7 +264,7 @@ public class MantencionUsuarioHecha {
                     array_clauses.add("ma.id_mantencion_usuario = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ma.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("ma.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("ma.borrado = 0");
@@ -418,17 +418,21 @@ public class MantencionUsuarioHecha {
             "    (" +
             "    fecha, " +
             "    id_mantencion_usuario_hecha, " +
+            "    borrado, " +
             "    id_mantencion_usuario, " +
             "    costo, " +
             "    km, " +
+            "    fecha_modificacion, " +
             "    id_usuario)" +
             "    VALUES" +
             "    (" +
             "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    " + (_idMantencionUsuarioHecha != null ? "'" + _idMantencionUsuarioHecha + "'" : "null") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
             "    " + (_idMantencionUsuario != null ? "'" + _idMantencionUsuario + "'" : "null") + "," +
             "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
             "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") +
             "    )";
         

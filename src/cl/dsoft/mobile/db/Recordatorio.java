@@ -46,7 +46,7 @@ public class Recordatorio {
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    strftime(re.fecha, '%Y-%m-%d %H:%M:%S') AS fecha," +
+        "    strftime('%Y-%m-%d %H:%M:%S', re.fecha) AS fecha," +
         "    re.borrado AS borrado," +
         "    re.descripcion AS descripcion," +
         "    re.recordar_km AS recordar_km," +
@@ -54,7 +54,7 @@ public class Recordatorio {
         "    re.recordar_fecha AS recordar_fecha," +
         "    re.id_recordatorio AS id_recordatorio," +
         "    re.titulo AS titulo," +
-        "    strftime(re.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', re.fecha_modificacion) AS fecha_modificacion," +
         "    re.id_usuario AS id_usuario," +
         "    re.id_vehiculo AS id_vehiculo" +
         "    FROM recordatorio re";
@@ -315,7 +315,7 @@ public class Recordatorio {
                     array_clauses.add("re.id_vehiculo = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("re.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("re.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("re.borrado = 0");
@@ -471,23 +471,27 @@ public class Recordatorio {
             "    INSERT INTO recordatorio" +
             "    (" +
             "    fecha, " +
+            "    borrado, " +
             "    descripcion, " +
             "    recordar_km, " +
             "    km, " +
             "    recordar_fecha, " +
             "    id_recordatorio, " +
             "    titulo, " +
+            "    fecha_modificacion, " +
             "    id_usuario, " +
             "    id_vehiculo)" +
             "    VALUES" +
             "    (" +
             "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_recordarKm != null ? "'" + _recordarKm + "'" : "null") + "," +
             "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
             "    " + (_recordarFecha != null ? "'" + _recordarFecha + "'" : "null") + "," +
             "    " + (_idRecordatorio != null ? "'" + _idRecordatorio + "'" : "null") + "," +
             "    " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
             "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") +
             "    )";

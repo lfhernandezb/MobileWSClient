@@ -30,7 +30,7 @@ public class Marca {
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    strftime(ma.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', ma.fecha_modificacion) AS fecha_modificacion," +
         "    ma.descripcion AS descripcion," +
         "    ma.id_marca AS id" +
         "    FROM marca ma";
@@ -173,7 +173,7 @@ public class Marca {
                     array_clauses.add("ma.id_marca = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ma.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("ma.fecha_modificacion > " + p.getValue());
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -315,10 +315,12 @@ public class Marca {
         String str_sql =
             "    INSERT INTO marca" +
             "    (" +
+            "    fecha_modificacion, " +
             "    descripcion, " +
             "    id_marca)" +
             "    VALUES" +
             "    (" +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_id != null ? "'" + _id + "'" : "null") +
             "    )";

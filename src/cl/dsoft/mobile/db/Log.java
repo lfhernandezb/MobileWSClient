@@ -46,7 +46,7 @@ public class Log {
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    strftime(lo.fecha, '%Y-%m-%d %H:%M:%S') AS fecha," +
+        "    strftime('%Y-%m-%d %H:%M:%S', lo.fecha) AS fecha," +
         "    lo.accion AS accion," +
         "    lo.km AS km," +
         "    lo.id_tipo_vehiculo AS id_tipo_vehiculo," +
@@ -456,6 +456,7 @@ public class Log {
         String str_sql =
             "    INSERT INTO log" +
             "    (" +
+            "    fecha, " +
             "    accion, " +
             "    km, " +
             "    id_tipo_vehiculo, " +
@@ -468,6 +469,7 @@ public class Log {
             "    id_marca)" +
             "    VALUES" +
             "    (" +
+            "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    " + (_accion != null ? "'" + _accion + "'" : "null") + "," +
             "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
             "    " + (_idTipoVehiculo != null ? "'" + _idTipoVehiculo + "'" : "null") + "," +

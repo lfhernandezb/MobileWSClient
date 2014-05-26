@@ -52,7 +52,7 @@ public class Rendimiento {
         "    re.costo AS costo," +
         "    re.km AS km," +
         "    re.litros AS litros," +
-        "    strftime(re.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', re.fecha_modificacion) AS fecha_modificacion," +
         "    re.id_usuario AS id_usuario," +
         "    re.id_vehiculo AS id_vehiculo," +
         "    re.latitud AS latitud," +
@@ -315,7 +315,7 @@ public class Rendimiento {
                     array_clauses.add("re.id_vehiculo = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("re.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("re.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("re.borrado = 0");
@@ -472,9 +472,11 @@ public class Rendimiento {
             "    (" +
             "    estanque_lleno, " +
             "    id_rendimiento, " +
+            "    borrado, " +
             "    costo, " +
             "    km, " +
             "    litros, " +
+            "    fecha_modificacion, " +
             "    id_usuario, " +
             "    id_vehiculo, " +
             "    latitud, " +
@@ -483,9 +485,11 @@ public class Rendimiento {
             "    (" +
             "    " + (_estanqueLleno != null ? "'" + _estanqueLleno + "'" : "null") + "," +
             "    " + (_idRendimiento != null ? "'" + _idRendimiento + "'" : "null") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
             "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
             "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
             "    " + (_litros != null ? "'" + _litros + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
             "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
             "    " + (_latitud != null ? "'" + _latitud + "'" : "null") + "," +

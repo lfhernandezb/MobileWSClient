@@ -25,6 +25,16 @@
 		android:layout_height="wrap_content"  
 		android:layout_gravity="center_horizontal"
     /> 
+    <Button 
+        android:paddingTop="10px"
+        android:id="@+id/PutServerData" 
+    	android:text="Put Data" 
+    	android:cursorVisible="true"
+    	android:clickable="true"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"  
+		android:layout_gravity="center_horizontal"
+    /> 
     <TextView
         android:paddingTop="20px"
         android:textStyle="bold"

@@ -44,7 +44,7 @@ public class Reparacion {
         "    re.descripcion AS descripcion," +
         "    re.costo AS costo," +
         "    re.titulo AS titulo," +
-        "    strftime(re.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', re.fecha_modificacion) AS fecha_modificacion," +
         "    re.id_usuario AS id_usuario," +
         "    re.id_vehiculo AS id_vehiculo," +
         "    re.id_reparacion AS id_reparacion" +
@@ -264,7 +264,7 @@ public class Reparacion {
                     array_clauses.add("re.id_vehiculo = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("re.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("re.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("re.borrado = 0");
@@ -416,17 +416,21 @@ public class Reparacion {
         String str_sql =
             "    INSERT INTO reparacion" +
             "    (" +
+            "    borrado, " +
             "    descripcion, " +
             "    costo, " +
             "    titulo, " +
+            "    fecha_modificacion, " +
             "    id_usuario, " +
             "    id_vehiculo, " +
             "    id_reparacion)" +
             "    VALUES" +
             "    (" +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
             "    " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
             "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
             "    " + (_idReparacion != null ? "'" + _idReparacion + "'" : "null") +

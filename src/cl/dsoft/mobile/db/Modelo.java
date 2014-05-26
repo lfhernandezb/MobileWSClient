@@ -35,7 +35,7 @@ public class Modelo {
     private final static String _str_sql = 
         "    SELECT" +
         "    mo.id_tipo_vehiculo AS id_tipo_vehiculo," +
-        "    strftime(mo.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', mo.fecha_modificacion) AS fecha_modificacion," +
         "    mo.descripcion AS descripcion," +
         "    mo.id_modelo AS id," +
         "    mo.id_marca AS id_marca" +
@@ -213,7 +213,7 @@ public class Modelo {
                     array_clauses.add("mo.id_marca = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("mo.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("mo.fecha_modificacion > " + p.getValue());
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -356,12 +356,14 @@ public class Modelo {
             "    INSERT INTO modelo" +
             "    (" +
             "    id_tipo_vehiculo, " +
+            "    fecha_modificacion, " +
             "    descripcion, " +
             "    id_modelo, " +
             "    id_marca)" +
             "    VALUES" +
             "    (" +
             "    " + (_idTipoVehiculo != null ? "'" + _idTipoVehiculo + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
             "    " + (_idMarca != null ? "'" + _idMarca + "'" : "null") +

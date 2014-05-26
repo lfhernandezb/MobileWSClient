@@ -30,7 +30,7 @@ public class Traccion {
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    strftime(tr.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', tr.fecha_modificacion) AS fecha_modificacion," +
         "    tr.descripcion AS descripcion," +
         "    tr.id_traccion AS id" +
         "    FROM traccion tr";
@@ -173,7 +173,7 @@ public class Traccion {
                     array_clauses.add("tr.id_traccion = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("tr.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("tr.fecha_modificacion > " + p.getValue());
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -315,10 +315,12 @@ public class Traccion {
         String str_sql =
             "    INSERT INTO traccion" +
             "    (" +
+            "    fecha_modificacion, " +
             "    descripcion, " +
             "    id_traccion)" +
             "    VALUES" +
             "    (" +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_id != null ? "'" + _id + "'" : "null") +
             "    )";

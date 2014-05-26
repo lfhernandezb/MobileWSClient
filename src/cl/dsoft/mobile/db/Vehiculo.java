@@ -53,7 +53,7 @@ public class Vehiculo {
     private final static String _str_sql = 
         "    SELECT" +
         "    ve.anio AS anio," +
-        "    strftime(ve.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', ve.fecha_modificacion) AS fecha_modificacion," +
         "    ve.aire_acondicionado AS aire_acondicionado," +
         "    ve.alias AS alias," +
         "    ve.id_usuario AS id_usuario," +
@@ -375,7 +375,7 @@ public class Vehiculo {
                     array_clauses.add("ve.id_combustible = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ve.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("ve.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("ve.borrado = 0");
@@ -531,10 +531,12 @@ public class Vehiculo {
             "    INSERT INTO vehiculo" +
             "    (" +
             "    anio, " +
+            "    fecha_modificacion, " +
             "    aire_acondicionado, " +
             "    alias, " +
             "    id_usuario, " +
             "    id_vehiculo, " +
+            "    borrado, " +
             "    patente, " +
             "    id_modelo, " +
             "    id_traccion, " +
@@ -545,10 +547,12 @@ public class Vehiculo {
             "    VALUES" +
             "    (" +
             "    " + (_anio != null ? "'" + _anio + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_aireAcondicionado != null ? "'" + _aireAcondicionado + "'" : "null") + "," +
             "    " + (_alias != null ? "'" + _alias + "'" : "null") + "," +
             "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
             "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
             "    " + (_patente != null ? "'" + _patente + "'" : "null") + "," +
             "    " + (_idModelo != null ? "'" + _idModelo + "'" : "null") + "," +
             "    " + (_idTraccion != null ? "'" + _idTraccion + "'" : "null") + "," +

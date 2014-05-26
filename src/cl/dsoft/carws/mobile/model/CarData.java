@@ -15,9 +15,11 @@ import cl.dsoft.mobile.db.MantencionUsuarioHecha;
 import cl.dsoft.mobile.db.Recordatorio;
 import cl.dsoft.mobile.db.Rendimiento;
 import cl.dsoft.mobile.db.Reparacion;
+import cl.dsoft.mobile.db.Usuario;
 import cl.dsoft.mobile.db.Vehiculo;
 
-@Root
+@Root(name = "CarData")
+@Order(elements={"usuarios", "vehiculos", "mantencionUsuarios", "mantencionUsuarioHechas", "recordatorios", "rendimientos", "reparaciones"})
 //If you want you can define the order in which the fields are written
 //Optional
 //@Order(elements = { "usuarios", "vehiculos", "mantencionUsuarios", "mantencionUsuarioHechas", "recordatorios", "rendimientos", "reparaciones" })
@@ -48,7 +50,7 @@ public class CarData {
 		this.rendimientos = null;
 		this.reparaciones = null;
 	}
-	/*
+	
 	public CarData(java.sql.Connection conn, Long idUsuario, String fechaModificacion) {
 
     	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
@@ -59,19 +61,19 @@ public class CarData {
 			listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(idUsuario)));
 			listParameters.add(new AbstractMap.SimpleEntry<String, String>("mas reciente", "'" + fechaModificacion + "'"));
 			
-			this.mantencionUsuarios = cl.dsoft.sqlite.db.MantencionUsuario.seek(conn, listParameters, null, null, 0, 1);
+			this.mantencionUsuarios = MantencionUsuario.seek(conn, listParameters, null, null, 0, 1);
 			
-			this.mantencionUsuarioHechas = cl.dsoft.sqlite.db.MantencionUsuarioHecha.seek(conn, listParameters, null, null, 0, 1);
+			this.mantencionUsuarioHechas = MantencionUsuarioHecha.seek(conn, listParameters, null, null, 0, 1);
 			
-			this.recordatorios = cl.dsoft.sqlite.db.Recordatorio.seek(conn, listParameters, null, null, 0, 1);
+			this.recordatorios = Recordatorio.seek(conn, listParameters, null, null, 0, 1);
 			
-			this.rendimientos = cl.dsoft.sqlite.db.Rendimiento.seek(conn, listParameters, null, null, 0, 1);
+			this.rendimientos = Rendimiento.seek(conn, listParameters, null, null, 0, 1);
 			
-			this.reparaciones = cl.dsoft.sqlite.db.Reparacion.seek(conn, listParameters, null, null, 0, 1);
+			this.reparaciones = Reparacion.seek(conn, listParameters, null, null, 0, 1);
 			
-			this.usuarios = cl.dsoft.sqlite.db.Usuario.seek(conn, listParameters, null, null, 0, 1);
+			this.usuarios = Usuario.seek(conn, listParameters, null, null, 0, 1);
 			
-			this.vehiculos = cl.dsoft.sqlite.db.Vehiculo.seek(conn, listParameters, null, null, 0, 1);
+			this.vehiculos = Vehiculo.seek(conn, listParameters, null, null, 0, 1);
 			
 			
 		} catch (Exception e) {
@@ -80,7 +82,7 @@ public class CarData {
 		}
 
 	}
-	*/
+	
 	/**
 	 * @return the usuarios
 	 */

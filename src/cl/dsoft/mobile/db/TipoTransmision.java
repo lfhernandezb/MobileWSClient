@@ -30,7 +30,7 @@ public class TipoTransmision {
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    strftime(ti.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', ti.fecha_modificacion) AS fecha_modificacion," +
         "    ti.descripcion AS descripcion," +
         "    ti.id_tipo_transmision AS id" +
         "    FROM tipo_transmision ti";
@@ -173,7 +173,7 @@ public class TipoTransmision {
                     array_clauses.add("ti.id_tipo_transmision = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ti.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("ti.fecha_modificacion > " + p.getValue());
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -315,10 +315,12 @@ public class TipoTransmision {
         String str_sql =
             "    INSERT INTO tipo_transmision" +
             "    (" +
+            "    fecha_modificacion, " +
             "    descripcion, " +
             "    id_tipo_transmision)" +
             "    VALUES" +
             "    (" +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_id != null ? "'" + _id + "'" : "null") +
             "    )";

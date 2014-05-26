@@ -30,7 +30,7 @@ public class Combustible {
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    strftime(co.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', co.fecha_modificacion) AS fecha_modificacion," +
         "    co.descripcion AS descripcion," +
         "    co.id_combustible AS id" +
         "    FROM combustible co";
@@ -173,7 +173,7 @@ public class Combustible {
                     array_clauses.add("co.id_combustible = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("co.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("co.fecha_modificacion > " + p.getValue());
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -315,10 +315,12 @@ public class Combustible {
         String str_sql =
             "    INSERT INTO combustible" +
             "    (" +
+            "    fecha_modificacion, " +
             "    descripcion, " +
             "    id_combustible)" +
             "    VALUES" +
             "    (" +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_id != null ? "'" + _id + "'" : "null") +
             "    )";

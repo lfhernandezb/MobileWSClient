@@ -45,15 +45,15 @@ public class Usuario {
     private final static String _str_sql = 
         "    SELECT" +
         "    us.nombre AS nombre," +
-        "    strftime(us.fecha_modificacion, '%Y-%m-%d %H:%M:%S') AS fecha_modificacion," +
-        "    strftime(us.fecha_vencimiento_licencia, '%Y-%m-%d %H:%M:%S') AS fecha_vencimiento_licencia," +
+        "    strftime('%Y-%m-%d %H:%M:%S', us.fecha_modificacion) AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', us.fecha_vencimiento_licencia) AS fecha_vencimiento_licencia," +
         "    us.id_usuario AS id," +
         "    us.hombre AS hombre," +
         "    us.id_comuna AS id_comuna," +
         "    us.borrado AS borrado," +
         "    us.telefono AS telefono," +
         "    us.correo AS correo," +
-        "    strftime(us.fecha_nacimiento, '%Y-%m-%d %H:%M:%S') AS fecha_nacimiento" +
+        "    strftime('%Y-%m-%d %H:%M:%S', us.fecha_nacimiento) AS fecha_nacimiento" +
         "    FROM usuario us";
 
     public Usuario() {
@@ -295,7 +295,7 @@ public class Usuario {
                     array_clauses.add("us.id_comuna = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("us.fecha_modificacion > '" + p.getValue() + "'");
+                    array_clauses.add("us.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("us.borrado = 0");
@@ -450,20 +450,24 @@ public class Usuario {
             "    INSERT INTO usuario" +
             "    (" +
             "    nombre, " +
+            "    fecha_modificacion, " +
             "    fecha_vencimiento_licencia, " +
             "    id_usuario, " +
             "    hombre, " +
             "    id_comuna, " +
+            "    borrado, " +
             "    telefono, " +
             "    correo, " +
             "    fecha_nacimiento)" +
             "    VALUES" +
             "    (" +
             "    " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_fechaVencimientoLicencia != null ? "'" + _fechaVencimientoLicencia + "'" : "null") + "," +
             "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
             "    " + (_hombre != null ? "'" + _hombre + "'" : "null") + "," +
             "    " + (_idComuna != null ? "'" + _idComuna + "'" : "null") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
             "    " + (_telefono != null ? "'" + _telefono + "'" : "null") + "," +
             "    " + (_correo != null ? "'" + _correo + "'" : "null") + "," +
             "    " + (_fechaNacimiento != null ? "'" + _fechaNacimiento + "'" : "null") +

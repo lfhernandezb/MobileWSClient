@@ -34,7 +34,7 @@ public class Autenticacion {
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    strftime(au.fecha, '%Y-%m-%d %H:%M:%S') AS fecha," +
+        "    strftime('%Y-%m-%d %H:%M:%S', au.fecha) AS fecha," +
         "    au.id_red_social AS id_red_social," +
         "    au.token AS token," +
         "    au.id_usuario AS id_usuario," +
