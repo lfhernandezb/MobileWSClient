@@ -221,7 +221,7 @@ public class RestFulWebservice extends Activity {
 		        String responseString = null;
 		        Connection conn = null;
 		        
-		        String serverURL = "http://ptt-studio.bounceme.net:8080/cl.dsoft.carws/rest/todo/receive";
+		        String serverURL = "http://ptt-studio.bounceme.net:8080/cl.dsoft.carws/rest/todo/byIdUsuario";
 		        
 		        try {
 		        	int timeoutConnection;
