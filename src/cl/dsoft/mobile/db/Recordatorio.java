@@ -21,9 +21,19 @@ import org.simpleframework.xml.Root;
  */
 @Root
 public class Recordatorio {
+    @Element(name = "idRecordatorio")
+    private Long _idRecordatorio;
+    @Element(name = "titulo", required = false)
+    private String _titulo;
+    @Element(name = "fechaModificacion")
+    private String _fechaModificacion;
     @Element(name = "fecha", required = false)
     private String _fecha;
-    @Element(name = "borrado", required = false)
+    @Element(name = "idUsuario")
+    private Long _idUsuario;
+    @Element(name = "idVehiculo")
+    private Long _idVehiculo;
+    @Element(name = "borrado")
     private Boolean _borrado;
     @Element(name = "descripcion", required = false)
     private String _descripcion;
@@ -33,51 +43,71 @@ public class Recordatorio {
     private Integer _km;
     @Element(name = "recordarFecha", required = false)
     private Boolean _recordarFecha;
-    @Element(name = "idRecordatorio")
-    private Long _idRecordatorio;
-    @Element(name = "titulo", required = false)
-    private String _titulo;
-    @Element(name = "fechaModificacion", required = false)
-    private String _fechaModificacion;
-    @Element(name = "idUsuario")
-    private Long _idUsuario;
-    @Element(name = "idVehiculo")
-    private Long _idVehiculo;
 
     private final static String _str_sql = 
         "    SELECT" +
+        "    re.id_recordatorio AS id_recordatorio," +
+        "    re.titulo AS titulo," +
+        "    strftime('%Y-%m-%d %H:%M:%S', re.fecha_modificacion) AS fecha_modificacion," +
         "    strftime('%Y-%m-%d %H:%M:%S', re.fecha) AS fecha," +
+        "    re.id_usuario AS id_usuario," +
+        "    re.id_vehiculo AS id_vehiculo," +
         "    re.borrado AS borrado," +
         "    re.descripcion AS descripcion," +
         "    re.recordar_km AS recordar_km," +
         "    re.km AS km," +
-        "    re.recordar_fecha AS recordar_fecha," +
-        "    re.id_recordatorio AS id_recordatorio," +
-        "    re.titulo AS titulo," +
-        "    strftime('%Y-%m-%d %H:%M:%S', re.fecha_modificacion) AS fecha_modificacion," +
-        "    re.id_usuario AS id_usuario," +
-        "    re.id_vehiculo AS id_vehiculo" +
+        "    re.recordar_fecha AS recordar_fecha" +
         "    FROM recordatorio re";
 
     public Recordatorio() {
+        _idRecordatorio = null;
+        _titulo = null;
+        _fechaModificacion = null;
         _fecha = null;
+        _idUsuario = null;
+        _idVehiculo = null;
         _borrado = null;
         _descripcion = null;
         _recordarKm = null;
         _km = null;
         _recordarFecha = null;
-        _idRecordatorio = null;
-        _titulo = null;
-        _fechaModificacion = null;
-        _idUsuario = null;
-        _idVehiculo = null;
 
+    }
+    /**
+     * @return the _idRecordatorio
+     */
+    public Long getIdRecordatorio() {
+        return _idRecordatorio;
+    }
+    /**
+     * @return the _titulo
+     */
+    public String getTitulo() {
+        return _titulo;
+    }
+    /**
+     * @return the _fechaModificacion
+     */
+    public String getFechaModificacion() {
+        return _fechaModificacion;
     }
     /**
      * @return the _fecha
      */
     public String getFecha() {
         return _fecha;
+    }
+    /**
+     * @return the _idUsuario
+     */
+    public Long getIdUsuario() {
+        return _idUsuario;
+    }
+    /**
+     * @return the _idVehiculo
+     */
+    public Long getIdVehiculo() {
+        return _idVehiculo;
     }
     /**
      * @return the _borrado
@@ -110,40 +140,40 @@ public class Recordatorio {
         return _recordarFecha;
     }
     /**
-     * @return the _idRecordatorio
+     * @param _idRecordatorio the _idRecordatorio to set
      */
-    public Long getIdRecordatorio() {
-        return _idRecordatorio;
+    public void setIdRecordatorio(Long _idRecordatorio) {
+        this._idRecordatorio = _idRecordatorio;
     }
     /**
-     * @return the _titulo
+     * @param _titulo the _titulo to set
      */
-    public String getTitulo() {
-        return _titulo;
+    public void setTitulo(String _titulo) {
+        this._titulo = _titulo;
     }
     /**
-     * @return the _fechaModificacion
+     * @param _fechaModificacion the _fechaModificacion to set
      */
-    public String getFechaModificacion() {
-        return _fechaModificacion;
-    }
-    /**
-     * @return the _idUsuario
-     */
-    public Long getIdUsuario() {
-        return _idUsuario;
-    }
-    /**
-     * @return the _idVehiculo
-     */
-    public Long getIdVehiculo() {
-        return _idVehiculo;
+    public void setFechaModificacion(String _fechaModificacion) {
+        this._fechaModificacion = _fechaModificacion;
     }
     /**
      * @param _fecha the _fecha to set
      */
     public void setFecha(String _fecha) {
         this._fecha = _fecha;
+    }
+    /**
+     * @param _idUsuario the _idUsuario to set
+     */
+    public void setIdUsuario(Long _idUsuario) {
+        this._idUsuario = _idUsuario;
+    }
+    /**
+     * @param _idVehiculo the _idVehiculo to set
+     */
+    public void setIdVehiculo(Long _idVehiculo) {
+        this._idVehiculo = _idVehiculo;
     }
     /**
      * @param _borrado the _borrado to set
@@ -175,51 +205,21 @@ public class Recordatorio {
     public void setRecordarFecha(Boolean _recordarFecha) {
         this._recordarFecha = _recordarFecha;
     }
-    /**
-     * @param _idRecordatorio the _idRecordatorio to set
-     */
-    public void setIdRecordatorio(Long _idRecordatorio) {
-        this._idRecordatorio = _idRecordatorio;
-    }
-    /**
-     * @param _titulo the _titulo to set
-     */
-    public void setTitulo(String _titulo) {
-        this._titulo = _titulo;
-    }
-    /**
-     * @param _fechaModificacion the _fechaModificacion to set
-     */
-    public void setFechaModificacion(String _fechaModificacion) {
-        this._fechaModificacion = _fechaModificacion;
-    }
-    /**
-     * @param _idUsuario the _idUsuario to set
-     */
-    public void setIdUsuario(Long _idUsuario) {
-        this._idUsuario = _idUsuario;
-    }
-    /**
-     * @param _idVehiculo the _idVehiculo to set
-     */
-    public void setIdVehiculo(Long _idVehiculo) {
-        this._idVehiculo = _idVehiculo;
-    }
 
     public static Recordatorio fromRS(ResultSet p_rs) throws SQLException {
         Recordatorio ret = new Recordatorio();
 
+        ret.setIdRecordatorio(p_rs.getLong("id_recordatorio"));
+        ret.setTitulo(p_rs.getString("titulo"));
+        ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
         ret.setFecha(p_rs.getString("fecha"));
+        ret.setIdUsuario(p_rs.getLong("id_usuario"));
+        ret.setIdVehiculo(p_rs.getLong("id_vehiculo"));
         ret.setBorrado(p_rs.getBoolean("borrado"));
         ret.setDescripcion(p_rs.getString("descripcion"));
         ret.setRecordarKm(p_rs.getBoolean("recordar_km"));
         ret.setKm(p_rs.getInt("km"));
         ret.setRecordarFecha(p_rs.getBoolean("recordar_fecha"));
-        ret.setIdRecordatorio(p_rs.getLong("id_recordatorio"));
-        ret.setTitulo(p_rs.getString("titulo"));
-        ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
-        ret.setIdUsuario(p_rs.getLong("id_usuario"));
-        ret.setIdVehiculo(p_rs.getLong("id_vehiculo"));
 
         return ret;
     }
@@ -409,14 +409,14 @@ public class Recordatorio {
         String str_sql =
             "    UPDATE recordatorio" +
             "    SET" +
+            "    titulo = " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    borrado = " + (_borrado != null ? _borrado : "null") + "," +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    recordar_km = " + (_recordarKm != null ? _recordarKm : "null") + "," +
             "    km = " + (_km != null ? _km : "null") + "," +
-            "    recordar_fecha = " + (_recordarFecha != null ? _recordarFecha : "null") + "," +
-            "    titulo = " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") +
+            "    recordar_fecha = " + (_recordarFecha != null ? _recordarFecha : "null") +
             "    WHERE" +
             "    id_recordatorio = " + Long.toString(this._idRecordatorio) + " AND" +
             "    id_usuario = " + Long.toString(this._idUsuario);
@@ -470,30 +470,30 @@ public class Recordatorio {
         String str_sql =
             "    INSERT INTO recordatorio" +
             "    (" +
+            "    id_recordatorio, " +
+            "    titulo, " +
+            "    fecha_modificacion, " +
             "    fecha, " +
+            "    id_usuario, " +
+            "    id_vehiculo, " +
             "    borrado, " +
             "    descripcion, " +
             "    recordar_km, " +
             "    km, " +
-            "    recordar_fecha, " +
-            "    id_recordatorio, " +
-            "    titulo, " +
-            "    fecha_modificacion, " +
-            "    id_usuario, " +
-            "    id_vehiculo)" +
+            "    recordar_fecha)" +
             "    VALUES" +
             "    (" +
+            "    " + (_idRecordatorio != null ? "'" + _idRecordatorio + "'" : "null") + "," +
+            "    " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
+            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
+            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
             "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_recordarKm != null ? "'" + _recordarKm + "'" : "null") + "," +
             "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
-            "    " + (_recordarFecha != null ? "'" + _recordarFecha + "'" : "null") + "," +
-            "    " + (_idRecordatorio != null ? "'" + _idRecordatorio + "'" : "null") + "," +
-            "    " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
-            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") +
+            "    " + (_recordarFecha != null ? "'" + _recordarFecha + "'" : "null") +
             "    )";
         
         try {
@@ -608,15 +608,15 @@ public class Recordatorio {
                 obj = fromRS(rs);
                 //System.out.println("fromRS(rs) ok");
 
+                _titulo = obj.getTitulo();
+                _fechaModificacion = obj.getFechaModificacion();
                 _fecha = obj.getFecha();
+                _idVehiculo = obj.getIdVehiculo();
                 _borrado = obj.getBorrado();
                 _descripcion = obj.getDescripcion();
                 _recordarKm = obj.getRecordarKm();
                 _km = obj.getKm();
                 _recordarFecha = obj.getRecordarFecha();
-                _titulo = obj.getTitulo();
-                _fechaModificacion = obj.getFechaModificacion();
-                _idVehiculo = obj.getIdVehiculo();
             }
         }
         catch (SQLException ex){
@@ -728,51 +728,51 @@ public class Recordatorio {
 @Override
     public String toString() {
         return "Recordatorio [" +
+	           "    _idRecordatorio = " + (_idRecordatorio != null ? _idRecordatorio : "null") + "," +
+	           "    _titulo = " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
+	           "    _fechaModificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
 	           "    _fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
+	           "    _idUsuario = " + (_idUsuario != null ? _idUsuario : "null") + "," +
+	           "    _idVehiculo = " + (_idVehiculo != null ? _idVehiculo : "null") + "," +
 	           "    _borrado = " + (_borrado != null ? _borrado : "null") + "," +
 	           "    _descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
 	           "    _recordarKm = " + (_recordarKm != null ? _recordarKm : "null") + "," +
 	           "    _km = " + (_km != null ? _km : "null") + "," +
-	           "    _recordarFecha = " + (_recordarFecha != null ? _recordarFecha : "null") + "," +
-	           "    _idRecordatorio = " + (_idRecordatorio != null ? _idRecordatorio : "null") + "," +
-	           "    _titulo = " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
-	           "    _fechaModificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-	           "    _idUsuario = " + (_idUsuario != null ? _idUsuario : "null") + "," +
-	           "    _idVehiculo = " + (_idVehiculo != null ? _idVehiculo : "null") +
+	           "    _recordarFecha = " + (_recordarFecha != null ? _recordarFecha : "null") +
 			   "]";
     }
 
 
     public String toJSON() {
         return "{\"Recordatorio\" : {" +
+	           "    \"_idRecordatorio\" : " + (_idRecordatorio != null ? _idRecordatorio : "null") + "," +
+	           "    \"_titulo\" : " + (_titulo != null ? "\"" + _titulo + "\"" : "null") + "," +
+	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") + "," +
 	           "    \"_fecha\" : " + (_fecha != null ? "\"" + _fecha + "\"" : "null") + "," +
+	           "    \"_idUsuario\" : " + (_idUsuario != null ? _idUsuario : "null") + "," +
+	           "    \"_idVehiculo\" : " + (_idVehiculo != null ? _idVehiculo : "null") + "," +
 	           "    \"_borrado\" : " + (_borrado != null ? _borrado : "null") + "," +
 	           "    \"_descripcion\" : " + (_descripcion != null ? "\"" + _descripcion + "\"" : "null") + "," +
 	           "    \"_recordarKm\" : " + (_recordarKm != null ? _recordarKm : "null") + "," +
 	           "    \"_km\" : " + (_km != null ? _km : "null") + "," +
-	           "    \"_recordarFecha\" : " + (_recordarFecha != null ? _recordarFecha : "null") + "," +
-	           "    \"_idRecordatorio\" : " + (_idRecordatorio != null ? _idRecordatorio : "null") + "," +
-	           "    \"_titulo\" : " + (_titulo != null ? "\"" + _titulo + "\"" : "null") + "," +
-	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") + "," +
-	           "    \"_idUsuario\" : " + (_idUsuario != null ? _idUsuario : "null") + "," +
-	           "    \"_idVehiculo\" : " + (_idVehiculo != null ? _idVehiculo : "null") +
+	           "    \"_recordarFecha\" : " + (_recordarFecha != null ? _recordarFecha : "null") +
 			   "}}";
     }
 
 
     public String toXML() {
         return "<Recordatorio>" +
+	           "    <idRecordatorio" + (_idRecordatorio != null ? ">" + _idRecordatorio + "</idRecordatorio>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <titulo" + (_titulo != null ? ">" + _titulo + "</titulo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <fecha" + (_fecha != null ? ">" + _fecha + "</fecha>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <idUsuario" + (_idUsuario != null ? ">" + _idUsuario + "</idUsuario>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <idVehiculo" + (_idVehiculo != null ? ">" + _idVehiculo + "</idVehiculo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <borrado" + (_borrado != null ? ">" + _borrado + "</borrado>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <descripcion" + (_descripcion != null ? ">" + _descripcion + "</descripcion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <recordarKm" + (_recordarKm != null ? ">" + _recordarKm + "</recordarKm>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <km" + (_km != null ? ">" + _km + "</km>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <recordarFecha" + (_recordarFecha != null ? ">" + _recordarFecha + "</recordarFecha>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idRecordatorio" + (_idRecordatorio != null ? ">" + _idRecordatorio + "</idRecordatorio>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <titulo" + (_titulo != null ? ">" + _titulo + "</titulo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idUsuario" + (_idUsuario != null ? ">" + _idUsuario + "</idUsuario>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idVehiculo" + (_idVehiculo != null ? ">" + _idVehiculo + "</idVehiculo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 			   "</Recordatorio>";
     }
 
@@ -783,17 +783,17 @@ public class Recordatorio {
 
         Element element = (Element) xmlNode;
 
+        ret.setIdRecordatorio(Long.decode(element.getElementsByTagName("id_recordatorio").item(0).getTextContent()));
+        ret.setTitulo(element.getElementsByTagName("titulo").item(0).getTextContent());
+        ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
         ret.setFecha(element.getElementsByTagName("fecha").item(0).getTextContent());
+        ret.setIdUsuario(Long.decode(element.getElementsByTagName("id_usuario").item(0).getTextContent()));
+        ret.setIdVehiculo(Long.decode(element.getElementsByTagName("id_vehiculo").item(0).getTextContent()));
         ret.setBorrado(Boolean.decode(element.getElementsByTagName("borrado").item(0).getTextContent()));
         ret.setDescripcion(element.getElementsByTagName("descripcion").item(0).getTextContent());
         ret.setRecordarKm(Boolean.decode(element.getElementsByTagName("recordar_km").item(0).getTextContent()));
         ret.setKm(Integer.decode(element.getElementsByTagName("km").item(0).getTextContent()));
         ret.setRecordarFecha(Boolean.decode(element.getElementsByTagName("recordar_fecha").item(0).getTextContent()));
-        ret.setIdRecordatorio(Long.decode(element.getElementsByTagName("id_recordatorio").item(0).getTextContent()));
-        ret.setTitulo(element.getElementsByTagName("titulo").item(0).getTextContent());
-        ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
-        ret.setIdUsuario(Long.decode(element.getElementsByTagName("id_usuario").item(0).getTextContent()));
-        ret.setIdVehiculo(Long.decode(element.getElementsByTagName("id_vehiculo").item(0).getTextContent()));
 
         return ret;
     }

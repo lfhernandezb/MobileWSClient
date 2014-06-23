@@ -23,17 +23,21 @@ import org.simpleframework.xml.Root;
 public class Pais {
     @Element(name = "id")
     private Long _id;
+    @Element(name = "fechaModificacion")
+    private String _fechaModificacion;
     @Element(name = "pais")
     private String _pais;
 
     private final static String _str_sql = 
         "    SELECT" +
         "    pa.id_pais AS id," +
+        "    strftime('%Y-%m-%d %H:%M:%S', pa.fecha_modificacion) AS fecha_modificacion," +
         "    pa.pais AS pais" +
         "    FROM pais pa";
 
     public Pais() {
         _id = null;
+        _fechaModificacion = null;
         _pais = null;
 
     }
@@ -42,6 +46,12 @@ public class Pais {
      */
     public Long getId() {
         return _id;
+    }
+    /**
+     * @return the _fechaModificacion
+     */
+    public String getFechaModificacion() {
+        return _fechaModificacion;
     }
     /**
      * @return the _pais
@@ -56,6 +66,12 @@ public class Pais {
         this._id = _id;
     }
     /**
+     * @param _fechaModificacion the _fechaModificacion to set
+     */
+    public void setFechaModificacion(String _fechaModificacion) {
+        this._fechaModificacion = _fechaModificacion;
+    }
+    /**
      * @param _pais the _pais to set
      */
     public void setPais(String _pais) {
@@ -66,6 +82,7 @@ public class Pais {
         Pais ret = new Pais();
 
         ret.setId(p_rs.getLong("id"));
+        ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
         ret.setPais(p_rs.getString("pais"));
 
         return ret;
@@ -155,6 +172,9 @@ public class Pais {
                 if (p.getKey().equals("id_pais")) {
                     array_clauses.add("pa.id_pais = " + p.getValue());
                 }
+                else if (p.getKey().equals("mas reciente")) {
+                    array_clauses.add("pa.fecha_modificacion > " + p.getValue());
+                }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
                 }
@@ -241,6 +261,7 @@ public class Pais {
         String str_sql =
             "    UPDATE pais" +
             "    SET" +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    pais = " + (_pais != null ? "'" + _pais + "'" : "null") +
             "    WHERE" +
             "    id_pais = " + Long.toString(this._id);
@@ -295,10 +316,12 @@ public class Pais {
             "    INSERT INTO pais" +
             "    (" +
             "    id_pais, " +
+            "    fecha_modificacion, " +
             "    pais)" +
             "    VALUES" +
             "    (" +
             "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_pais != null ? "'" + _pais + "'" : "null") +
             "    )";
         
@@ -412,6 +435,7 @@ public class Pais {
                 obj = fromRS(rs);
                 //System.out.println("fromRS(rs) ok");
 
+                _fechaModificacion = obj.getFechaModificacion();
                 _pais = obj.getPais();
             }
         }
@@ -524,6 +548,7 @@ public class Pais {
     public String toString() {
         return "Pais [" +
 	           "    _id = " + (_id != null ? _id : "null") + "," +
+	           "    _fechaModificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
 	           "    _pais = " + (_pais != null ? "'" + _pais + "'" : "null") +
 			   "]";
     }
@@ -532,6 +557,7 @@ public class Pais {
     public String toJSON() {
         return "{\"Pais\" : {" +
 	           "    \"_id\" : " + (_id != null ? _id : "null") + "," +
+	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") + "," +
 	           "    \"_pais\" : " + (_pais != null ? "\"" + _pais + "\"" : "null") +
 			   "}}";
     }
@@ -540,6 +566,7 @@ public class Pais {
     public String toXML() {
         return "<Pais>" +
 	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <pais" + (_pais != null ? ">" + _pais + "</pais>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 			   "</Pais>";
     }
@@ -552,6 +579,7 @@ public class Pais {
         Element element = (Element) xmlNode;
 
         ret.setId(Long.decode(element.getElementsByTagName("id_pais").item(0).getTextContent()));
+        ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
         ret.setPais(element.getElementsByTagName("pais").item(0).getTextContent());
 
         return ret;

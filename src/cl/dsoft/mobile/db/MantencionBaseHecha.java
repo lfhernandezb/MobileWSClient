@@ -20,24 +20,40 @@ import org.simpleframework.xml.Root;
  *
  */
 @Root
-public class Traccion {
+public class MantencionBaseHecha {
     @Element(name = "fechaModificacion")
     private String _fechaModificacion;
-    @Element(name = "descripcion")
-    private String _descripcion;
+    @Element(name = "fecha", required = false)
+    private String _fecha;
+    @Element(name = "idMantencionBase")
+    private Long _idMantencionBase;
+    @Element(name = "borrado")
+    private Boolean _borrado;
+    @Element(name = "costo", required = false)
+    private Integer _costo;
+    @Element(name = "km", required = false)
+    private Integer _km;
     @Element(name = "id")
-    private Byte _id;
+    private Integer _id;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    strftime('%Y-%m-%d %H:%M:%S', tr.fecha_modificacion) AS fecha_modificacion," +
-        "    tr.descripcion AS descripcion," +
-        "    tr.id_traccion AS id" +
-        "    FROM traccion tr";
+        "    strftime('%Y-%m-%d %H:%M:%S', ma.fecha_modificacion) AS fecha_modificacion," +
+        "    strftime('%Y-%m-%d %H:%M:%S', ma.fecha) AS fecha," +
+        "    ma.id_mantencion_base AS id_mantencion_base," +
+        "    ma.borrado AS borrado," +
+        "    ma.costo AS costo," +
+        "    ma.km AS km," +
+        "    ma.id_mantencion_base_hecha AS id" +
+        "    FROM mantencion_base_hecha ma";
 
-    public Traccion() {
+    public MantencionBaseHecha() {
         _fechaModificacion = null;
-        _descripcion = null;
+        _fecha = null;
+        _idMantencionBase = null;
+        _borrado = null;
+        _costo = null;
+        _km = null;
         _id = null;
 
     }
@@ -48,15 +64,39 @@ public class Traccion {
         return _fechaModificacion;
     }
     /**
-     * @return the _descripcion
+     * @return the _fecha
      */
-    public String getDescripcion() {
-        return _descripcion;
+    public String getFecha() {
+        return _fecha;
+    }
+    /**
+     * @return the _idMantencionBase
+     */
+    public Long getIdMantencionBase() {
+        return _idMantencionBase;
+    }
+    /**
+     * @return the _borrado
+     */
+    public Boolean getBorrado() {
+        return _borrado;
+    }
+    /**
+     * @return the _costo
+     */
+    public Integer getCosto() {
+        return _costo;
+    }
+    /**
+     * @return the _km
+     */
+    public Integer getKm() {
+        return _km;
     }
     /**
      * @return the _id
      */
-    public Byte getId() {
+    public Integer getId() {
         return _id;
     }
     /**
@@ -66,33 +106,61 @@ public class Traccion {
         this._fechaModificacion = _fechaModificacion;
     }
     /**
-     * @param _descripcion the _descripcion to set
+     * @param _fecha the _fecha to set
      */
-    public void setDescripcion(String _descripcion) {
-        this._descripcion = _descripcion;
+    public void setFecha(String _fecha) {
+        this._fecha = _fecha;
+    }
+    /**
+     * @param _idMantencionBase the _idMantencionBase to set
+     */
+    public void setIdMantencionBase(Long _idMantencionBase) {
+        this._idMantencionBase = _idMantencionBase;
+    }
+    /**
+     * @param _borrado the _borrado to set
+     */
+    public void setBorrado(Boolean _borrado) {
+        this._borrado = _borrado;
+    }
+    /**
+     * @param _costo the _costo to set
+     */
+    public void setCosto(Integer _costo) {
+        this._costo = _costo;
+    }
+    /**
+     * @param _km the _km to set
+     */
+    public void setKm(Integer _km) {
+        this._km = _km;
     }
     /**
      * @param _id the _id to set
      */
-    public void setId(Byte _id) {
+    public void setId(Integer _id) {
         this._id = _id;
     }
 
-    public static Traccion fromRS(ResultSet p_rs) throws SQLException {
-        Traccion ret = new Traccion();
+    public static MantencionBaseHecha fromRS(ResultSet p_rs) throws SQLException {
+        MantencionBaseHecha ret = new MantencionBaseHecha();
 
         ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
-        ret.setDescripcion(p_rs.getString("descripcion"));
-        ret.setId(p_rs.getByte("id"));
+        ret.setFecha(p_rs.getString("fecha"));
+        ret.setIdMantencionBase(p_rs.getLong("id_mantencion_base"));
+        ret.setBorrado(p_rs.getBoolean("borrado"));
+        ret.setCosto(p_rs.getInt("costo"));
+        ret.setKm(p_rs.getInt("km"));
+        ret.setId(p_rs.getInt("id"));
 
         return ret;
     }
 
-    public static Traccion getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
-        Traccion ret = null;
+    public static MantencionBaseHecha getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
+        MantencionBaseHecha ret = null;
         
         String str_sql = _str_sql +
-            "  WHERE tr." + p_key + " = " + p_value +
+            "  WHERE ma." + p_key + " = " + p_value +
             "  LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -149,31 +217,40 @@ public class Traccion {
         return ret;        
     }
 
-    public static Traccion getById(Connection p_conn, String p_id) throws Exception {
-        return getByParameter(p_conn, "id_traccion", p_id);
+    public static MantencionBaseHecha getById(Connection p_conn, String p_id) throws Exception {
+        return getByParameter(p_conn, "id_mantencion_base_hecha", p_id);
     }
     
-    public static ArrayList<Traccion> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
+    public static ArrayList<MantencionBaseHecha> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
         Statement stmt = null;
         ResultSet rs = null;
         String str_sql;
-        ArrayList<Traccion> ret;
+        ArrayList<MantencionBaseHecha> ret;
         
         str_sql = "";
         
         try {
             ArrayList<String> array_clauses = new ArrayList<String>();
             
-            ret = new ArrayList<Traccion>();
+            ret = new ArrayList<MantencionBaseHecha>();
             
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_traccion")) {
-                    array_clauses.add("tr.id_traccion = " + p.getValue());
+                if (p.getKey().equals("id_mantencion_base_hecha")) {
+                    array_clauses.add("ma.id_mantencion_base_hecha = " + p.getValue());
+                }
+                else if (p.getKey().equals("id_mantencion_base")) {
+                    array_clauses.add("ma.id_mantencion_base = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("tr.fecha_modificacion > " + p.getValue());
+                    array_clauses.add("ma.fecha_modificacion > " + p.getValue());
+                }
+                else if (p.getKey().equals("no borrado")) {
+                    array_clauses.add("ma.borrado = 0");
+                }
+                else if (p.getKey().equals("borrado")) {
+                    array_clauses.add("ma.borrado = 1");
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -259,12 +336,15 @@ public class Traccion {
         Statement stmt = null;
 
         String str_sql =
-            "    UPDATE traccion" +
+            "    UPDATE mantencion_base_hecha" +
             "    SET" +
             "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-            "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") +
+            "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
+            "    borrado = " + (_borrado != null ? _borrado : "null") + "," +
+            "    costo = " + (_costo != null ? _costo : "null") + "," +
+            "    km = " + (_km != null ? _km : "null") +
             "    WHERE" +
-            "    id_traccion = " + Byte.toString(this._id);
+            "    id_mantencion_base_hecha = " + Integer.toString(this._id);
 
         try {
             stmt = p_conn.createStatement();
@@ -313,15 +393,23 @@ public class Traccion {
         ResultSet rs = null;
 
         String str_sql =
-            "    INSERT INTO traccion" +
+            "    INSERT INTO mantencion_base_hecha" +
             "    (" +
             "    fecha_modificacion, " +
-            "    descripcion, " +
-            "    id_traccion)" +
+            "    fecha, " +
+            "    id_mantencion_base, " +
+            "    borrado, " +
+            "    costo, " +
+            "    km, " +
+            "    id_mantencion_base_hecha)" +
             "    VALUES" +
             "    (" +
             "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-            "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
+            "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
+            "    " + (_idMantencionBase != null ? "'" + _idMantencionBase + "'" : "null") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
+            "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
+            "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
             "    " + (_id != null ? "'" + _id + "'" : "null") +
             "    )";
         
@@ -373,9 +461,9 @@ public class Traccion {
         Statement stmt = null;
 
         String str_sql =
-            "    DELETE FROM traccion" +
+            "    DELETE FROM mantencion_base_hecha" +
             "    WHERE" +
-            "    id_traccion = " + Byte.toString(this._id);
+            "    id_mantencion_base_hecha = " + Integer.toString(this._id);
 
         try {
             stmt = p_conn.createStatement();
@@ -409,11 +497,11 @@ public class Traccion {
     }
 
     public void load(Connection p_conn) throws SQLException {
-        Traccion obj = null;
+        MantencionBaseHecha obj = null;
         
         String str_sql = _str_sql +
             "    WHERE" +
-            "    id_traccion = " + Byte.toString(this._id) +
+            "    id_mantencion_base_hecha = " + Integer.toString(this._id) +
             "    LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -436,7 +524,11 @@ public class Traccion {
                 //System.out.println("fromRS(rs) ok");
 
                 _fechaModificacion = obj.getFechaModificacion();
-                _descripcion = obj.getDescripcion();
+                _fecha = obj.getFecha();
+                _idMantencionBase = obj.getIdMantencionBase();
+                _borrado = obj.getBorrado();
+                _costo = obj.getCosto();
+                _km = obj.getKm();
             }
         }
         catch (SQLException ex){
@@ -476,7 +568,7 @@ public class Traccion {
         
         String str_sql = _str_sql +
             "    WHERE" +
-            "    id_traccion = " + Byte.toString(this._id) +
+            "    id_mantencion_base_hecha = " + Integer.toString(this._id) +
             "    LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -546,41 +638,57 @@ public class Traccion {
 
 @Override
     public String toString() {
-        return "Traccion [" +
+        return "MantencionBaseHecha [" +
 	           "    _fechaModificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-	           "    _descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
+	           "    _fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
+	           "    _idMantencionBase = " + (_idMantencionBase != null ? _idMantencionBase : "null") + "," +
+	           "    _borrado = " + (_borrado != null ? _borrado : "null") + "," +
+	           "    _costo = " + (_costo != null ? _costo : "null") + "," +
+	           "    _km = " + (_km != null ? _km : "null") + "," +
 	           "    _id = " + (_id != null ? _id : "null") +
 			   "]";
     }
 
 
     public String toJSON() {
-        return "{\"Traccion\" : {" +
+        return "{\"MantencionBaseHecha\" : {" +
 	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") + "," +
-	           "    \"_descripcion\" : " + (_descripcion != null ? "\"" + _descripcion + "\"" : "null") + "," +
+	           "    \"_fecha\" : " + (_fecha != null ? "\"" + _fecha + "\"" : "null") + "," +
+	           "    \"_idMantencionBase\" : " + (_idMantencionBase != null ? _idMantencionBase : "null") + "," +
+	           "    \"_borrado\" : " + (_borrado != null ? _borrado : "null") + "," +
+	           "    \"_costo\" : " + (_costo != null ? _costo : "null") + "," +
+	           "    \"_km\" : " + (_km != null ? _km : "null") + "," +
 	           "    \"_id\" : " + (_id != null ? _id : "null") +
 			   "}}";
     }
 
 
     public String toXML() {
-        return "<Traccion>" +
+        return "<MantencionBaseHecha>" +
 	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <descripcion" + (_descripcion != null ? ">" + _descripcion + "</descripcion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <fecha" + (_fecha != null ? ">" + _fecha + "</fecha>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <idMantencionBase" + (_idMantencionBase != null ? ">" + _idMantencionBase + "</idMantencionBase>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <borrado" + (_borrado != null ? ">" + _borrado + "</borrado>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <costo" + (_costo != null ? ">" + _costo + "</costo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <km" + (_km != null ? ">" + _km + "</km>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-			   "</Traccion>";
+			   "</MantencionBaseHecha>";
     }
 
 
 /*
-    public static Traccion fromXMLNode(Node xmlNode) {
-        Traccion ret = new Traccion();
+    public static MantencionBaseHecha fromXMLNode(Node xmlNode) {
+        MantencionBaseHecha ret = new MantencionBaseHecha();
 
         Element element = (Element) xmlNode;
 
         ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
-        ret.setDescripcion(element.getElementsByTagName("descripcion").item(0).getTextContent());
-        ret.setId(Byte.decode(element.getElementsByTagName("id_traccion").item(0).getTextContent()));
+        ret.setFecha(element.getElementsByTagName("fecha").item(0).getTextContent());
+        ret.setIdMantencionBase(Long.decode(element.getElementsByTagName("id_mantencion_base").item(0).getTextContent()));
+        ret.setBorrado(Boolean.decode(element.getElementsByTagName("borrado").item(0).getTextContent()));
+        ret.setCosto(Integer.decode(element.getElementsByTagName("costo").item(0).getTextContent()));
+        ret.setKm(Integer.decode(element.getElementsByTagName("km").item(0).getTextContent()));
+        ret.setId(Integer.decode(element.getElementsByTagName("id_mantencion_base_hecha").item(0).getTextContent()));
 
         return ret;
     }

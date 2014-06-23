@@ -23,7 +23,7 @@ import org.simpleframework.xml.Root;
 public class Usuario {
     @Element(name = "nombre", required = false)
     private String _nombre;
-    @Element(name = "fechaModificacion", required = false)
+    @Element(name = "fechaModificacion")
     private String _fechaModificacion;
     @Element(name = "fechaVencimientoLicencia", required = false)
     private String _fechaVencimientoLicencia;
@@ -33,7 +33,7 @@ public class Usuario {
     private Boolean _hombre;
     @Element(name = "idComuna")
     private Long _idComuna;
-    @Element(name = "borrado", required = false)
+    @Element(name = "borrado")
     private Boolean _borrado;
     @Element(name = "telefono", required = false)
     private String _telefono;

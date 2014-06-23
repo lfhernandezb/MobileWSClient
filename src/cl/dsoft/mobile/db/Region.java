@@ -27,18 +27,22 @@ public class Region {
     private Long _id;
     @Element(name = "idPais")
     private Long _idPais;
+    @Element(name = "fechaModificacion")
+    private String _fechaModificacion;
 
     private final static String _str_sql = 
         "    SELECT" +
         "    re.region AS region," +
         "    re.id_region AS id," +
-        "    re.id_pais AS id_pais" +
+        "    re.id_pais AS id_pais," +
+        "    strftime('%Y-%m-%d %H:%M:%S', re.fecha_modificacion) AS fecha_modificacion" +
         "    FROM region re";
 
     public Region() {
         _region = null;
         _id = null;
         _idPais = null;
+        _fechaModificacion = null;
 
     }
     /**
@@ -60,6 +64,12 @@ public class Region {
         return _idPais;
     }
     /**
+     * @return the _fechaModificacion
+     */
+    public String getFechaModificacion() {
+        return _fechaModificacion;
+    }
+    /**
      * @param _region the _region to set
      */
     public void setRegion(String _region) {
@@ -77,6 +87,12 @@ public class Region {
     public void setIdPais(Long _idPais) {
         this._idPais = _idPais;
     }
+    /**
+     * @param _fechaModificacion the _fechaModificacion to set
+     */
+    public void setFechaModificacion(String _fechaModificacion) {
+        this._fechaModificacion = _fechaModificacion;
+    }
 
     public static Region fromRS(ResultSet p_rs) throws SQLException {
         Region ret = new Region();
@@ -84,6 +100,7 @@ public class Region {
         ret.setRegion(p_rs.getString("region"));
         ret.setId(p_rs.getLong("id"));
         ret.setIdPais(p_rs.getLong("id_pais"));
+        ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
 
         return ret;
     }
@@ -175,6 +192,9 @@ public class Region {
                 else if (p.getKey().equals("id_pais")) {
                     array_clauses.add("re.id_pais = " + p.getValue());
                 }
+                else if (p.getKey().equals("mas reciente")) {
+                    array_clauses.add("re.fecha_modificacion > " + p.getValue());
+                }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
                 }
@@ -261,7 +281,8 @@ public class Region {
         String str_sql =
             "    UPDATE region" +
             "    SET" +
-            "    region = " + (_region != null ? "'" + _region + "'" : "null") +
+            "    region = " + (_region != null ? "'" + _region + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") +
             "    WHERE" +
             "    id_region = " + Long.toString(this._id);
 
@@ -316,12 +337,14 @@ public class Region {
             "    (" +
             "    region, " +
             "    id_region, " +
-            "    id_pais)" +
+            "    id_pais, " +
+            "    fecha_modificacion)" +
             "    VALUES" +
             "    (" +
             "    " + (_region != null ? "'" + _region + "'" : "null") + "," +
             "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
-            "    " + (_idPais != null ? "'" + _idPais + "'" : "null") +
+            "    " + (_idPais != null ? "'" + _idPais + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") +
             "    )";
         
         try {
@@ -436,6 +459,7 @@ public class Region {
 
                 _region = obj.getRegion();
                 _idPais = obj.getIdPais();
+                _fechaModificacion = obj.getFechaModificacion();
             }
         }
         catch (SQLException ex){
@@ -548,7 +572,8 @@ public class Region {
         return "Region [" +
 	           "    _region = " + (_region != null ? "'" + _region + "'" : "null") + "," +
 	           "    _id = " + (_id != null ? _id : "null") + "," +
-	           "    _idPais = " + (_idPais != null ? _idPais : "null") +
+	           "    _idPais = " + (_idPais != null ? _idPais : "null") + "," +
+	           "    _fechaModificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") +
 			   "]";
     }
 
@@ -557,7 +582,8 @@ public class Region {
         return "{\"Region\" : {" +
 	           "    \"_region\" : " + (_region != null ? "\"" + _region + "\"" : "null") + "," +
 	           "    \"_id\" : " + (_id != null ? _id : "null") + "," +
-	           "    \"_idPais\" : " + (_idPais != null ? _idPais : "null") +
+	           "    \"_idPais\" : " + (_idPais != null ? _idPais : "null") + "," +
+	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") +
 			   "}}";
     }
 
@@ -567,6 +593,7 @@ public class Region {
 	           "    <region" + (_region != null ? ">" + _region + "</region>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <idPais" + (_idPais != null ? ">" + _idPais + "</idPais>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 			   "</Region>";
     }
 
@@ -580,6 +607,7 @@ public class Region {
         ret.setRegion(element.getElementsByTagName("region").item(0).getTextContent());
         ret.setId(Long.decode(element.getElementsByTagName("id_region").item(0).getTextContent()));
         ret.setIdPais(Long.decode(element.getElementsByTagName("id_pais").item(0).getTextContent()));
+        ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
 
         return ret;
     }

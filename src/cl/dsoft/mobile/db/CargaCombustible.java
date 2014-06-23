@@ -20,74 +20,80 @@ import org.simpleframework.xml.Root;
  *
  */
 @Root
-public class MantencionUsuario {
-    @Element(name = "nombre", required = false)
-    private String _nombre;
+public class CargaCombustible {
     @Element(name = "fechaModificacion")
     private String _fechaModificacion;
+    @Element(name = "estanqueLleno", required = false)
+    private Boolean _estanqueLleno;
+    @Element(name = "fecha", required = false)
+    private String _fecha;
     @Element(name = "idUsuario")
     private Long _idUsuario;
     @Element(name = "idVehiculo")
     private Long _idVehiculo;
     @Element(name = "borrado")
     private Boolean _borrado;
-    @Element(name = "kmentremantenciones", required = false)
-    private Integer _kmentremantenciones;
-    @Element(name = "descripcion", required = false)
-    private String _descripcion;
-    @Element(name = "idMantencionUsuario")
-    private Long _idMantencionUsuario;
-    @Element(name = "diasentremantenciones", required = false)
-    private Integer _diasentremantenciones;
-    @Element(name = "url", required = false)
-    private String _url;
-    @Element(name = "dependekm", required = false)
-    private Boolean _dependekm;
-    @Element(name = "beneficios", required = false)
-    private String _beneficios;
+    @Element(name = "latitud", required = false)
+    private Integer _latitud;
+    @Element(name = "costo", required = false)
+    private Integer _costo;
+    @Element(name = "longitud", required = false)
+    private Integer _longitud;
+    @Element(name = "idCargaCombustible")
+    private Long _idCargaCombustible;
+    @Element(name = "km", required = false)
+    private Integer _km;
+    @Element(name = "litros", required = false)
+    private Integer _litros;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    ma.nombre AS nombre," +
-        "    strftime('%Y-%m-%d %H:%M:%S', ma.fecha_modificacion) AS fecha_modificacion," +
-        "    ma.id_usuario AS id_usuario," +
-        "    ma.id_vehiculo AS id_vehiculo," +
-        "    ma.borrado AS borrado," +
-        "    ma.KmEntreMantenciones AS KmEntreMantenciones," +
-        "    ma.descripcion AS descripcion," +
-        "    ma.id_mantencion_usuario AS id_mantencion_usuario," +
-        "    ma.DiasEntreMantenciones AS DiasEntreMantenciones," +
-        "    ma.URL AS URL," +
-        "    ma.DependeKm AS DependeKm," +
-        "    ma.beneficios AS beneficios" +
-        "    FROM mantencion_usuario ma";
+        "    strftime('%Y-%m-%d %H:%M:%S', ca.fecha_modificacion) AS fecha_modificacion," +
+        "    ca.estanque_lleno AS estanque_lleno," +
+        "    strftime('%Y-%m-%d %H:%M:%S', ca.fecha) AS fecha," +
+        "    ca.id_usuario AS id_usuario," +
+        "    ca.id_vehiculo AS id_vehiculo," +
+        "    ca.borrado AS borrado," +
+        "    ca.latitud AS latitud," +
+        "    ca.costo AS costo," +
+        "    ca.longitud AS longitud," +
+        "    ca.id_carga_combustible AS id_carga_combustible," +
+        "    ca.km AS km," +
+        "    ca.litros AS litros" +
+        "    FROM carga_combustible ca";
 
-    public MantencionUsuario() {
-        _nombre = null;
+    public CargaCombustible() {
         _fechaModificacion = null;
+        _estanqueLleno = null;
+        _fecha = null;
         _idUsuario = null;
         _idVehiculo = null;
         _borrado = null;
-        _kmentremantenciones = null;
-        _descripcion = null;
-        _idMantencionUsuario = null;
-        _diasentremantenciones = null;
-        _url = null;
-        _dependekm = null;
-        _beneficios = null;
+        _latitud = null;
+        _costo = null;
+        _longitud = null;
+        _idCargaCombustible = null;
+        _km = null;
+        _litros = null;
 
-    }
-    /**
-     * @return the _nombre
-     */
-    public String getNombre() {
-        return _nombre;
     }
     /**
      * @return the _fechaModificacion
      */
     public String getFechaModificacion() {
         return _fechaModificacion;
+    }
+    /**
+     * @return the _estanqueLleno
+     */
+    public Boolean getEstanqueLleno() {
+        return _estanqueLleno;
+    }
+    /**
+     * @return the _fecha
+     */
+    public String getFecha() {
+        return _fecha;
     }
     /**
      * @return the _idUsuario
@@ -108,58 +114,58 @@ public class MantencionUsuario {
         return _borrado;
     }
     /**
-     * @return the _kmentremantenciones
+     * @return the _latitud
      */
-    public Integer getKmentremantenciones() {
-        return _kmentremantenciones;
+    public Integer getLatitud() {
+        return _latitud;
     }
     /**
-     * @return the _descripcion
+     * @return the _costo
      */
-    public String getDescripcion() {
-        return _descripcion;
+    public Integer getCosto() {
+        return _costo;
     }
     /**
-     * @return the _idMantencionUsuario
+     * @return the _longitud
      */
-    public Long getIdMantencionUsuario() {
-        return _idMantencionUsuario;
+    public Integer getLongitud() {
+        return _longitud;
     }
     /**
-     * @return the _diasentremantenciones
+     * @return the _idCargaCombustible
      */
-    public Integer getDiasentremantenciones() {
-        return _diasentremantenciones;
+    public Long getIdCargaCombustible() {
+        return _idCargaCombustible;
     }
     /**
-     * @return the _url
+     * @return the _km
      */
-    public String getUrl() {
-        return _url;
+    public Integer getKm() {
+        return _km;
     }
     /**
-     * @return the _dependekm
+     * @return the _litros
      */
-    public Boolean getDependekm() {
-        return _dependekm;
-    }
-    /**
-     * @return the _beneficios
-     */
-    public String getBeneficios() {
-        return _beneficios;
-    }
-    /**
-     * @param _nombre the _nombre to set
-     */
-    public void setNombre(String _nombre) {
-        this._nombre = _nombre;
+    public Integer getLitros() {
+        return _litros;
     }
     /**
      * @param _fechaModificacion the _fechaModificacion to set
      */
     public void setFechaModificacion(String _fechaModificacion) {
         this._fechaModificacion = _fechaModificacion;
+    }
+    /**
+     * @param _estanqueLleno the _estanqueLleno to set
+     */
+    public void setEstanqueLleno(Boolean _estanqueLleno) {
+        this._estanqueLleno = _estanqueLleno;
+    }
+    /**
+     * @param _fecha the _fecha to set
+     */
+    public void setFecha(String _fecha) {
+        this._fecha = _fecha;
     }
     /**
      * @param _idUsuario the _idUsuario to set
@@ -180,72 +186,66 @@ public class MantencionUsuario {
         this._borrado = _borrado;
     }
     /**
-     * @param _kmentremantenciones the _kmentremantenciones to set
+     * @param _latitud the _latitud to set
      */
-    public void setKmentremantenciones(Integer _kmentremantenciones) {
-        this._kmentremantenciones = _kmentremantenciones;
+    public void setLatitud(Integer _latitud) {
+        this._latitud = _latitud;
     }
     /**
-     * @param _descripcion the _descripcion to set
+     * @param _costo the _costo to set
      */
-    public void setDescripcion(String _descripcion) {
-        this._descripcion = _descripcion;
+    public void setCosto(Integer _costo) {
+        this._costo = _costo;
     }
     /**
-     * @param _idMantencionUsuario the _idMantencionUsuario to set
+     * @param _longitud the _longitud to set
      */
-    public void setIdMantencionUsuario(Long _idMantencionUsuario) {
-        this._idMantencionUsuario = _idMantencionUsuario;
+    public void setLongitud(Integer _longitud) {
+        this._longitud = _longitud;
     }
     /**
-     * @param _diasentremantenciones the _diasentremantenciones to set
+     * @param _idCargaCombustible the _idCargaCombustible to set
      */
-    public void setDiasentremantenciones(Integer _diasentremantenciones) {
-        this._diasentremantenciones = _diasentremantenciones;
+    public void setIdCargaCombustible(Long _idCargaCombustible) {
+        this._idCargaCombustible = _idCargaCombustible;
     }
     /**
-     * @param _url the _url to set
+     * @param _km the _km to set
      */
-    public void setUrl(String _url) {
-        this._url = _url;
+    public void setKm(Integer _km) {
+        this._km = _km;
     }
     /**
-     * @param _dependekm the _dependekm to set
+     * @param _litros the _litros to set
      */
-    public void setDependekm(Boolean _dependekm) {
-        this._dependekm = _dependekm;
-    }
-    /**
-     * @param _beneficios the _beneficios to set
-     */
-    public void setBeneficios(String _beneficios) {
-        this._beneficios = _beneficios;
+    public void setLitros(Integer _litros) {
+        this._litros = _litros;
     }
 
-    public static MantencionUsuario fromRS(ResultSet p_rs) throws SQLException {
-        MantencionUsuario ret = new MantencionUsuario();
+    public static CargaCombustible fromRS(ResultSet p_rs) throws SQLException {
+        CargaCombustible ret = new CargaCombustible();
 
-        ret.setNombre(p_rs.getString("nombre"));
         ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
+        ret.setEstanqueLleno(p_rs.getBoolean("estanque_lleno"));
+        ret.setFecha(p_rs.getString("fecha"));
         ret.setIdUsuario(p_rs.getLong("id_usuario"));
         ret.setIdVehiculo(p_rs.getLong("id_vehiculo"));
         ret.setBorrado(p_rs.getBoolean("borrado"));
-        ret.setKmentremantenciones(p_rs.getInt("KmEntreMantenciones"));
-        ret.setDescripcion(p_rs.getString("descripcion"));
-        ret.setIdMantencionUsuario(p_rs.getLong("id_mantencion_usuario"));
-        ret.setDiasentremantenciones(p_rs.getInt("DiasEntreMantenciones"));
-        ret.setUrl(p_rs.getString("URL"));
-        ret.setDependekm(p_rs.getBoolean("DependeKm"));
-        ret.setBeneficios(p_rs.getString("beneficios"));
+        ret.setLatitud(p_rs.getInt("latitud"));
+        ret.setCosto(p_rs.getInt("costo"));
+        ret.setLongitud(p_rs.getInt("longitud"));
+        ret.setIdCargaCombustible(p_rs.getLong("id_carga_combustible"));
+        ret.setKm(p_rs.getInt("km"));
+        ret.setLitros(p_rs.getInt("litros"));
 
         return ret;
     }
 
-    public static MantencionUsuario getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
-        MantencionUsuario ret = null;
+    public static CargaCombustible getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
+        CargaCombustible ret = null;
         
         String str_sql = _str_sql +
-            "  WHERE ma." + p_key + " = " + p_value +
+            "  WHERE ca." + p_key + " = " + p_value +
             "  LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -303,42 +303,42 @@ public class MantencionUsuario {
     }
 
     
-    public static ArrayList<MantencionUsuario> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
+    public static ArrayList<CargaCombustible> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
         Statement stmt = null;
         ResultSet rs = null;
         String str_sql;
-        ArrayList<MantencionUsuario> ret;
+        ArrayList<CargaCombustible> ret;
         
         str_sql = "";
         
         try {
             ArrayList<String> array_clauses = new ArrayList<String>();
             
-            ret = new ArrayList<MantencionUsuario>();
+            ret = new ArrayList<CargaCombustible>();
             
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
                 if (p.getKey().equals("id_usuario")) {
-                    array_clauses.add("ma.id_usuario = " + p.getValue());
+                    array_clauses.add("ca.id_usuario = " + p.getValue());
                 }
-                else if (p.getKey().equals("id_mantencion_usuario")) {
-                    array_clauses.add("ma.id_mantencion_usuario = " + p.getValue());
+                else if (p.getKey().equals("id_carga_combustible")) {
+                    array_clauses.add("ca.id_carga_combustible = " + p.getValue());
                 }
                 else if (p.getKey().equals("id_usuario")) {
-                    array_clauses.add("ma.id_usuario = " + p.getValue());
+                    array_clauses.add("ca.id_usuario = " + p.getValue());
                 }
                 else if (p.getKey().equals("id_vehiculo")) {
-                    array_clauses.add("ma.id_vehiculo = " + p.getValue());
+                    array_clauses.add("ca.id_vehiculo = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ma.fecha_modificacion > " + p.getValue());
+                    array_clauses.add("ca.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
-                    array_clauses.add("ma.borrado = 0");
+                    array_clauses.add("ca.borrado = 0");
                 }
                 else if (p.getKey().equals("borrado")) {
-                    array_clauses.add("ma.borrado = 1");
+                    array_clauses.add("ca.borrado = 1");
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -424,20 +424,20 @@ public class MantencionUsuario {
         Statement stmt = null;
 
         String str_sql =
-            "    UPDATE mantencion_usuario" +
+            "    UPDATE carga_combustible" +
             "    SET" +
-            "    nombre = " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
             "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    estanque_lleno = " + (_estanqueLleno != null ? _estanqueLleno : "null") + "," +
+            "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    borrado = " + (_borrado != null ? _borrado : "null") + "," +
-            "    KmEntreMantenciones = " + (_kmentremantenciones != null ? _kmentremantenciones : "null") + "," +
-            "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    DiasEntreMantenciones = " + (_diasentremantenciones != null ? _diasentremantenciones : "null") + "," +
-            "    URL = " + (_url != null ? "'" + _url + "'" : "null") + "," +
-            "    DependeKm = " + (_dependekm != null ? _dependekm : "null") + "," +
-            "    beneficios = " + (_beneficios != null ? "'" + _beneficios + "'" : "null") +
+            "    latitud = " + (_latitud != null ? _latitud : "null") + "," +
+            "    costo = " + (_costo != null ? _costo : "null") + "," +
+            "    longitud = " + (_longitud != null ? _longitud : "null") + "," +
+            "    km = " + (_km != null ? _km : "null") + "," +
+            "    litros = " + (_litros != null ? _litros : "null") +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
-            "    id_mantencion_usuario = " + Long.toString(this._idMantencionUsuario);
+            "    id_carga_combustible = " + Long.toString(this._idCargaCombustible);
 
         try {
             stmt = p_conn.createStatement();
@@ -486,34 +486,34 @@ public class MantencionUsuario {
         ResultSet rs = null;
 
         String str_sql =
-            "    INSERT INTO mantencion_usuario" +
+            "    INSERT INTO carga_combustible" +
             "    (" +
-            "    nombre, " +
             "    fecha_modificacion, " +
+            "    estanque_lleno, " +
+            "    fecha, " +
             "    id_usuario, " +
             "    id_vehiculo, " +
             "    borrado, " +
-            "    KmEntreMantenciones, " +
-            "    descripcion, " +
-            "    id_mantencion_usuario, " +
-            "    DiasEntreMantenciones, " +
-            "    URL, " +
-            "    DependeKm, " +
-            "    beneficios)" +
+            "    latitud, " +
+            "    costo, " +
+            "    longitud, " +
+            "    id_carga_combustible, " +
+            "    km, " +
+            "    litros)" +
             "    VALUES" +
             "    (" +
-            "    " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
             "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    " + (_estanqueLleno != null ? "'" + _estanqueLleno + "'" : "null") + "," +
+            "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
             "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
             "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
-            "    " + (_kmentremantenciones != null ? "'" + _kmentremantenciones + "'" : "null") + "," +
-            "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    " + (_idMantencionUsuario != null ? "'" + _idMantencionUsuario + "'" : "null") + "," +
-            "    " + (_diasentremantenciones != null ? "'" + _diasentremantenciones + "'" : "null") + "," +
-            "    " + (_url != null ? "'" + _url + "'" : "null") + "," +
-            "    " + (_dependekm != null ? "'" + _dependekm + "'" : "null") + "," +
-            "    " + (_beneficios != null ? "'" + _beneficios + "'" : "null") +
+            "    " + (_latitud != null ? "'" + _latitud + "'" : "null") + "," +
+            "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
+            "    " + (_longitud != null ? "'" + _longitud + "'" : "null") + "," +
+            "    " + (_idCargaCombustible != null ? "'" + _idCargaCombustible + "'" : "null") + "," +
+            "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
+            "    " + (_litros != null ? "'" + _litros + "'" : "null") +
             "    )";
         
         try {
@@ -564,10 +564,10 @@ public class MantencionUsuario {
         Statement stmt = null;
 
         String str_sql =
-            "    DELETE FROM mantencion_usuario" +
+            "    DELETE FROM carga_combustible" +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
-            "    id_mantencion_usuario = " + Long.toString(this._idMantencionUsuario);
+            "    id_carga_combustible = " + Long.toString(this._idCargaCombustible);
 
         try {
             stmt = p_conn.createStatement();
@@ -601,12 +601,12 @@ public class MantencionUsuario {
     }
 
     public void load(Connection p_conn) throws SQLException {
-        MantencionUsuario obj = null;
+        CargaCombustible obj = null;
         
         String str_sql = _str_sql +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
-            "    id_mantencion_usuario = " + Long.toString(this._idMantencionUsuario) +
+            "    id_carga_combustible = " + Long.toString(this._idCargaCombustible) +
             "    LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -628,16 +628,16 @@ public class MantencionUsuario {
                 obj = fromRS(rs);
                 //System.out.println("fromRS(rs) ok");
 
-                _nombre = obj.getNombre();
                 _fechaModificacion = obj.getFechaModificacion();
+                _estanqueLleno = obj.getEstanqueLleno();
+                _fecha = obj.getFecha();
                 _idVehiculo = obj.getIdVehiculo();
                 _borrado = obj.getBorrado();
-                _kmentremantenciones = obj.getKmentremantenciones();
-                _descripcion = obj.getDescripcion();
-                _diasentremantenciones = obj.getDiasentremantenciones();
-                _url = obj.getUrl();
-                _dependekm = obj.getDependekm();
-                _beneficios = obj.getBeneficios();
+                _latitud = obj.getLatitud();
+                _costo = obj.getCosto();
+                _longitud = obj.getLongitud();
+                _km = obj.getKm();
+                _litros = obj.getLitros();
             }
         }
         catch (SQLException ex){
@@ -678,7 +678,7 @@ public class MantencionUsuario {
         String str_sql = _str_sql +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
-            "    id_mantencion_usuario = " + Long.toString(this._idMantencionUsuario) +
+            "    id_carga_combustible = " + Long.toString(this._idCargaCombustible) +
             "    LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -748,77 +748,77 @@ public class MantencionUsuario {
 
 @Override
     public String toString() {
-        return "MantencionUsuario [" +
-	           "    _nombre = " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
+        return "CargaCombustible [" +
 	           "    _fechaModificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+	           "    _estanqueLleno = " + (_estanqueLleno != null ? _estanqueLleno : "null") + "," +
+	           "    _fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
 	           "    _idUsuario = " + (_idUsuario != null ? _idUsuario : "null") + "," +
 	           "    _idVehiculo = " + (_idVehiculo != null ? _idVehiculo : "null") + "," +
 	           "    _borrado = " + (_borrado != null ? _borrado : "null") + "," +
-	           "    _kmentremantenciones = " + (_kmentremantenciones != null ? _kmentremantenciones : "null") + "," +
-	           "    _descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-	           "    _idMantencionUsuario = " + (_idMantencionUsuario != null ? _idMantencionUsuario : "null") + "," +
-	           "    _diasentremantenciones = " + (_diasentremantenciones != null ? _diasentremantenciones : "null") + "," +
-	           "    _url = " + (_url != null ? "'" + _url + "'" : "null") + "," +
-	           "    _dependekm = " + (_dependekm != null ? _dependekm : "null") + "," +
-	           "    _beneficios = " + (_beneficios != null ? "'" + _beneficios + "'" : "null") +
+	           "    _latitud = " + (_latitud != null ? _latitud : "null") + "," +
+	           "    _costo = " + (_costo != null ? _costo : "null") + "," +
+	           "    _longitud = " + (_longitud != null ? _longitud : "null") + "," +
+	           "    _idCargaCombustible = " + (_idCargaCombustible != null ? _idCargaCombustible : "null") + "," +
+	           "    _km = " + (_km != null ? _km : "null") + "," +
+	           "    _litros = " + (_litros != null ? _litros : "null") +
 			   "]";
     }
 
 
     public String toJSON() {
-        return "{\"MantencionUsuario\" : {" +
-	           "    \"_nombre\" : " + (_nombre != null ? "\"" + _nombre + "\"" : "null") + "," +
+        return "{\"CargaCombustible\" : {" +
 	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") + "," +
+	           "    \"_estanqueLleno\" : " + (_estanqueLleno != null ? _estanqueLleno : "null") + "," +
+	           "    \"_fecha\" : " + (_fecha != null ? "\"" + _fecha + "\"" : "null") + "," +
 	           "    \"_idUsuario\" : " + (_idUsuario != null ? _idUsuario : "null") + "," +
 	           "    \"_idVehiculo\" : " + (_idVehiculo != null ? _idVehiculo : "null") + "," +
 	           "    \"_borrado\" : " + (_borrado != null ? _borrado : "null") + "," +
-	           "    \"_kmentremantenciones\" : " + (_kmentremantenciones != null ? _kmentremantenciones : "null") + "," +
-	           "    \"_descripcion\" : " + (_descripcion != null ? "\"" + _descripcion + "\"" : "null") + "," +
-	           "    \"_idMantencionUsuario\" : " + (_idMantencionUsuario != null ? _idMantencionUsuario : "null") + "," +
-	           "    \"_diasentremantenciones\" : " + (_diasentremantenciones != null ? _diasentremantenciones : "null") + "," +
-	           "    \"_URL\" : " + (_url != null ? "\"" + _url + "\"" : "null") + "," +
-	           "    \"_dependekm\" : " + (_dependekm != null ? _dependekm : "null") + "," +
-	           "    \"_beneficios\" : " + (_beneficios != null ? "\"" + _beneficios + "\"" : "null") +
+	           "    \"_latitud\" : " + (_latitud != null ? _latitud : "null") + "," +
+	           "    \"_costo\" : " + (_costo != null ? _costo : "null") + "," +
+	           "    \"_longitud\" : " + (_longitud != null ? _longitud : "null") + "," +
+	           "    \"_idCargaCombustible\" : " + (_idCargaCombustible != null ? _idCargaCombustible : "null") + "," +
+	           "    \"_km\" : " + (_km != null ? _km : "null") + "," +
+	           "    \"_litros\" : " + (_litros != null ? _litros : "null") +
 			   "}}";
     }
 
 
     public String toXML() {
-        return "<MantencionUsuario>" +
-	           "    <nombre" + (_nombre != null ? ">" + _nombre + "</nombre>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+        return "<CargaCombustible>" +
 	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <estanqueLleno" + (_estanqueLleno != null ? ">" + _estanqueLleno + "</estanqueLleno>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <fecha" + (_fecha != null ? ">" + _fecha + "</fecha>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <idUsuario" + (_idUsuario != null ? ">" + _idUsuario + "</idUsuario>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <idVehiculo" + (_idVehiculo != null ? ">" + _idVehiculo + "</idVehiculo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <borrado" + (_borrado != null ? ">" + _borrado + "</borrado>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <kmentremantenciones" + (_kmentremantenciones != null ? ">" + _kmentremantenciones + "</kmentremantenciones>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <descripcion" + (_descripcion != null ? ">" + _descripcion + "</descripcion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idMantencionUsuario" + (_idMantencionUsuario != null ? ">" + _idMantencionUsuario + "</idMantencionUsuario>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <diasentremantenciones" + (_diasentremantenciones != null ? ">" + _diasentremantenciones + "</diasentremantenciones>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <url" + (_url != null ? ">" + _url + "</url>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <dependekm" + (_dependekm != null ? ">" + _dependekm + "</dependekm>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <beneficios" + (_beneficios != null ? ">" + _beneficios + "</beneficios>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-			   "</MantencionUsuario>";
+	           "    <latitud" + (_latitud != null ? ">" + _latitud + "</latitud>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <costo" + (_costo != null ? ">" + _costo + "</costo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <longitud" + (_longitud != null ? ">" + _longitud + "</longitud>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <idCargaCombustible" + (_idCargaCombustible != null ? ">" + _idCargaCombustible + "</idCargaCombustible>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <km" + (_km != null ? ">" + _km + "</km>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <litros" + (_litros != null ? ">" + _litros + "</litros>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+			   "</CargaCombustible>";
     }
 
 
 /*
-    public static MantencionUsuario fromXMLNode(Node xmlNode) {
-        MantencionUsuario ret = new MantencionUsuario();
+    public static CargaCombustible fromXMLNode(Node xmlNode) {
+        CargaCombustible ret = new CargaCombustible();
 
         Element element = (Element) xmlNode;
 
-        ret.setNombre(element.getElementsByTagName("nombre").item(0).getTextContent());
         ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
+        ret.setEstanqueLleno(Boolean.decode(element.getElementsByTagName("estanque_lleno").item(0).getTextContent()));
+        ret.setFecha(element.getElementsByTagName("fecha").item(0).getTextContent());
         ret.setIdUsuario(Long.decode(element.getElementsByTagName("id_usuario").item(0).getTextContent()));
         ret.setIdVehiculo(Long.decode(element.getElementsByTagName("id_vehiculo").item(0).getTextContent()));
         ret.setBorrado(Boolean.decode(element.getElementsByTagName("borrado").item(0).getTextContent()));
-        ret.setKmentremantenciones(Integer.decode(element.getElementsByTagName("KmEntreMantenciones").item(0).getTextContent()));
-        ret.setDescripcion(element.getElementsByTagName("descripcion").item(0).getTextContent());
-        ret.setIdMantencionUsuario(Long.decode(element.getElementsByTagName("id_mantencion_usuario").item(0).getTextContent()));
-        ret.setDiasentremantenciones(Integer.decode(element.getElementsByTagName("DiasEntreMantenciones").item(0).getTextContent()));
-        ret.setUrl(element.getElementsByTagName("URL").item(0).getTextContent());
-        ret.setDependekm(Boolean.decode(element.getElementsByTagName("DependeKm").item(0).getTextContent()));
-        ret.setBeneficios(element.getElementsByTagName("beneficios").item(0).getTextContent());
+        ret.setLatitud(Integer.decode(element.getElementsByTagName("latitud").item(0).getTextContent()));
+        ret.setCosto(Integer.decode(element.getElementsByTagName("costo").item(0).getTextContent()));
+        ret.setLongitud(Integer.decode(element.getElementsByTagName("longitud").item(0).getTextContent()));
+        ret.setIdCargaCombustible(Long.decode(element.getElementsByTagName("id_carga_combustible").item(0).getTextContent()));
+        ret.setKm(Integer.decode(element.getElementsByTagName("km").item(0).getTextContent()));
+        ret.setLitros(Integer.decode(element.getElementsByTagName("litros").item(0).getTextContent()));
 
         return ret;
     }

@@ -21,7 +21,7 @@ import org.simpleframework.xml.Root;
  */
 @Root
 public class TipoTransmision {
-    @Element(name = "fechaModificacion", required = false)
+    @Element(name = "fechaModificacion")
     private String _fechaModificacion;
     @Element(name = "descripcion")
     private String _descripcion;

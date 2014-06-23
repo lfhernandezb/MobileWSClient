@@ -21,9 +21,7 @@ import org.simpleframework.xml.Root;
  */
 @Root
 public class Modelo {
-    @Element(name = "idTipoVehiculo")
-    private Byte _idTipoVehiculo;
-    @Element(name = "fechaModificacion", required = false)
+    @Element(name = "fechaModificacion")
     private String _fechaModificacion;
     @Element(name = "descripcion")
     private String _descripcion;
@@ -34,7 +32,6 @@ public class Modelo {
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    mo.id_tipo_vehiculo AS id_tipo_vehiculo," +
         "    strftime('%Y-%m-%d %H:%M:%S', mo.fecha_modificacion) AS fecha_modificacion," +
         "    mo.descripcion AS descripcion," +
         "    mo.id_modelo AS id," +
@@ -42,18 +39,11 @@ public class Modelo {
         "    FROM modelo mo";
 
     public Modelo() {
-        _idTipoVehiculo = null;
         _fechaModificacion = null;
         _descripcion = null;
         _id = null;
         _idMarca = null;
 
-    }
-    /**
-     * @return the _idTipoVehiculo
-     */
-    public Byte getIdTipoVehiculo() {
-        return _idTipoVehiculo;
     }
     /**
      * @return the _fechaModificacion
@@ -78,12 +68,6 @@ public class Modelo {
      */
     public Short getIdMarca() {
         return _idMarca;
-    }
-    /**
-     * @param _idTipoVehiculo the _idTipoVehiculo to set
-     */
-    public void setIdTipoVehiculo(Byte _idTipoVehiculo) {
-        this._idTipoVehiculo = _idTipoVehiculo;
     }
     /**
      * @param _fechaModificacion the _fechaModificacion to set
@@ -113,7 +97,6 @@ public class Modelo {
     public static Modelo fromRS(ResultSet p_rs) throws SQLException {
         Modelo ret = new Modelo();
 
-        ret.setIdTipoVehiculo(p_rs.getByte("id_tipo_vehiculo"));
         ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
         ret.setDescripcion(p_rs.getString("descripcion"));
         ret.setId(p_rs.getLong("id"));
@@ -205,9 +188,6 @@ public class Modelo {
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
                 if (p.getKey().equals("id_modelo")) {
                     array_clauses.add("mo.id_modelo = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_tipo_vehiculo")) {
-                    array_clauses.add("mo.id_tipo_vehiculo = " + p.getValue());
                 }
                 else if (p.getKey().equals("id_marca")) {
                     array_clauses.add("mo.id_marca = " + p.getValue());
@@ -355,14 +335,12 @@ public class Modelo {
         String str_sql =
             "    INSERT INTO modelo" +
             "    (" +
-            "    id_tipo_vehiculo, " +
             "    fecha_modificacion, " +
             "    descripcion, " +
             "    id_modelo, " +
             "    id_marca)" +
             "    VALUES" +
             "    (" +
-            "    " + (_idTipoVehiculo != null ? "'" + _idTipoVehiculo + "'" : "null") + "," +
             "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
@@ -479,7 +457,6 @@ public class Modelo {
                 obj = fromRS(rs);
                 //System.out.println("fromRS(rs) ok");
 
-                _idTipoVehiculo = obj.getIdTipoVehiculo();
                 _fechaModificacion = obj.getFechaModificacion();
                 _descripcion = obj.getDescripcion();
                 _idMarca = obj.getIdMarca();
@@ -593,7 +570,6 @@ public class Modelo {
 @Override
     public String toString() {
         return "Modelo [" +
-	           "    _idTipoVehiculo = " + (_idTipoVehiculo != null ? _idTipoVehiculo : "null") + "," +
 	           "    _fechaModificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
 	           "    _descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
 	           "    _id = " + (_id != null ? _id : "null") + "," +
@@ -604,7 +580,6 @@ public class Modelo {
 
     public String toJSON() {
         return "{\"Modelo\" : {" +
-	           "    \"_idTipoVehiculo\" : " + (_idTipoVehiculo != null ? _idTipoVehiculo : "null") + "," +
 	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") + "," +
 	           "    \"_descripcion\" : " + (_descripcion != null ? "\"" + _descripcion + "\"" : "null") + "," +
 	           "    \"_id\" : " + (_id != null ? _id : "null") + "," +
@@ -615,7 +590,6 @@ public class Modelo {
 
     public String toXML() {
         return "<Modelo>" +
-	           "    <idTipoVehiculo" + (_idTipoVehiculo != null ? ">" + _idTipoVehiculo + "</idTipoVehiculo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <descripcion" + (_descripcion != null ? ">" + _descripcion + "</descripcion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
@@ -630,7 +604,6 @@ public class Modelo {
 
         Element element = (Element) xmlNode;
 
-        ret.setIdTipoVehiculo(Byte.decode(element.getElementsByTagName("id_tipo_vehiculo").item(0).getTextContent()));
         ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
         ret.setDescripcion(element.getElementsByTagName("descripcion").item(0).getTextContent());
         ret.setId(Long.decode(element.getElementsByTagName("id_modelo").item(0).getTextContent()));

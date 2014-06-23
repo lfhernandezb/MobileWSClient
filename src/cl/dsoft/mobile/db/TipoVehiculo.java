@@ -23,7 +23,7 @@ import org.simpleframework.xml.Root;
 public class TipoVehiculo {
     @Element(name = "id")
     private Byte _id;
-    @Element(name = "fechaModificacion", required = false)
+    @Element(name = "fechaModificacion")
     private String _fechaModificacion;
     @Element(name = "descripcion")
     private String _descripcion;

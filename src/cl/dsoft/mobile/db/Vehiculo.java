@@ -23,7 +23,7 @@ import org.simpleframework.xml.Root;
 public class Vehiculo {
     @Element(name = "anio", required = false)
     private Integer _anio;
-    @Element(name = "fechaModificacion", required = false)
+    @Element(name = "fechaModificacion")
     private String _fechaModificacion;
     @Element(name = "aireAcondicionado", required = false)
     private Boolean _aireAcondicionado;
@@ -33,7 +33,7 @@ public class Vehiculo {
     private Long _idUsuario;
     @Element(name = "idVehiculo")
     private Long _idVehiculo;
-    @Element(name = "borrado", required = false)
+    @Element(name = "borrado")
     private Boolean _borrado;
     @Element(name = "patente", required = false)
     private String _patente;

@@ -17,6 +17,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 import org.apache.http.HttpResponse;
@@ -136,6 +137,7 @@ public class RestFulWebservice extends Activity {
 		            	Serializer serializer;
 		            	CarData carData;
 		            	String url;
+		            	Statement stmt;
 		            	
 		                ByteArrayOutputStream out = new ByteArrayOutputStream();
 		                response.getEntity().writeTo(out);
@@ -158,6 +160,12 @@ public class RestFulWebservice extends Activity {
 	        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
 	        			
 	        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
+	        			
+	        	    	stmt = conn.createStatement();
+	        			
+	        			stmt.executeQuery("PRAGMA foreign_keys = on;");
+	        			
+	        			stmt.close();
 	        			
 	        	    	conn.setAutoCommit(false);
 		        	    	
@@ -221,7 +229,7 @@ public class RestFulWebservice extends Activity {
 		        String responseString = null;
 		        Connection conn = null;
 		        
-		        String serverURL = "http://ptt-studio.bounceme.net:8080/cl.dsoft.carws/rest/todo/byIdUsuario";
+		        String serverURL = "http://ptt-studio.bounceme.net:8080/cl.dsoft.carws/rest/todo/receive";
 		        
 		        try {
 		        	int timeoutConnection;

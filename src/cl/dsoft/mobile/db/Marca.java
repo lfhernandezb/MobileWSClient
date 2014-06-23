@@ -21,7 +21,11 @@ import org.simpleframework.xml.Root;
  */
 @Root
 public class Marca {
-    @Element(name = "fechaModificacion", required = false)
+    @Element(name = "idTipoVehiculo")
+    private Byte _idTipoVehiculo;
+    @Element(name = "idPais")
+    private Long _idPais;
+    @Element(name = "fechaModificacion")
     private String _fechaModificacion;
     @Element(name = "descripcion")
     private String _descripcion;
@@ -30,16 +34,32 @@ public class Marca {
 
     private final static String _str_sql = 
         "    SELECT" +
+        "    ma.id_tipo_vehiculo AS id_tipo_vehiculo," +
+        "    ma.id_pais AS id_pais," +
         "    strftime('%Y-%m-%d %H:%M:%S', ma.fecha_modificacion) AS fecha_modificacion," +
         "    ma.descripcion AS descripcion," +
         "    ma.id_marca AS id" +
         "    FROM marca ma";
 
     public Marca() {
+        _idTipoVehiculo = null;
+        _idPais = null;
         _fechaModificacion = null;
         _descripcion = null;
         _id = null;
 
+    }
+    /**
+     * @return the _idTipoVehiculo
+     */
+    public Byte getIdTipoVehiculo() {
+        return _idTipoVehiculo;
+    }
+    /**
+     * @return the _idPais
+     */
+    public Long getIdPais() {
+        return _idPais;
     }
     /**
      * @return the _fechaModificacion
@@ -58,6 +78,18 @@ public class Marca {
      */
     public Short getId() {
         return _id;
+    }
+    /**
+     * @param _idTipoVehiculo the _idTipoVehiculo to set
+     */
+    public void setIdTipoVehiculo(Byte _idTipoVehiculo) {
+        this._idTipoVehiculo = _idTipoVehiculo;
+    }
+    /**
+     * @param _idPais the _idPais to set
+     */
+    public void setIdPais(Long _idPais) {
+        this._idPais = _idPais;
     }
     /**
      * @param _fechaModificacion the _fechaModificacion to set
@@ -81,6 +113,8 @@ public class Marca {
     public static Marca fromRS(ResultSet p_rs) throws SQLException {
         Marca ret = new Marca();
 
+        ret.setIdTipoVehiculo(p_rs.getByte("id_tipo_vehiculo"));
+        ret.setIdPais(p_rs.getLong("id_pais"));
         ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
         ret.setDescripcion(p_rs.getString("descripcion"));
         ret.setId(p_rs.getShort("id"));
@@ -171,6 +205,12 @@ public class Marca {
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
                 if (p.getKey().equals("id_marca")) {
                     array_clauses.add("ma.id_marca = " + p.getValue());
+                }
+                else if (p.getKey().equals("id_tipo_vehiculo")) {
+                    array_clauses.add("ma.id_tipo_vehiculo = " + p.getValue());
+                }
+                else if (p.getKey().equals("id_pais")) {
+                    array_clauses.add("ma.id_pais = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
                     array_clauses.add("ma.fecha_modificacion > " + p.getValue());
@@ -315,11 +355,15 @@ public class Marca {
         String str_sql =
             "    INSERT INTO marca" +
             "    (" +
+            "    id_tipo_vehiculo, " +
+            "    id_pais, " +
             "    fecha_modificacion, " +
             "    descripcion, " +
             "    id_marca)" +
             "    VALUES" +
             "    (" +
+            "    " + (_idTipoVehiculo != null ? "'" + _idTipoVehiculo + "'" : "null") + "," +
+            "    " + (_idPais != null ? "'" + _idPais + "'" : "null") + "," +
             "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_id != null ? "'" + _id + "'" : "null") +
@@ -435,6 +479,8 @@ public class Marca {
                 obj = fromRS(rs);
                 //System.out.println("fromRS(rs) ok");
 
+                _idTipoVehiculo = obj.getIdTipoVehiculo();
+                _idPais = obj.getIdPais();
                 _fechaModificacion = obj.getFechaModificacion();
                 _descripcion = obj.getDescripcion();
             }
@@ -547,6 +593,8 @@ public class Marca {
 @Override
     public String toString() {
         return "Marca [" +
+	           "    _idTipoVehiculo = " + (_idTipoVehiculo != null ? _idTipoVehiculo : "null") + "," +
+	           "    _idPais = " + (_idPais != null ? _idPais : "null") + "," +
 	           "    _fechaModificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
 	           "    _descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
 	           "    _id = " + (_id != null ? _id : "null") +
@@ -556,6 +604,8 @@ public class Marca {
 
     public String toJSON() {
         return "{\"Marca\" : {" +
+	           "    \"_idTipoVehiculo\" : " + (_idTipoVehiculo != null ? _idTipoVehiculo : "null") + "," +
+	           "    \"_idPais\" : " + (_idPais != null ? _idPais : "null") + "," +
 	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") + "," +
 	           "    \"_descripcion\" : " + (_descripcion != null ? "\"" + _descripcion + "\"" : "null") + "," +
 	           "    \"_id\" : " + (_id != null ? _id : "null") +
@@ -565,6 +615,8 @@ public class Marca {
 
     public String toXML() {
         return "<Marca>" +
+	           "    <idTipoVehiculo" + (_idTipoVehiculo != null ? ">" + _idTipoVehiculo + "</idTipoVehiculo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
+	           "    <idPais" + (_idPais != null ? ">" + _idPais + "</idPais>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <descripcion" + (_descripcion != null ? ">" + _descripcion + "</descripcion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
 	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
@@ -578,6 +630,8 @@ public class Marca {
 
         Element element = (Element) xmlNode;
 
+        ret.setIdTipoVehiculo(Byte.decode(element.getElementsByTagName("id_tipo_vehiculo").item(0).getTextContent()));
+        ret.setIdPais(Long.decode(element.getElementsByTagName("id_pais").item(0).getTextContent()));
         ret.setFechaModificacion(element.getElementsByTagName("fecha_modificacion").item(0).getTextContent());
         ret.setDescripcion(element.getElementsByTagName("descripcion").item(0).getTextContent());
         ret.setId(Short.decode(element.getElementsByTagName("id_marca").item(0).getTextContent()));
