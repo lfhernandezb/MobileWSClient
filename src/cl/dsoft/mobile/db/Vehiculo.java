@@ -378,10 +378,10 @@ public class Vehiculo {
                     array_clauses.add("ve.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
-                    array_clauses.add("ve.borrado = 0");
+                    array_clauses.add("ve.borrado = 'false'");
                 }
                 else if (p.getKey().equals("borrado")) {
-                    array_clauses.add("ve.borrado = 1");
+                    array_clauses.add("ve.borrado = 'true'");
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -469,14 +469,14 @@ public class Vehiculo {
         String str_sql =
             "    UPDATE vehiculo" +
             "    SET" +
-            "    anio = " + (_anio != null ? _anio : "null") + "," +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-            "    aire_acondicionado = " + (_aireAcondicionado != null ? _aireAcondicionado : "null") + "," +
+            "    anio = " + (_anio != null ? "'" + _anio + "'" : "'null'") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
+            "    aire_acondicionado = " + (_aireAcondicionado != null ? "'" + _aireAcondicionado + "'" : "'null'") + "," +
             "    alias = " + (_alias != null ? "'" + _alias + "'" : "null") + "," +
-            "    borrado = " + (_borrado != null ? _borrado : "null") + "," +
+            "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
             "    patente = " + (_patente != null ? "'" + _patente + "'" : "null") + "," +
-            "    km = " + (_km != null ? _km : "null") + "," +
-            "    alza_vidrios = " + (_alzaVidrios != null ? _alzaVidrios : "null") +
+            "    km = " + (_km != null ? "'" + _km + "'" : "'null'") + "," +
+            "    alza_vidrios = " + (_alzaVidrios != null ? "'" + _alzaVidrios + "'" : "'null'") +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
             "    id_vehiculo = " + Long.toString(this._idVehiculo);
@@ -546,20 +546,20 @@ public class Vehiculo {
             "    alza_vidrios)" +
             "    VALUES" +
             "    (" +
-            "    " + (_anio != null ? "'" + _anio + "'" : "null") + "," +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-            "    " + (_aireAcondicionado != null ? "'" + _aireAcondicionado + "'" : "null") + "," +
+            "    " + (_anio != null ? "'" + _anio + "'" : "'null'") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
+            "    " + (_aireAcondicionado != null ? "'" + _aireAcondicionado + "'" : "'null'") + "," +
             "    " + (_alias != null ? "'" + _alias + "'" : "null") + "," +
-            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
-            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
-            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
+            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "'null'") + "," +
+            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "'null'") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
             "    " + (_patente != null ? "'" + _patente + "'" : "null") + "," +
-            "    " + (_idModelo != null ? "'" + _idModelo + "'" : "null") + "," +
-            "    " + (_idTraccion != null ? "'" + _idTraccion + "'" : "null") + "," +
-            "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
-            "    " + (_idCombustible != null ? "'" + _idCombustible + "'" : "null") + "," +
-            "    " + (_idTipoTransmision != null ? "'" + _idTipoTransmision + "'" : "null") + "," +
-            "    " + (_alzaVidrios != null ? "'" + _alzaVidrios + "'" : "null") +
+            "    " + (_idModelo != null ? "'" + _idModelo + "'" : "'null'") + "," +
+            "    " + (_idTraccion != null ? "'" + _idTraccion + "'" : "'null'") + "," +
+            "    " + (_km != null ? "'" + _km + "'" : "'null'") + "," +
+            "    " + (_idCombustible != null ? "'" + _idCombustible + "'" : "'null'") + "," +
+            "    " + (_idTipoTransmision != null ? "'" + _idTipoTransmision + "'" : "'null'") + "," +
+            "    " + (_alzaVidrios != null ? "'" + _alzaVidrios + "'" : "'null'") +
             "    )";
         
         try {

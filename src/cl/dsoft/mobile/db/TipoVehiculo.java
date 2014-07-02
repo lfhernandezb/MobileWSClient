@@ -261,7 +261,7 @@ public class TipoVehiculo {
         String str_sql =
             "    UPDATE tipo_vehiculo" +
             "    SET" +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") +
             "    WHERE" +
             "    id_tipo_vehiculo = " + Byte.toString(this._id);
@@ -320,8 +320,8 @@ public class TipoVehiculo {
             "    descripcion)" +
             "    VALUES" +
             "    (" +
-            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "'null'") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") +
             "    )";
         

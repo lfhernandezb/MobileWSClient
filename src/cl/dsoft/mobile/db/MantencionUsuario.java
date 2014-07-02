@@ -335,10 +335,10 @@ public class MantencionUsuario {
                     array_clauses.add("ma.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
-                    array_clauses.add("ma.borrado = 0");
+                    array_clauses.add("ma.borrado = 'false'");
                 }
                 else if (p.getKey().equals("borrado")) {
-                    array_clauses.add("ma.borrado = 1");
+                    array_clauses.add("ma.borrado = 'true'");
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -427,13 +427,13 @@ public class MantencionUsuario {
             "    UPDATE mantencion_usuario" +
             "    SET" +
             "    nombre = " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-            "    borrado = " + (_borrado != null ? _borrado : "null") + "," +
-            "    KmEntreMantenciones = " + (_kmentremantenciones != null ? _kmentremantenciones : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
+            "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
+            "    KmEntreMantenciones = " + (_kmentremantenciones != null ? "'" + _kmentremantenciones + "'" : "'null'") + "," +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    DiasEntreMantenciones = " + (_diasentremantenciones != null ? _diasentremantenciones : "null") + "," +
+            "    DiasEntreMantenciones = " + (_diasentremantenciones != null ? "'" + _diasentremantenciones + "'" : "'null'") + "," +
             "    URL = " + (_url != null ? "'" + _url + "'" : "null") + "," +
-            "    DependeKm = " + (_dependekm != null ? _dependekm : "null") + "," +
+            "    DependeKm = " + (_dependekm != null ? "'" + _dependekm + "'" : "'null'") + "," +
             "    beneficios = " + (_beneficios != null ? "'" + _beneficios + "'" : "null") +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
@@ -503,16 +503,16 @@ public class MantencionUsuario {
             "    VALUES" +
             "    (" +
             "    " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
-            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
-            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
-            "    " + (_kmentremantenciones != null ? "'" + _kmentremantenciones + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
+            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "'null'") + "," +
+            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "'null'") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
+            "    " + (_kmentremantenciones != null ? "'" + _kmentremantenciones + "'" : "'null'") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    " + (_idMantencionUsuario != null ? "'" + _idMantencionUsuario + "'" : "null") + "," +
-            "    " + (_diasentremantenciones != null ? "'" + _diasentremantenciones + "'" : "null") + "," +
+            "    " + (_idMantencionUsuario != null ? "'" + _idMantencionUsuario + "'" : "'null'") + "," +
+            "    " + (_diasentremantenciones != null ? "'" + _diasentremantenciones + "'" : "'null'") + "," +
             "    " + (_url != null ? "'" + _url + "'" : "null") + "," +
-            "    " + (_dependekm != null ? "'" + _dependekm + "'" : "null") + "," +
+            "    " + (_dependekm != null ? "'" + _dependekm + "'" : "'null'") + "," +
             "    " + (_beneficios != null ? "'" + _beneficios + "'" : "null") +
             "    )";
         

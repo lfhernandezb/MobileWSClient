@@ -318,10 +318,10 @@ public class Recordatorio {
                     array_clauses.add("re.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
-                    array_clauses.add("re.borrado = 0");
+                    array_clauses.add("re.borrado = 'false'");
                 }
                 else if (p.getKey().equals("borrado")) {
-                    array_clauses.add("re.borrado = 1");
+                    array_clauses.add("re.borrado = 'true'");
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -410,13 +410,13 @@ public class Recordatorio {
             "    UPDATE recordatorio" +
             "    SET" +
             "    titulo = " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    borrado = " + (_borrado != null ? _borrado : "null") + "," +
+            "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    recordar_km = " + (_recordarKm != null ? _recordarKm : "null") + "," +
-            "    km = " + (_km != null ? _km : "null") + "," +
-            "    recordar_fecha = " + (_recordarFecha != null ? _recordarFecha : "null") +
+            "    recordar_km = " + (_recordarKm != null ? "'" + _recordarKm + "'" : "'null'") + "," +
+            "    km = " + (_km != null ? "'" + _km + "'" : "'null'") + "," +
+            "    recordar_fecha = " + (_recordarFecha != null ? "'" + _recordarFecha + "'" : "'null'") +
             "    WHERE" +
             "    id_recordatorio = " + Long.toString(this._idRecordatorio) + " AND" +
             "    id_usuario = " + Long.toString(this._idUsuario);
@@ -483,17 +483,17 @@ public class Recordatorio {
             "    recordar_fecha)" +
             "    VALUES" +
             "    (" +
-            "    " + (_idRecordatorio != null ? "'" + _idRecordatorio + "'" : "null") + "," +
+            "    " + (_idRecordatorio != null ? "'" + _idRecordatorio + "'" : "'null'") + "," +
             "    " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
-            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
-            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
+            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "'null'") + "," +
+            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "'null'") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    " + (_recordarKm != null ? "'" + _recordarKm + "'" : "null") + "," +
-            "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
-            "    " + (_recordarFecha != null ? "'" + _recordarFecha + "'" : "null") +
+            "    " + (_recordarKm != null ? "'" + _recordarKm + "'" : "'null'") + "," +
+            "    " + (_km != null ? "'" + _km + "'" : "'null'") + "," +
+            "    " + (_recordarFecha != null ? "'" + _recordarFecha + "'" : "'null'") +
             "    )";
         
         try {

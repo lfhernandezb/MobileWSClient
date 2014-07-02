@@ -394,15 +394,15 @@ public class Log {
         String str_sql =
             "    UPDATE log" +
             "    SET" +
-            "    id_tipo_vehiculo = " + (_idTipoVehiculo != null ? _idTipoVehiculo : "null") + "," +
+            "    id_tipo_vehiculo = " + (_idTipoVehiculo != null ? "'" + _idTipoVehiculo + "'" : "'null'") + "," +
             "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    id_vehiculo = " + (_idVehiculo != null ? _idVehiculo : "null") + "," +
-            "    latitud = " + (_latitud != null ? _latitud : "null") + "," +
-            "    id_modelo = " + (_idModelo != null ? _idModelo : "null") + "," +
-            "    longitud = " + (_longitud != null ? _longitud : "null") + "," +
+            "    id_vehiculo = " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "'null'") + "," +
+            "    latitud = " + (_latitud != null ? "'" + _latitud + "'" : "'null'") + "," +
+            "    id_modelo = " + (_idModelo != null ? "'" + _idModelo + "'" : "'null'") + "," +
+            "    longitud = " + (_longitud != null ? "'" + _longitud + "'" : "'null'") + "," +
             "    accion = " + (_accion != null ? "'" + _accion + "'" : "null") + "," +
-            "    km = " + (_km != null ? _km : "null") + "," +
-            "    id_marca = " + (_idMarca != null ? _idMarca : "null") +
+            "    km = " + (_km != null ? "'" + _km + "'" : "'null'") + "," +
+            "    id_marca = " + (_idMarca != null ? "'" + _idMarca + "'" : "'null'") +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
             "    id_log = " + Long.toString(this._idLog);
@@ -469,17 +469,17 @@ public class Log {
             "    id_marca)" +
             "    VALUES" +
             "    (" +
-            "    " + (_idTipoVehiculo != null ? "'" + _idTipoVehiculo + "'" : "null") + "," +
+            "    " + (_idTipoVehiculo != null ? "'" + _idTipoVehiculo + "'" : "'null'") + "," +
             "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
-            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
-            "    " + (_latitud != null ? "'" + _latitud + "'" : "null") + "," +
-            "    " + (_idLog != null ? "'" + _idLog + "'" : "null") + "," +
-            "    " + (_idModelo != null ? "'" + _idModelo + "'" : "null") + "," +
-            "    " + (_longitud != null ? "'" + _longitud + "'" : "null") + "," +
+            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "'null'") + "," +
+            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "'null'") + "," +
+            "    " + (_latitud != null ? "'" + _latitud + "'" : "'null'") + "," +
+            "    " + (_idLog != null ? "'" + _idLog + "'" : "'null'") + "," +
+            "    " + (_idModelo != null ? "'" + _idModelo + "'" : "'null'") + "," +
+            "    " + (_longitud != null ? "'" + _longitud + "'" : "'null'") + "," +
             "    " + (_accion != null ? "'" + _accion + "'" : "null") + "," +
-            "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
-            "    " + (_idMarca != null ? "'" + _idMarca + "'" : "null") +
+            "    " + (_km != null ? "'" + _km + "'" : "'null'") + "," +
+            "    " + (_idMarca != null ? "'" + _idMarca + "'" : "'null'") +
             "    )";
         
         try {

@@ -335,10 +335,10 @@ public class CargaCombustible {
                     array_clauses.add("ca.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
-                    array_clauses.add("ca.borrado = 0");
+                    array_clauses.add("ca.borrado = 'false'");
                 }
                 else if (p.getKey().equals("borrado")) {
-                    array_clauses.add("ca.borrado = 1");
+                    array_clauses.add("ca.borrado = 'true'");
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -426,15 +426,15 @@ public class CargaCombustible {
         String str_sql =
             "    UPDATE carga_combustible" +
             "    SET" +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-            "    estanque_lleno = " + (_estanqueLleno != null ? _estanqueLleno : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
+            "    estanque_lleno = " + (_estanqueLleno != null ? "'" + _estanqueLleno + "'" : "'null'") + "," +
             "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    borrado = " + (_borrado != null ? _borrado : "null") + "," +
-            "    latitud = " + (_latitud != null ? _latitud : "null") + "," +
-            "    costo = " + (_costo != null ? _costo : "null") + "," +
-            "    longitud = " + (_longitud != null ? _longitud : "null") + "," +
-            "    km = " + (_km != null ? _km : "null") + "," +
-            "    litros = " + (_litros != null ? _litros : "null") +
+            "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
+            "    latitud = " + (_latitud != null ? "'" + _latitud + "'" : "'null'") + "," +
+            "    costo = " + (_costo != null ? "'" + _costo + "'" : "'null'") + "," +
+            "    longitud = " + (_longitud != null ? "'" + _longitud + "'" : "'null'") + "," +
+            "    km = " + (_km != null ? "'" + _km + "'" : "'null'") + "," +
+            "    litros = " + (_litros != null ? "'" + _litros + "'" : "'null'") +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
             "    id_carga_combustible = " + Long.toString(this._idCargaCombustible);
@@ -502,18 +502,18 @@ public class CargaCombustible {
             "    litros)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-            "    " + (_estanqueLleno != null ? "'" + _estanqueLleno + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
+            "    " + (_estanqueLleno != null ? "'" + _estanqueLleno + "'" : "'null'") + "," +
             "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
-            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
-            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
-            "    " + (_latitud != null ? "'" + _latitud + "'" : "null") + "," +
-            "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
-            "    " + (_longitud != null ? "'" + _longitud + "'" : "null") + "," +
-            "    " + (_idCargaCombustible != null ? "'" + _idCargaCombustible + "'" : "null") + "," +
-            "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
-            "    " + (_litros != null ? "'" + _litros + "'" : "null") +
+            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "'null'") + "," +
+            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "'null'") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
+            "    " + (_latitud != null ? "'" + _latitud + "'" : "'null'") + "," +
+            "    " + (_costo != null ? "'" + _costo + "'" : "'null'") + "," +
+            "    " + (_longitud != null ? "'" + _longitud + "'" : "'null'") + "," +
+            "    " + (_idCargaCombustible != null ? "'" + _idCargaCombustible + "'" : "'null'") + "," +
+            "    " + (_km != null ? "'" + _km + "'" : "'null'") + "," +
+            "    " + (_litros != null ? "'" + _litros + "'" : "'null'") +
             "    )";
         
         try {

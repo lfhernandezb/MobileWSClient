@@ -284,10 +284,10 @@ public class Reparacion {
                     array_clauses.add("re.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
-                    array_clauses.add("re.borrado = 0");
+                    array_clauses.add("re.borrado = 'false'");
                 }
                 else if (p.getKey().equals("borrado")) {
-                    array_clauses.add("re.borrado = 1");
+                    array_clauses.add("re.borrado = 'true'");
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -376,11 +376,11 @@ public class Reparacion {
             "    UPDATE reparacion" +
             "    SET" +
             "    titulo = " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    borrado = " + (_borrado != null ? _borrado : "null") + "," +
+            "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    costo = " + (_costo != null ? _costo : "null") +
+            "    costo = " + (_costo != null ? "'" + _costo + "'" : "'null'") +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
             "    id_reparacion = " + Long.toString(this._idReparacion);
@@ -446,14 +446,14 @@ public class Reparacion {
             "    VALUES" +
             "    (" +
             "    " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
-            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
-            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
+            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "'null'") + "," +
+            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "'null'") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    " + (_idReparacion != null ? "'" + _idReparacion + "'" : "null") + "," +
-            "    " + (_costo != null ? "'" + _costo + "'" : "null") +
+            "    " + (_idReparacion != null ? "'" + _idReparacion + "'" : "'null'") + "," +
+            "    " + (_costo != null ? "'" + _costo + "'" : "'null'") +
             "    )";
         
         try {

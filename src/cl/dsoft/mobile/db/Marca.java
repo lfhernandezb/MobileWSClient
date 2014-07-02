@@ -301,7 +301,7 @@ public class Marca {
         String str_sql =
             "    UPDATE marca" +
             "    SET" +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") +
             "    WHERE" +
             "    id_marca = " + Short.toString(this._id);
@@ -362,11 +362,11 @@ public class Marca {
             "    id_marca)" +
             "    VALUES" +
             "    (" +
-            "    " + (_idTipoVehiculo != null ? "'" + _idTipoVehiculo + "'" : "null") + "," +
-            "    " + (_idPais != null ? "'" + _idPais + "'" : "null") + "," +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    " + (_idTipoVehiculo != null ? "'" + _idTipoVehiculo + "'" : "'null'") + "," +
+            "    " + (_idPais != null ? "'" + _idPais + "'" : "'null'") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    " + (_id != null ? "'" + _id + "'" : "null") +
+            "    " + (_id != null ? "'" + _id + "'" : "'null'") +
             "    )";
         
         try {

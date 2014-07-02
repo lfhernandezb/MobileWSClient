@@ -267,10 +267,10 @@ public class MantencionUsuarioHecha {
                     array_clauses.add("ma.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
-                    array_clauses.add("ma.borrado = 0");
+                    array_clauses.add("ma.borrado = 'false'");
                 }
                 else if (p.getKey().equals("borrado")) {
-                    array_clauses.add("ma.borrado = 1");
+                    array_clauses.add("ma.borrado = 'true'");
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -358,11 +358,11 @@ public class MantencionUsuarioHecha {
         String str_sql =
             "    UPDATE mantencion_usuario_hecha" +
             "    SET" +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    borrado = " + (_borrado != null ? _borrado : "null") + "," +
-            "    costo = " + (_costo != null ? _costo : "null") + "," +
-            "    km = " + (_km != null ? _km : "null") +
+            "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
+            "    costo = " + (_costo != null ? "'" + _costo + "'" : "'null'") + "," +
+            "    km = " + (_km != null ? "'" + _km + "'" : "'null'") +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
             "    id_mantencion_usuario_hecha = " + Long.toString(this._idMantencionUsuarioHecha);
@@ -426,14 +426,14 @@ public class MantencionUsuarioHecha {
             "    km)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
-            "    " + (_idMantencionUsuarioHecha != null ? "'" + _idMantencionUsuarioHecha + "'" : "null") + "," +
-            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
-            "    " + (_idMantencionUsuario != null ? "'" + _idMantencionUsuario + "'" : "null") + "," +
-            "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
-            "    " + (_km != null ? "'" + _km + "'" : "null") +
+            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "'null'") + "," +
+            "    " + (_idMantencionUsuarioHecha != null ? "'" + _idMantencionUsuarioHecha + "'" : "'null'") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
+            "    " + (_idMantencionUsuario != null ? "'" + _idMantencionUsuario + "'" : "'null'") + "," +
+            "    " + (_costo != null ? "'" + _costo + "'" : "'null'") + "," +
+            "    " + (_km != null ? "'" + _km + "'" : "'null'") +
             "    )";
         
         try {

@@ -298,10 +298,10 @@ public class Usuario {
                     array_clauses.add("us.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
-                    array_clauses.add("us.borrado = 0");
+                    array_clauses.add("us.borrado = 'false'");
                 }
                 else if (p.getKey().equals("borrado")) {
-                    array_clauses.add("us.borrado = 1");
+                    array_clauses.add("us.borrado = 'true'");
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -390,10 +390,10 @@ public class Usuario {
             "    UPDATE usuario" +
             "    SET" +
             "    nombre = " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    fecha_vencimiento_licencia = " + (_fechaVencimientoLicencia != null ? "'" + _fechaVencimientoLicencia + "'" : "null") + "," +
-            "    hombre = " + (_hombre != null ? _hombre : "null") + "," +
-            "    borrado = " + (_borrado != null ? _borrado : "null") + "," +
+            "    hombre = " + (_hombre != null ? "'" + _hombre + "'" : "'null'") + "," +
+            "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
             "    telefono = " + (_telefono != null ? "'" + _telefono + "'" : "null") + "," +
             "    correo = " + (_correo != null ? "'" + _correo + "'" : "null") + "," +
             "    fecha_nacimiento = " + (_fechaNacimiento != null ? "'" + _fechaNacimiento + "'" : "null") +
@@ -462,12 +462,12 @@ public class Usuario {
             "    VALUES" +
             "    (" +
             "    " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    " + (_fechaVencimientoLicencia != null ? "'" + _fechaVencimientoLicencia + "'" : "null") + "," +
-            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
-            "    " + (_hombre != null ? "'" + _hombre + "'" : "null") + "," +
-            "    " + (_idComuna != null ? "'" + _idComuna + "'" : "null") + "," +
-            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "'null'") + "," +
+            "    " + (_hombre != null ? "'" + _hombre + "'" : "'null'") + "," +
+            "    " + (_idComuna != null ? "'" + _idComuna + "'" : "'null'") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
             "    " + (_telefono != null ? "'" + _telefono + "'" : "null") + "," +
             "    " + (_correo != null ? "'" + _correo + "'" : "null") + "," +
             "    " + (_fechaNacimiento != null ? "'" + _fechaNacimiento + "'" : "null") +

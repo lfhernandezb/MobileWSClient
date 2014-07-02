@@ -247,10 +247,10 @@ public class MantencionBaseHecha {
                     array_clauses.add("ma.fecha_modificacion > " + p.getValue());
                 }
                 else if (p.getKey().equals("no borrado")) {
-                    array_clauses.add("ma.borrado = 0");
+                    array_clauses.add("ma.borrado = 'false'");
                 }
                 else if (p.getKey().equals("borrado")) {
-                    array_clauses.add("ma.borrado = 1");
+                    array_clauses.add("ma.borrado = 'true'");
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -340,9 +340,9 @@ public class MantencionBaseHecha {
             "    SET" +
             "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    borrado = " + (_borrado != null ? _borrado : "null") + "," +
-            "    costo = " + (_costo != null ? _costo : "null") + "," +
-            "    km = " + (_km != null ? _km : "null") +
+            "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "'null'") + "," +
+            "    costo = " + (_costo != null ? "'" + _costo + "'" : "'null'") + "," +
+            "    km = " + (_km != null ? "'" + _km + "'" : "'null'") +
             "    WHERE" +
             "    id_mantencion_base_hecha = " + Integer.toString(this._id);
 
@@ -406,11 +406,11 @@ public class MantencionBaseHecha {
             "    (" +
             "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
             "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    " + (_idMantencionBase != null ? "'" + _idMantencionBase + "'" : "null") + "," +
-            "    " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
-            "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
-            "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
-            "    " + (_id != null ? "'" + _id + "'" : "null") +
+            "    " + (_idMantencionBase != null ? "'" + _idMantencionBase + "'" : "'null'") + "," +
+            "    " + (_borrado != null ? "'" + _borrado + "'" : "'null'") + "," +
+            "    " + (_costo != null ? "'" + _costo + "'" : "'null'") + "," +
+            "    " + (_km != null ? "'" + _km + "'" : "'null'") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "'null'") +
             "    )";
         
         try {

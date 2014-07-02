@@ -261,7 +261,7 @@ public class Traccion {
         String str_sql =
             "    UPDATE traccion" +
             "    SET" +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") +
             "    WHERE" +
             "    id_traccion = " + Byte.toString(this._id);
@@ -320,9 +320,9 @@ public class Traccion {
             "    id_traccion)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    " + (_id != null ? "'" + _id + "'" : "null") +
+            "    " + (_id != null ? "'" + _id + "'" : "'null'") +
             "    )";
         
         try {

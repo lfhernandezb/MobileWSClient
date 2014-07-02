@@ -345,11 +345,11 @@ public class InfoSincro {
             "    SET" +
             "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    fecha_fin_procesamiento = " + (_fechaFinProcesamiento != null ? "'" + _fechaFinProcesamiento + "'" : "null") + "," +
-            "    sentido = " + (_sentido != null ? _sentido : "null") + "," +
+            "    sentido = " + (_sentido != null ? "'" + _sentido + "'" : "'null'") + "," +
             "    fecha_lectura = " + (_fechaLectura != null ? "'" + _fechaLectura + "'" : "null") + "," +
             "    archivo_nombre = " + (_archivoNombre != null ? "'" + _archivoNombre + "'" : "null") + "," +
             "    archivo_md5 = " + (_archivoMd5 != null ? "'" + _archivoMd5 + "'" : "null") + "," +
-            "    archivo_tamano = " + (_archivoTamano != null ? _archivoTamano : "null") +
+            "    archivo_tamano = " + (_archivoTamano != null ? "'" + _archivoTamano + "'" : "'null'") +
             "    WHERE" +
             "    id_info_sincro = " + Integer.toString(this._id);
 
@@ -412,14 +412,14 @@ public class InfoSincro {
             "    archivo_tamano)" +
             "    VALUES" +
             "    (" +
-            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "'null'") + "," +
             "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    " + (_fechaFinProcesamiento != null ? "'" + _fechaFinProcesamiento + "'" : "null") + "," +
-            "    " + (_sentido != null ? "'" + _sentido + "'" : "null") + "," +
+            "    " + (_sentido != null ? "'" + _sentido + "'" : "'null'") + "," +
             "    " + (_fechaLectura != null ? "'" + _fechaLectura + "'" : "null") + "," +
             "    " + (_archivoNombre != null ? "'" + _archivoNombre + "'" : "null") + "," +
             "    " + (_archivoMd5 != null ? "'" + _archivoMd5 + "'" : "null") + "," +
-            "    " + (_archivoTamano != null ? "'" + _archivoTamano + "'" : "null") +
+            "    " + (_archivoTamano != null ? "'" + _archivoTamano + "'" : "'null'") +
             "    )";
         
         try {

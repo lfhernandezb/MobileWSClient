@@ -281,7 +281,7 @@ public class Modelo {
         String str_sql =
             "    UPDATE modelo" +
             "    SET" +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") +
             "    WHERE" +
             "    id_modelo = " + Long.toString(this._id);
@@ -341,10 +341,10 @@ public class Modelo {
             "    id_marca)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
-            "    " + (_idMarca != null ? "'" + _idMarca + "'" : "null") +
+            "    " + (_id != null ? "'" + _id + "'" : "'null'") + "," +
+            "    " + (_idMarca != null ? "'" + _idMarca + "'" : "'null'") +
             "    )";
         
         try {

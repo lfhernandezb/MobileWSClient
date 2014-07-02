@@ -421,11 +421,11 @@ public class MantencionBase {
             "    UPDATE mantencion_base" +
             "    SET" +
             "    nombre = " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-            "    dias_entre_mantenciones = " + (_diasEntreMantenciones != null ? _diasEntreMantenciones : "null") + "," +
+            "    dias_entre_mantenciones = " + (_diasEntreMantenciones != null ? "'" + _diasEntreMantenciones + "'" : "'null'") + "," +
             "    descripcion_item = " + (_descripcionItem != null ? "'" + _descripcionItem + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-            "    km_entre_mantenciones = " + (_kmEntreMantenciones != null ? _kmEntreMantenciones : "null") + "," +
-            "    depende_km = " + (_dependeKm != null ? _dependeKm : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
+            "    km_entre_mantenciones = " + (_kmEntreMantenciones != null ? "'" + _kmEntreMantenciones + "'" : "'null'") + "," +
+            "    depende_km = " + (_dependeKm != null ? "'" + _dependeKm + "'" : "'null'") + "," +
             "    accion = " + (_accion != null ? "'" + _accion + "'" : "null") + "," +
             "    url = " + (_url != null ? "'" + _url + "'" : "null") + "," +
             "    beneficios = " + (_beneficios != null ? "'" + _beneficios + "'" : "null") +
@@ -496,16 +496,16 @@ public class MantencionBase {
             "    VALUES" +
             "    (" +
             "    " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-            "    " + (_diasEntreMantenciones != null ? "'" + _diasEntreMantenciones + "'" : "null") + "," +
+            "    " + (_diasEntreMantenciones != null ? "'" + _diasEntreMantenciones + "'" : "'null'") + "," +
             "    " + (_descripcionItem != null ? "'" + _descripcionItem + "'" : "null") + "," +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
-            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
-            "    " + (_kmEntreMantenciones != null ? "'" + _kmEntreMantenciones + "'" : "null") + "," +
-            "    " + (_idTraccion != null ? "'" + _idTraccion + "'" : "null") + "," +
-            "    " + (_dependeKm != null ? "'" + _dependeKm + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "'null'") + "," +
+            "    " + (_kmEntreMantenciones != null ? "'" + _kmEntreMantenciones + "'" : "'null'") + "," +
+            "    " + (_idTraccion != null ? "'" + _idTraccion + "'" : "'null'") + "," +
+            "    " + (_dependeKm != null ? "'" + _dependeKm + "'" : "'null'") + "," +
             "    " + (_accion != null ? "'" + _accion + "'" : "null") + "," +
             "    " + (_url != null ? "'" + _url + "'" : "null") + "," +
-            "    " + (_idCombustible != null ? "'" + _idCombustible + "'" : "null") + "," +
+            "    " + (_idCombustible != null ? "'" + _idCombustible + "'" : "'null'") + "," +
             "    " + (_beneficios != null ? "'" + _beneficios + "'" : "null") +
             "    )";
         

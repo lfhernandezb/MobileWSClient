@@ -318,7 +318,7 @@ public class Autenticacion {
         String str_sql =
             "    UPDATE autenticacion" +
             "    SET" +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    token = " + (_token != null ? "'" + _token + "'" : "null") +
             "    WHERE" +
@@ -381,12 +381,12 @@ public class Autenticacion {
             "    id_autenticacion)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
             "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    " + (_idRedSocial != null ? "'" + _idRedSocial + "'" : "null") + "," +
+            "    " + (_idRedSocial != null ? "'" + _idRedSocial + "'" : "'null'") + "," +
             "    " + (_token != null ? "'" + _token + "'" : "null") + "," +
-            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
-            "    " + (_id != null ? "'" + _id + "'" : "null") +
+            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "'null'") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "'null'") +
             "    )";
         
         try {
