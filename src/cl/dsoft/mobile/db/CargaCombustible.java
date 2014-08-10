@@ -7,16 +7,17 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-//import org.w3c.dom.Element;
-//import org.w3c.dom.Node;
+import java.util.Date;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 /**
- * @author petete-ntbk
+ * @author Luis Hernandez
  *
  */
 @Root
@@ -94,6 +95,17 @@ public class CargaCombustible {
      */
     public String getFecha() {
         return _fecha;
+    }
+    /**
+     * @return the _fecha as Date
+     */
+    public Date getFechaAsDate() throws ParseException {
+        Date d;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        d = formatter.parse(_fecha);
+
+        return d;
     }
     /**
      * @return the _idUsuario
@@ -226,11 +238,11 @@ public class CargaCombustible {
         CargaCombustible ret = new CargaCombustible();
 
         ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
-        ret.setEstanqueLleno(p_rs.getBoolean("estanque_lleno"));
+        ret.setEstanqueLleno(p_rs.getString("estanque_lleno") != null ? p_rs.getString("estanque_lleno").equals("true") : null);
         ret.setFecha(p_rs.getString("fecha"));
         ret.setIdUsuario(p_rs.getLong("id_usuario"));
         ret.setIdVehiculo(p_rs.getLong("id_vehiculo"));
-        ret.setBorrado(p_rs.getBoolean("borrado"));
+        ret.setBorrado(p_rs.getString("borrado") != null ? p_rs.getString("borrado").equals("true") : null);
         ret.setLatitud(p_rs.getInt("latitud"));
         ret.setCosto(p_rs.getInt("costo"));
         ret.setLongitud(p_rs.getInt("longitud"));
@@ -303,7 +315,7 @@ public class CargaCombustible {
     }
 
     
-    public static ArrayList<CargaCombustible> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
+    public static ArrayList<CargaCombustible> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws UnsupportedParameter, SQLException {
         Statement stmt = null;
         ResultSet rs = null;
         String str_sql;
@@ -332,7 +344,7 @@ public class CargaCombustible {
                     array_clauses.add("ca.id_vehiculo = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ca.fecha_modificacion > " + p.getValue());
+                    array_clauses.add("ca.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("ca.borrado = 'false'");
@@ -341,7 +353,7 @@ public class CargaCombustible {
                     array_clauses.add("ca.borrado = 'true'");
                 }
                 else {
-                    throw new Exception("Parametro no soportado: " + p.getKey());
+                    throw new UnsupportedParameter("Parametro no soportado: " + p.getKey());
                 }
             }
                                 
@@ -389,7 +401,7 @@ public class CargaCombustible {
             
             throw ex;
         }
-        catch (Exception ex) {
+        catch (UnsupportedParameter ex) {
             throw ex;
         }
         finally {
@@ -418,6 +430,67 @@ public class CargaCombustible {
         return ret;
     }
 
+
+    public static Long getNextId(Connection p_conn) throws SQLException {
+        Long ret = null;
+        
+        String str_sql = 
+            "  SELECT COALESCE(MAX(id_carga_combustible), 0) + 1 AS next_id FROM carga_combustible";
+        
+        //System.out.println(str_sql);
+        
+        // assume that conn is an already created JDBC connection (see previous examples)
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            stmt = p_conn.createStatement();
+            //System.out.println("stmt = p_conn.createStatement() ok");
+            rs = stmt.executeQuery(str_sql);
+            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
+
+            // Now do something with the ResultSet ....
+            
+            if (rs.next()) {
+                //System.out.println("rs.next() ok");
+                ret = rs.getLong("next_id");
+                //System.out.println("fromRS(rs) ok");
+            }
+        }
+        catch (SQLException ex){
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            
+            throw ex;
+        }
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { 
+                    
+                } // ignore
+                rs = null;
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    
+                } // ignore
+                stmt = null;
+            }
+        }        
+        
+        return ret;        
+    }
+
     public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
@@ -426,15 +499,15 @@ public class CargaCombustible {
         String str_sql =
             "    UPDATE carga_combustible" +
             "    SET" +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
-            "    estanque_lleno = " + (_estanqueLleno != null ? "'" + _estanqueLleno + "'" : "'null'") + "," +
-            "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "datetime('" + _fechaModificacion + "', 'localtime')" : "datetime('now', 'localtime')") + "," +
+            "    estanque_lleno = " + (_estanqueLleno != null ? "'" + _estanqueLleno + "'" : "null") + "," +
+            "    fecha = " + (_fecha != null ? "date('" + _fecha + "', 'localtime')" : "null") + "," +
             "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
-            "    latitud = " + (_latitud != null ? "'" + _latitud + "'" : "'null'") + "," +
-            "    costo = " + (_costo != null ? "'" + _costo + "'" : "'null'") + "," +
-            "    longitud = " + (_longitud != null ? "'" + _longitud + "'" : "'null'") + "," +
-            "    km = " + (_km != null ? "'" + _km + "'" : "'null'") + "," +
-            "    litros = " + (_litros != null ? "'" + _litros + "'" : "'null'") +
+            "    latitud = " + (_latitud != null ? "'" + _latitud + "'" : "null") + "," +
+            "    costo = " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
+            "    longitud = " + (_longitud != null ? "'" + _longitud + "'" : "null") + "," +
+            "    km = " + (_km != null ? "'" + _km + "'" : "null") + "," +
+            "    litros = " + (_litros != null ? "'" + _litros + "'" : "null") +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._idUsuario) + " AND" +
             "    id_carga_combustible = " + Long.toString(this._idCargaCombustible);
@@ -485,6 +558,10 @@ public class CargaCombustible {
         Statement stmt = null;
         ResultSet rs = null;
 
+        if (_idCargaCombustible == null) {
+            _idCargaCombustible = getNextId(p_conn);
+        }
+
         String str_sql =
             "    INSERT INTO carga_combustible" +
             "    (" +
@@ -502,18 +579,18 @@ public class CargaCombustible {
             "    litros)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
-            "    " + (_estanqueLleno != null ? "'" + _estanqueLleno + "'" : "'null'") + "," +
-            "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
-            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "'null'") + "," +
-            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "'null'") + "," +
+            "    " + (_fechaModificacion != null ? "datetime('" + _fechaModificacion + "', 'localtime')" : "datetime('now', 'localtime')") + "," +
+            "    " + (_estanqueLleno != null ? "'" + _estanqueLleno + "'" : "null") + "," +
+            "    " + (_fecha != null ? "date('" + _fecha + "', 'localtime')" : "null") + "," +
+            "    " + (_idUsuario != null ? "'" + _idUsuario + "'" : "null") + "," +
+            "    " + (_idVehiculo != null ? "'" + _idVehiculo + "'" : "null") + "," +
             "    " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
-            "    " + (_latitud != null ? "'" + _latitud + "'" : "'null'") + "," +
-            "    " + (_costo != null ? "'" + _costo + "'" : "'null'") + "," +
-            "    " + (_longitud != null ? "'" + _longitud + "'" : "'null'") + "," +
-            "    " + (_idCargaCombustible != null ? "'" + _idCargaCombustible + "'" : "'null'") + "," +
-            "    " + (_km != null ? "'" + _km + "'" : "'null'") + "," +
-            "    " + (_litros != null ? "'" + _litros + "'" : "'null'") +
+            "    " + (_latitud != null ? "'" + _latitud + "'" : "null") + "," +
+            "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
+            "    " + (_longitud != null ? "'" + _longitud + "'" : "null") + "," +
+            "    " + (_idCargaCombustible != null ? "'" + _idCargaCombustible + "'" : "null") + "," +
+            "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
+            "    " + (_litros != null ? "'" + _litros + "'" : "null") +
             "    )";
         
         try {
@@ -762,42 +839,6 @@ public class CargaCombustible {
 	           "    _km = " + (_km != null ? _km : "null") + "," +
 	           "    _litros = " + (_litros != null ? _litros : "null") +
 			   "]";
-    }
-
-
-    public String toJSON() {
-        return "{\"CargaCombustible\" : {" +
-	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") + "," +
-	           "    \"_estanqueLleno\" : " + (_estanqueLleno != null ? _estanqueLleno : "null") + "," +
-	           "    \"_fecha\" : " + (_fecha != null ? "\"" + _fecha + "\"" : "null") + "," +
-	           "    \"_idUsuario\" : " + (_idUsuario != null ? _idUsuario : "null") + "," +
-	           "    \"_idVehiculo\" : " + (_idVehiculo != null ? _idVehiculo : "null") + "," +
-	           "    \"_borrado\" : " + (_borrado != null ? _borrado : "null") + "," +
-	           "    \"_latitud\" : " + (_latitud != null ? _latitud : "null") + "," +
-	           "    \"_costo\" : " + (_costo != null ? _costo : "null") + "," +
-	           "    \"_longitud\" : " + (_longitud != null ? _longitud : "null") + "," +
-	           "    \"_idCargaCombustible\" : " + (_idCargaCombustible != null ? _idCargaCombustible : "null") + "," +
-	           "    \"_km\" : " + (_km != null ? _km : "null") + "," +
-	           "    \"_litros\" : " + (_litros != null ? _litros : "null") +
-			   "}}";
-    }
-
-
-    public String toXML() {
-        return "<CargaCombustible>" +
-	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <estanqueLleno" + (_estanqueLleno != null ? ">" + _estanqueLleno + "</estanqueLleno>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <fecha" + (_fecha != null ? ">" + _fecha + "</fecha>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idUsuario" + (_idUsuario != null ? ">" + _idUsuario + "</idUsuario>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idVehiculo" + (_idVehiculo != null ? ">" + _idVehiculo + "</idVehiculo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <borrado" + (_borrado != null ? ">" + _borrado + "</borrado>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <latitud" + (_latitud != null ? ">" + _latitud + "</latitud>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <costo" + (_costo != null ? ">" + _costo + "</costo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <longitud" + (_longitud != null ? ">" + _longitud + "</longitud>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idCargaCombustible" + (_idCargaCombustible != null ? ">" + _idCargaCombustible + "</idCargaCombustible>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <km" + (_km != null ? ">" + _km + "</km>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <litros" + (_litros != null ? ">" + _litros + "</litros>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-			   "</CargaCombustible>";
     }
 
 

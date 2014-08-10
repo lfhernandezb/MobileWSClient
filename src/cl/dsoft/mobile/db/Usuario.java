@@ -9,14 +9,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-//import org.w3c.dom.Element;
-//import org.w3c.dom.Node;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 /**
- * @author petete-ntbk
+ * @author Luis Hernandez
  *
  */
 @Root
@@ -88,6 +90,17 @@ public class Usuario {
         return _fechaVencimientoLicencia;
     }
     /**
+     * @return the _fechaVencimientoLicencia as seconds from January 1, 1970, 00:00:00 GMT
+     */
+    public long getFechaVencimientoLicenciaAsLong() throws ParseException {
+        Date d;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        d = formatter.parse(_fechaVencimientoLicencia);
+
+        return (long)d.getTime() / 1000L;
+    }
+    /**
      * @return the _id
      */
     public Long getId() {
@@ -130,6 +143,17 @@ public class Usuario {
         return _fechaNacimiento;
     }
     /**
+     * @return the _fechaNacimiento as seconds from January 1, 1970, 00:00:00 GMT
+     */
+    public long getFechaNacimientoAsLong() throws ParseException {
+        Date d;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        d = formatter.parse(_fechaNacimiento);
+
+        return (long)d.getTime() / 1000L;
+    }
+    /**
      * @param _nombre the _nombre to set
      */
     public void setNombre(String _nombre) {
@@ -146,6 +170,17 @@ public class Usuario {
      */
     public void setFechaVencimientoLicencia(String _fechaVencimientoLicencia) {
         this._fechaVencimientoLicencia = _fechaVencimientoLicencia;
+    }
+    /**
+     * @param _fechaVencimientoLicencia the _fechaVencimientoLicencia to set as seconds from January 1, 1970, 00:00:00 GMT
+     */
+    public void setFechaVencimientoLicencia(long _timeStamp) {
+        Date d;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        d = new Date((long)_timeStamp*1000);
+
+        this._fechaVencimientoLicencia = formatter.format(d);
     }
     /**
      * @param _id the _id to set
@@ -189,6 +224,17 @@ public class Usuario {
     public void setFechaNacimiento(String _fechaNacimiento) {
         this._fechaNacimiento = _fechaNacimiento;
     }
+    /**
+     * @param _fechaNacimiento the _fechaNacimiento to set as seconds from January 1, 1970, 00:00:00 GMT
+     */
+    public void setFechaNacimiento(long _timeStamp) {
+        Date d;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        d = new Date((long)_timeStamp*1000);
+
+        this._fechaNacimiento = formatter.format(d);
+    }
 
     public static Usuario fromRS(ResultSet p_rs) throws SQLException {
         Usuario ret = new Usuario();
@@ -197,9 +243,9 @@ public class Usuario {
         ret.setFechaModificacion(p_rs.getString("fecha_modificacion"));
         ret.setFechaVencimientoLicencia(p_rs.getString("fecha_vencimiento_licencia"));
         ret.setId(p_rs.getLong("id"));
-        ret.setHombre(p_rs.getBoolean("hombre"));
+        ret.setHombre(p_rs.getString("hombre") != null ? p_rs.getString("hombre").equals("true") : null);
         ret.setIdComuna(p_rs.getLong("id_comuna"));
-        ret.setBorrado(p_rs.getBoolean("borrado"));
+        ret.setBorrado(p_rs.getString("borrado") != null ? p_rs.getString("borrado").equals("true") : null);
         ret.setTelefono(p_rs.getString("telefono"));
         ret.setCorreo(p_rs.getString("correo"));
         ret.setFechaNacimiento(p_rs.getString("fecha_nacimiento"));
@@ -268,11 +314,11 @@ public class Usuario {
         return ret;        
     }
 
-    public static Usuario getById(Connection p_conn, String p_id) throws Exception {
+    public static Usuario getById(Connection p_conn, String p_id) throws SQLException {
         return getByParameter(p_conn, "id_usuario", p_id);
     }
     
-    public static ArrayList<Usuario> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
+    public static ArrayList<Usuario> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws UnsupportedParameter, SQLException {
         Statement stmt = null;
         ResultSet rs = null;
         String str_sql;
@@ -295,7 +341,7 @@ public class Usuario {
                     array_clauses.add("us.id_comuna = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("us.fecha_modificacion > " + p.getValue());
+                    array_clauses.add("us.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("us.borrado = 'false'");
@@ -304,7 +350,7 @@ public class Usuario {
                     array_clauses.add("us.borrado = 'true'");
                 }
                 else {
-                    throw new Exception("Parametro no soportado: " + p.getKey());
+                    throw new UnsupportedParameter("Parametro no soportado: " + p.getKey());
                 }
             }
                                 
@@ -352,7 +398,7 @@ public class Usuario {
             
             throw ex;
         }
-        catch (Exception ex) {
+        catch (UnsupportedParameter ex) {
             throw ex;
         }
         finally {
@@ -381,6 +427,67 @@ public class Usuario {
         return ret;
     }
 
+
+    public static Long getNextId(Connection p_conn) throws SQLException {
+        Long ret = null;
+        
+        String str_sql = 
+            "  SELECT COALESCE(MAX(id_usuario), 0) + 1 AS next_id FROM usuario";
+        
+        //System.out.println(str_sql);
+        
+        // assume that conn is an already created JDBC connection (see previous examples)
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            stmt = p_conn.createStatement();
+            //System.out.println("stmt = p_conn.createStatement() ok");
+            rs = stmt.executeQuery(str_sql);
+            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
+
+            // Now do something with the ResultSet ....
+            
+            if (rs.next()) {
+                //System.out.println("rs.next() ok");
+                ret = rs.getLong("next_id");
+                //System.out.println("fromRS(rs) ok");
+            }
+        }
+        catch (SQLException ex){
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            
+            throw ex;
+        }
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { 
+                    
+                } // ignore
+                rs = null;
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    
+                } // ignore
+                stmt = null;
+            }
+        }        
+        
+        return ret;        
+    }
+
     public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
@@ -390,13 +497,13 @@ public class Usuario {
             "    UPDATE usuario" +
             "    SET" +
             "    nombre = " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
-            "    fecha_vencimiento_licencia = " + (_fechaVencimientoLicencia != null ? "'" + _fechaVencimientoLicencia + "'" : "null") + "," +
-            "    hombre = " + (_hombre != null ? "'" + _hombre + "'" : "'null'") + "," +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "datetime('" + _fechaModificacion + "', 'localtime')" : "datetime('now', 'localtime')") + "," +
+            "    fecha_vencimiento_licencia = " + (_fechaVencimientoLicencia != null ? "date('" + _fechaVencimientoLicencia + "', 'localtime')" : "null") + "," +
+            "    hombre = " + (_hombre != null ? "'" + _hombre + "'" : "null") + "," +
             "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
             "    telefono = " + (_telefono != null ? "'" + _telefono + "'" : "null") + "," +
             "    correo = " + (_correo != null ? "'" + _correo + "'" : "null") + "," +
-            "    fecha_nacimiento = " + (_fechaNacimiento != null ? "'" + _fechaNacimiento + "'" : "null") +
+            "    fecha_nacimiento = " + (_fechaNacimiento != null ? "date('" + _fechaNacimiento + "', 'localtime')" : "null") +
             "    WHERE" +
             "    id_usuario = " + Long.toString(this._id);
 
@@ -446,6 +553,10 @@ public class Usuario {
         Statement stmt = null;
         ResultSet rs = null;
 
+        if (_id == null) {
+            _id = getNextId(p_conn);
+        }
+
         String str_sql =
             "    INSERT INTO usuario" +
             "    (" +
@@ -462,15 +573,15 @@ public class Usuario {
             "    VALUES" +
             "    (" +
             "    " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") + "," +
-            "    " + (_fechaVencimientoLicencia != null ? "'" + _fechaVencimientoLicencia + "'" : "null") + "," +
-            "    " + (_id != null ? "'" + _id + "'" : "'null'") + "," +
-            "    " + (_hombre != null ? "'" + _hombre + "'" : "'null'") + "," +
-            "    " + (_idComuna != null ? "'" + _idComuna + "'" : "'null'") + "," +
+            "    " + (_fechaModificacion != null ? "datetime('" + _fechaModificacion + "', 'localtime')" : "datetime('now', 'localtime')") + "," +
+            "    " + (_fechaVencimientoLicencia != null ? "date('" + _fechaVencimientoLicencia + "', 'localtime')" : "null") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
+            "    " + (_hombre != null ? "'" + _hombre + "'" : "null") + "," +
+            "    " + (_idComuna != null ? "'" + _idComuna + "'" : "null") + "," +
             "    " + (_borrado != null ? "'" + _borrado + "'" : "'false'") + "," +
             "    " + (_telefono != null ? "'" + _telefono + "'" : "null") + "," +
             "    " + (_correo != null ? "'" + _correo + "'" : "null") + "," +
-            "    " + (_fechaNacimiento != null ? "'" + _fechaNacimiento + "'" : "null") +
+            "    " + (_fechaNacimiento != null ? "date('" + _fechaNacimiento + "', 'localtime')" : "null") +
             "    )";
         
         try {
@@ -713,38 +824,6 @@ public class Usuario {
 	           "    _correo = " + (_correo != null ? "'" + _correo + "'" : "null") + "," +
 	           "    _fechaNacimiento = " + (_fechaNacimiento != null ? "'" + _fechaNacimiento + "'" : "null") +
 			   "]";
-    }
-
-
-    public String toJSON() {
-        return "{\"Usuario\" : {" +
-	           "    \"_nombre\" : " + (_nombre != null ? "\"" + _nombre + "\"" : "null") + "," +
-	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") + "," +
-	           "    \"_fecha_vencimiento_licencia\" : " + (_fechaVencimientoLicencia != null ? "\"" + _fechaVencimientoLicencia + "\"" : "null") + "," +
-	           "    \"_id\" : " + (_id != null ? _id : "null") + "," +
-	           "    \"_hombre\" : " + (_hombre != null ? _hombre : "null") + "," +
-	           "    \"_idComuna\" : " + (_idComuna != null ? _idComuna : "null") + "," +
-	           "    \"_borrado\" : " + (_borrado != null ? _borrado : "null") + "," +
-	           "    \"_telefono\" : " + (_telefono != null ? "\"" + _telefono + "\"" : "null") + "," +
-	           "    \"_correo\" : " + (_correo != null ? "\"" + _correo + "\"" : "null") + "," +
-	           "    \"_fecha_nacimiento\" : " + (_fechaNacimiento != null ? "\"" + _fechaNacimiento + "\"" : "null") +
-			   "}}";
-    }
-
-
-    public String toXML() {
-        return "<Usuario>" +
-	           "    <nombre" + (_nombre != null ? ">" + _nombre + "</nombre>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <fechaVencimientoLicencia" + (_fechaVencimientoLicencia != null ? ">" + _fechaVencimientoLicencia + "</fechaVencimientoLicencia>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <hombre" + (_hombre != null ? ">" + _hombre + "</hombre>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idComuna" + (_idComuna != null ? ">" + _idComuna + "</idComuna>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <borrado" + (_borrado != null ? ">" + _borrado + "</borrado>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <telefono" + (_telefono != null ? ">" + _telefono + "</telefono>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <correo" + (_correo != null ? ">" + _correo + "</correo>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <fechaNacimiento" + (_fechaNacimiento != null ? ">" + _fechaNacimiento + "</fechaNacimiento>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-			   "</Usuario>";
     }
 
 

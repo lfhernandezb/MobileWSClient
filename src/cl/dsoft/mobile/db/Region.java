@@ -9,14 +9,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-//import org.w3c.dom.Element;
-//import org.w3c.dom.Node;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 /**
- * @author petete-ntbk
+ * @author Luis Hernandez
  *
  */
 @Root
@@ -166,11 +164,11 @@ public class Region {
         return ret;        
     }
 
-    public static Region getById(Connection p_conn, String p_id) throws Exception {
+    public static Region getById(Connection p_conn, String p_id) throws SQLException {
         return getByParameter(p_conn, "id_region", p_id);
     }
     
-    public static ArrayList<Region> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
+    public static ArrayList<Region> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws UnsupportedParameter, SQLException {
         Statement stmt = null;
         ResultSet rs = null;
         String str_sql;
@@ -193,10 +191,10 @@ public class Region {
                     array_clauses.add("re.id_pais = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("re.fecha_modificacion > " + p.getValue());
+                    array_clauses.add("re.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
                 }
                 else {
-                    throw new Exception("Parametro no soportado: " + p.getKey());
+                    throw new UnsupportedParameter("Parametro no soportado: " + p.getKey());
                 }
             }
                                 
@@ -244,7 +242,7 @@ public class Region {
             
             throw ex;
         }
-        catch (Exception ex) {
+        catch (UnsupportedParameter ex) {
             throw ex;
         }
         finally {
@@ -273,6 +271,67 @@ public class Region {
         return ret;
     }
 
+
+    public static Long getNextId(Connection p_conn) throws SQLException {
+        Long ret = null;
+        
+        String str_sql = 
+            "  SELECT COALESCE(MAX(id_region), 0) + 1 AS next_id FROM region";
+        
+        //System.out.println(str_sql);
+        
+        // assume that conn is an already created JDBC connection (see previous examples)
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            stmt = p_conn.createStatement();
+            //System.out.println("stmt = p_conn.createStatement() ok");
+            rs = stmt.executeQuery(str_sql);
+            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
+
+            // Now do something with the ResultSet ....
+            
+            if (rs.next()) {
+                //System.out.println("rs.next() ok");
+                ret = rs.getLong("next_id");
+                //System.out.println("fromRS(rs) ok");
+            }
+        }
+        catch (SQLException ex){
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            
+            throw ex;
+        }
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { 
+                    
+                } // ignore
+                rs = null;
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    
+                } // ignore
+                stmt = null;
+            }
+        }        
+        
+        return ret;        
+    }
+
     public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
@@ -282,7 +341,7 @@ public class Region {
             "    UPDATE region" +
             "    SET" +
             "    region = " + (_region != null ? "'" + _region + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") +
+            "    fecha_modificacion = " + (_fechaModificacion != null ? "datetime('" + _fechaModificacion + "', 'localtime')" : "datetime('now', 'localtime')") +
             "    WHERE" +
             "    id_region = " + Long.toString(this._id);
 
@@ -332,6 +391,10 @@ public class Region {
         Statement stmt = null;
         ResultSet rs = null;
 
+        if (_id == null) {
+            _id = getNextId(p_conn);
+        }
+
         String str_sql =
             "    INSERT INTO region" +
             "    (" +
@@ -342,9 +405,9 @@ public class Region {
             "    VALUES" +
             "    (" +
             "    " + (_region != null ? "'" + _region + "'" : "null") + "," +
-            "    " + (_id != null ? "'" + _id + "'" : "'null'") + "," +
-            "    " + (_idPais != null ? "'" + _idPais + "'" : "'null'") + "," +
-            "    " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "datetime('now', 'localtime')") +
+            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
+            "    " + (_idPais != null ? "'" + _idPais + "'" : "null") + "," +
+            "    " + (_fechaModificacion != null ? "datetime('" + _fechaModificacion + "', 'localtime')" : "datetime('now', 'localtime')") +
             "    )";
         
         try {
@@ -575,26 +638,6 @@ public class Region {
 	           "    _idPais = " + (_idPais != null ? _idPais : "null") + "," +
 	           "    _fechaModificacion = " + (_fechaModificacion != null ? "'" + _fechaModificacion + "'" : "null") +
 			   "]";
-    }
-
-
-    public String toJSON() {
-        return "{\"Region\" : {" +
-	           "    \"_region\" : " + (_region != null ? "\"" + _region + "\"" : "null") + "," +
-	           "    \"_id\" : " + (_id != null ? _id : "null") + "," +
-	           "    \"_idPais\" : " + (_idPais != null ? _idPais : "null") + "," +
-	           "    \"_fecha_modificacion\" : " + (_fechaModificacion != null ? "\"" + _fechaModificacion + "\"" : "null") +
-			   "}}";
-    }
-
-
-    public String toXML() {
-        return "<Region>" +
-	           "    <region" + (_region != null ? ">" + _region + "</region>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <id" + (_id != null ? ">" + _id + "</id>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <idPais" + (_idPais != null ? ">" + _idPais + "</idPais>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-	           "    <fechaModificacion" + (_fechaModificacion != null ? ">" + _fechaModificacion + "</fechaModificacion>" : " xsi:nil=\"true\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>") +
-			   "</Region>";
     }
 
 

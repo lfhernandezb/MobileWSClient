@@ -12,6 +12,7 @@ import org.simpleframework.xml.Root;
 
 import cl.dsoft.mobile.db.CargaCombustible;
 import cl.dsoft.mobile.db.Comuna;
+import cl.dsoft.mobile.db.MantencionBaseHecha;
 import cl.dsoft.mobile.db.MantencionUsuario;
 import cl.dsoft.mobile.db.MantencionUsuarioHecha;
 import cl.dsoft.mobile.db.Pais;
@@ -23,7 +24,7 @@ import cl.dsoft.mobile.db.Usuario;
 import cl.dsoft.mobile.db.Vehiculo;
 
 @Root(name = "CarData")
-@Order(elements={"paises", "regiones", "comunas", "usuarios", "vehiculos", "mantencionUsuarios", "mantencionUsuarioHechas", "recordatorios", "cargaCombustibles", "reparaciones"})
+@Order(elements={"paises", "regiones", "comunas", "usuarios", "vehiculos", "mantencionBaseHechas", "mantencionUsuarios", "mantencionUsuarioHechas", "recordatorios", "cargaCombustibles", "reparaciones"})
 //If you want you can define the order in which the fields are written
 //Optional
 //@Order(elements = { "usuarios", "vehiculos", "mantencionUsuarios", "mantencionUsuarioHechas", "recordatorios", "rendimientos", "reparaciones" })
@@ -36,19 +37,21 @@ public class CarData {
 	@ElementList(required=false)
 	protected ArrayList<cl.dsoft.mobile.db.Comuna> comunas;
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.MantencionUsuarioHecha> mantencionUsuarioHechas;
+	protected ArrayList<cl.dsoft.mobile.db.Usuario> usuarios;
+	@ElementList(required=false)
+	protected ArrayList<cl.dsoft.mobile.db.Vehiculo> vehiculos;
+	@ElementList(required=false)
+	protected ArrayList<cl.dsoft.mobile.db.MantencionBaseHecha> mantencionBaseHechas;
 	@ElementList(required=false)
 	protected ArrayList<cl.dsoft.mobile.db.MantencionUsuario> mantencionUsuarios;
+	@ElementList(required=false)
+	protected ArrayList<cl.dsoft.mobile.db.MantencionUsuarioHecha> mantencionUsuarioHechas;
 	@ElementList(required=false)
 	protected ArrayList<cl.dsoft.mobile.db.Recordatorio> recordatorios;
 	@ElementList(required=false)
 	protected ArrayList<cl.dsoft.mobile.db.CargaCombustible> cargaCombustibles;
 	@ElementList(required=false)
 	protected ArrayList<cl.dsoft.mobile.db.Reparacion> reparaciones;
-	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.Usuario> usuarios;
-	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.Vehiculo> vehiculos;
 	
 	public CarData() {
 
@@ -57,6 +60,7 @@ public class CarData {
 		this.comunas = null;
 		this.usuarios = null;
 		this.vehiculos = null;
+		this.mantencionBaseHechas = null;
 		this.mantencionUsuarios = null;
 		this.mantencionUsuarioHechas = null;
 		this.recordatorios = null;
@@ -79,6 +83,8 @@ public class CarData {
 			//this.regiones = Region.seek(conn, listParameters, null, null, 0, 1);
 			
 			//this.comunas = Comuna.seek(conn, listParameters, null, null, 0, 1);
+			
+			this.mantencionBaseHechas = MantencionBaseHecha.seek(conn, listParameters, null, null, 0, 1);
 			
 			this.mantencionUsuarios = MantencionUsuario.seek(conn, listParameters, null, null, 0, 1);
 			
@@ -170,6 +176,21 @@ public class CarData {
 	 */
 	public void setVehiculos(ArrayList<Vehiculo> vehiculos) {
 		this.vehiculos = vehiculos;
+	}
+
+	/**
+	 * @return the mantencionBaseHechas
+	 */
+	public ArrayList<MantencionBaseHecha> getMantencionBaseHechas() {
+		return mantencionBaseHechas;
+	}
+
+	/**
+	 * @param mantencionBaseHechas the mantencionBaseHechas to set
+	 */
+	public void setMantencionBaseHechas(
+			ArrayList<MantencionBaseHecha> mantencionBaseHechas) {
+		this.mantencionBaseHechas = mantencionBaseHechas;
 	}
 
 	/**
@@ -270,6 +291,11 @@ public class CarData {
 			vehiculo.save(conn);
 		}
 	
+		for (cl.dsoft.mobile.db.MantencionBaseHecha mantencionBaseHecha : this.getMantencionBaseHechas()) {
+			
+			mantencionBaseHecha.save(conn);
+		}
+
 		for (cl.dsoft.mobile.db.MantencionUsuario mantencionUsuario : this.getMantencionUsuarios()) {
 			
 			mantencionUsuario.save(conn);

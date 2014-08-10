@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import org.apache.http.HttpResponse;
@@ -41,6 +42,14 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import cl.dsoft.carws.mobile.model.CarData;
+import cl.dsoft.mobile.db.CargaCombustible;
+import cl.dsoft.mobile.db.MantencionBaseHecha;
+import cl.dsoft.mobile.db.MantencionUsuario;
+import cl.dsoft.mobile.db.MantencionUsuarioHecha;
+import cl.dsoft.mobile.db.Recordatorio;
+import cl.dsoft.mobile.db.Reparacion;
+import cl.dsoft.mobile.db.Usuario;
+import cl.dsoft.mobile.db.Vehiculo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -68,6 +77,8 @@ public class RestFulWebservice extends Activity {
         final Button GetServerData = (Button) findViewById(R.id.GetServerData);
         
         final Button PutServerData = (Button) findViewById(R.id.PutServerData);
+        
+        final Button PopulateDB = (Button) findViewById(R.id.PopulateDB);
         
         final TextView uiUpdate = (TextView) findViewById(R.id.output);
         final TextView jsonParsed = (TextView) findViewById(R.id.jsonParsed);
@@ -244,7 +255,7 @@ public class RestFulWebservice extends Activity {
 		        	long idUsuario;
 		        	String fechaModificacion, url;
 		        	
-		        	idUsuario = 1L;
+		        	idUsuario = 2L;
 		        	fechaModificacion = "1900-01-01";
 
 		        	HttpParams httpParameters = new BasicHttpParams();
@@ -319,8 +330,257 @@ public class RestFulWebservice extends Activity {
 		        	}
 		        }
 			}
-        });    
+        });
+        
+        PopulateDB.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Connection conn = null;
+			  
+				try {
+					int i;
+			        
+					ArrayList<MantencionBaseHecha> list_mbh;
+					
+					//Class.forName("org.sqldroid.SQLDroidDriver");
+					//conn = DriverManager.getConnection("jdbc:sqldroid:" + "/data/data/cl.dsoft.dbtest/databases/" + "car.db3");
+					String url;
+					
+        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
+        			
+        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
+					
+			    	conn.setAutoCommit(false);
+			    	
+			    	conn.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+			    	
+			    	//marca = Marca.getById(conn, "1");
+			    	
+			    	//Log.e("CLAC", "Nombre=" + marca.get_descripcion());
+			    	
+			    	//c = new Combustible();
+			    	
+			    	//c.set_id((byte) 101);
+			    	//c.set_descripcion("gas");
+			    	
+			    	//c.insert(conn);
+			    	
+			    	
+			    	Usuario u = new Usuario();
+			    	
+			    	u.setIdComuna(1L);
+			    	
+			    	u.insert(conn);
+			    	
+			    	u.setNombre("Bonifacio");
+			    	u.setHombre(true);
+
+			    	u.update(conn);
+			    	
+			    	System.out.println(u.toString());
+			    	
+			    	Vehiculo ve = new Vehiculo();
+			    	
+			    	ve.setIdUsuario(u.getId());
+			    	ve.setIdModelo(8057399L);
+			    	ve.setIdTipoTransmision((byte) 2);
+			    	ve.setIdCombustible((byte) 2);
+			    	ve.setIdTraccion((byte) 3);
+			    	ve.setAlias("Toco");
+			    	
+			    	ve.insert(conn);
+			    	
+			    	System.out.println(v.toString());
+			    	
+			    	//System.out.println(v.toJSON());
+			    	
+			    	ve.setAnio(2012);
+			    	ve.setKm(1500);
+			    	
+			    	ve.update(conn);
+
+			    	System.out.println(v.toString());
+			    	
+			    	//System.out.println(v.toJSON());
+			    	
+			    	MantencionBaseHecha mbh = new MantencionBaseHecha();
+			    	
+			    	mbh.setCosto(50000);
+			    	mbh.setFecha("2014-07-15");
+			    	mbh.setIdMantencionBase(4L);
+			    	mbh.setIdUsuario(u.getId());
+			    	mbh.setIdVehiculo(ve.getIdVehiculo());
+			    	mbh.setKm(1300);
+			    	
+			    	mbh.insert(conn);
+			    	
+			    	System.out.println(mbh.toString());
+			    	
+			    	MantencionUsuario mu = new MantencionUsuario();
+			    	
+			    	//mu.setIdMantencionUsuario(1L);
+			    	mu.setIdUsuario(u.getId());
+			    	mu.setIdVehiculo(ve.getIdVehiculo());
+			    	mu.setNombre("Lavado Tapiz");
+			    	mu.setDescripcion("Lavado tapiz completo");
+			    	mu.setDependeKm(true);
+			    	mu.setKmEntreMantenciones(10000);
+			    	//mu.setMesesEntreMantenciones();
+			    	
+			    	mu.insert(conn);
+			    	
+			    	MantencionUsuarioHecha muh = new MantencionUsuarioHecha();
+			    	
+			    	//muh.setIdMantencionUsuarioHecha(1L);
+			    	muh.setIdUsuario(u.getId());
+			    	muh.setIdVehiculo(ve.getIdVehiculo());
+			    	muh.setIdMantencionUsuario(mu.getIdMantencionUsuario());
+			    	muh.setCosto(40000);
+			    	muh.setFecha("2014-06-20");
+			    	muh.setKm(1200);
+			    	
+			    	muh.insert(conn);
+
+			    	Reparacion rep = new Reparacion();
+			    	
+			    	//rep.setIdReparacion(1L);
+			    	rep.setIdUsuario(u.getId());
+			    	rep.setIdVehiculo(ve.getIdVehiculo());
+			    	rep.setTitulo("titulo");
+			    	rep.setDescripcion("descripcion");
+			    	
+			    	rep.insert(conn);
+			    	
+			    	Recordatorio rec = new Recordatorio();
+			    	
+			    	//rec.setIdRecordatorio(1L);
+			    	rec.setIdUsuario(u.getId());
+			    	rec.setIdVehiculo(ve.getIdVehiculo());
+			    	rec.setKm(180000);
+			    	rec.setTitulo("titulo");
+			    	rec.setDescripcion("descripcion");
+			    	
+			    	rec.insert(conn);
+			    	
+			    	CargaCombustible cc = new CargaCombustible();
+			    	
+			    	//cc.setIdCargaCombustible(1L);
+			    	cc.setIdUsuario(u.getId());
+			    	cc.setIdVehiculo(ve.getIdVehiculo());
+			    	cc.setEstanqueLleno(true);
+			    	cc.setFecha("2010-01-01");
+			    	cc.setKm(100000);
+			    	cc.setLitros(70);
+			    	
+			    	cc.insert(conn);
+
+			    	cc.setIdCargaCombustible(null);
+			    	cc.setIdUsuario(u.getId());
+			    	cc.setIdVehiculo(ve.getIdVehiculo());
+			    	cc.setEstanqueLleno(false);
+			    	cc.setFecha("2010-01-15");
+			    	cc.setKm(100600);
+			    	cc.setLitros(40);
+			    	
+			    	cc.insert(conn);
+			    	
+			    	cc.setIdCargaCombustible(null);
+			    	cc.setIdUsuario(u.getId());
+			    	cc.setIdVehiculo(ve.getIdVehiculo());
+			    	cc.setEstanqueLleno(true);
+			    	cc.setFecha("2010-01-31");
+			    	cc.setKm(101100);
+			    	cc.setLitros(70);
+			    	
+			    	cc.insert(conn);
+
+			    	cc.setIdCargaCombustible(null);
+			    	cc.setIdUsuario(u.getId());
+			    	cc.setIdVehiculo(ve.getIdVehiculo());
+			    	cc.setEstanqueLleno(true);
+			    	cc.setFecha("2010-02-15");
+			    	cc.setKm(101800);
+			    	cc.setLitros(70);
+			    	
+			    	cc.insert(conn);
+
+			    	cc.setIdCargaCombustible(null);
+			    	cc.setIdUsuario(u.getId());
+			    	cc.setIdVehiculo(ve.getIdVehiculo());
+			    	cc.setEstanqueLleno(false);
+			    	cc.setFecha("2010-03-01");
+			    	cc.setKm(102300);
+			    	cc.setLitros(20);
+			    	
+			    	cc.insert(conn);
+
+			    	cc.setIdCargaCombustible(null);
+			    	cc.setIdUsuario(u.getId());
+			    	cc.setIdVehiculo(ve.getIdVehiculo());
+			    	cc.setEstanqueLleno(true);
+			    	cc.setFecha("2010-04-01");
+			    	cc.setKm(102700);
+			    	cc.setLitros(70);
+			    	
+			    	cc.insert(conn);
+
+			    	cc.setIdCargaCombustible(null);
+			    	cc.setIdUsuario(u.getId());
+			    	cc.setIdVehiculo(ve.getIdVehiculo());
+			    	cc.setEstanqueLleno(true);
+			    	cc.setFecha("2010-05-01");
+			    	cc.setKm(103300);
+			    	cc.setLitros(60);
+			    	
+			    	cc.insert(conn);
+			    	
+			    	cc.setIdCargaCombustible(null);
+			    	cc.setIdUsuario(u.getId());
+			    	cc.setIdVehiculo(ve.getIdVehiculo());
+			    	cc.setEstanqueLleno(true);
+			    	cc.setFecha("2010-06-01");
+			    	cc.setKm(103800);
+			    	cc.setLitros(50);
+			    	
+			    	cc.insert(conn);
+
+			    	cc.setIdCargaCombustible(null);
+			    	cc.setIdUsuario(u.getId());
+			    	cc.setIdVehiculo(ve.getIdVehiculo());
+			    	cc.setEstanqueLleno(false);
+			    	cc.setFecha("2010-07-01");
+			    	cc.setKm(104500);
+			    	cc.setLitros(10);
+			    	
+			    	cc.insert(conn);
+			    	
+			    	//v.setBorrado(true); 
+			    	
+			    	conn.commit();
+
+					
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+				finally {
+					if (conn != null) {
+						try {
+							conn.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		});
+        
     }
+    
     
 	private void copyDataBaseFile() throws CarException, FileNotFoundException, IOException {
 		String path = getApplicationContext().getFilesDir().getAbsolutePath() + "/";

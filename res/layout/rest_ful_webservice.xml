@@ -9,6 +9,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
+
     <EditText
         android:paddingTop="20px"
         android:id="@+id/serverText"
@@ -34,7 +35,17 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"  
 		android:layout_gravity="center_horizontal"
-    /> 
+    />
+
+    <Button
+        android:id="@+id/PopulateDB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:cursorVisible="true"
+        android:paddingTop="10px"
+        android:text="Populate DB" />
+ 
     <TextView
         android:paddingTop="20px"
         android:textStyle="bold"
