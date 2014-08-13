@@ -327,7 +327,7 @@ public class MantencionUsuarioHecha {
                     array_clauses.add("ma.id_mantencion_usuario = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ma.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
+                    array_clauses.add("ma.fecha_modificacion > datetime('" + p.getValue() + "', 'localtime')");
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("ma.borrado = 'false'");

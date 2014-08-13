@@ -171,7 +171,7 @@ public class TipoTransmision {
                     array_clauses.add("ti.id_tipo_transmision = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ti.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
+                    array_clauses.add("ti.fecha_modificacion > datetime('" + p.getValue() + "', 'localtime')");
                 }
                 else {
                     throw new UnsupportedParameter("Parametro no soportado: " + p.getKey());

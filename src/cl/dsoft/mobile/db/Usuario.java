@@ -341,7 +341,7 @@ public class Usuario {
                     array_clauses.add("us.id_comuna = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("us.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
+                    array_clauses.add("us.fecha_modificacion > datetime('" + p.getValue() + "', 'localtime')");
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("us.borrado = 'false'");

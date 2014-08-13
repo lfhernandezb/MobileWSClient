@@ -191,7 +191,7 @@ public class Comuna {
                     array_clauses.add("co.id_region = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("co.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
+                    array_clauses.add("co.fecha_modificacion > datetime('" + p.getValue() + "', 'localtime')");
                 }
                 else {
                     throw new UnsupportedParameter("Parametro no soportado: " + p.getKey());

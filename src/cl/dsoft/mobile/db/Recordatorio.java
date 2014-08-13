@@ -313,7 +313,7 @@ public class Recordatorio {
                     array_clauses.add("re.id_vehiculo = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("re.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
+                    array_clauses.add("re.fecha_modificacion > datetime('" + p.getValue() + "', 'localtime')");
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("re.borrado = 'false'");

@@ -344,7 +344,7 @@ public class CargaCombustible {
                     array_clauses.add("ca.id_vehiculo = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ca.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
+                    array_clauses.add("ca.fecha_modificacion > datetime('" + p.getValue() + "', 'localtime')");
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("ca.borrado = 'false'");

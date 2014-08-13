@@ -385,7 +385,7 @@ public class Vehiculo {
                     array_clauses.add("ve.id_combustible = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ma.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
+                    array_clauses.add("ve.fecha_modificacion > datetime('" + p.getValue() + "', 'localtime')");
                 }
                 else if (p.getKey().equals("no borrado")) {
                     array_clauses.add("ve.borrado = 'false'");

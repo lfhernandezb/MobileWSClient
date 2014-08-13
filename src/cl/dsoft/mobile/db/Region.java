@@ -191,7 +191,7 @@ public class Region {
                     array_clauses.add("re.id_pais = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("re.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
+                    array_clauses.add("re.fecha_modificacion > datetime('" + p.getValue() + "', 'localtime')");
                 }
                 else {
                     throw new UnsupportedParameter("Parametro no soportado: " + p.getKey());

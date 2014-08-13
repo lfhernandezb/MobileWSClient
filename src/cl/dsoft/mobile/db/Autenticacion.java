@@ -228,7 +228,7 @@ public class Autenticacion {
                     array_clauses.add("au.id_usuario = " + p.getValue());
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("au.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
+                    array_clauses.add("au.fecha_modificacion > datetime('" + p.getValue() + "', 'localtime')");
                 }
                 else {
                     throw new UnsupportedParameter("Parametro no soportado: " + p.getKey());

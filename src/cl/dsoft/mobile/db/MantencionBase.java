@@ -330,7 +330,7 @@ public class MantencionBase {
                     array_clauses.add("(ma.combustible = '" + p.getValue() + "' OR ma.combustible = 'ALL')");
                 }
                 else if (p.getKey().equals("mas reciente")) {
-                    array_clauses.add("ma.fecha_modificacion > datetime('" + p.getValue() + "', localtime)");
+                    array_clauses.add("ma.fecha_modificacion > datetime('" + p.getValue() + "', 'localtime')");
                 }
                 else {
                     throw new UnsupportedParameter("Parametro no soportado: " + p.getKey());
