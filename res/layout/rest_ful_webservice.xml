@@ -18,8 +18,8 @@
         android:text="" />
     <Button 
         android:paddingTop="10px"
-        android:id="@+id/GetServerData" 
-    	android:text="Restful Webservice Call" 
+        android:id="@+id/ByIdUsuario" 
+    	android:text="WS ByIdUsuario" 
     	android:cursorVisible="true"
     	android:clickable="true"
 		android:layout_width="wrap_content"
@@ -45,7 +45,16 @@
         android:cursorVisible="true"
         android:paddingTop="10px"
         android:text="Populate DB" />
- 
+
+    <Button
+        android:id="@+id/ByIdRedSocial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:cursorVisible="true"
+        android:paddingTop="10px"
+        android:text="WS ByIdRedSocial" />
+    
     <TextView
         android:paddingTop="20px"
         android:textStyle="bold"

@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -161,6 +164,26 @@ public class Recordatorio {
     public void setFecha(String _fecha) {
         this._fecha = _fecha;
     }
+     /**
+     * @param _fecha the _fecha to set as seconds from January 1, 1970, 00:00:00 GMT
+     */
+    public void setFecha(long _timeStamp) {
+        Date d;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        d = new Date((long)_timeStamp*1000);
+
+        this._fecha = formatter.format(d);
+    }
+    /**
+    * @param _fecha the _fecha to set as Date
+    */
+   public void setFecha(Date _fecha) {
+       
+       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+       this._fecha = formatter.format(_fecha);
+   }
     /**
      * @param _idUsuario the _idUsuario to set
      */

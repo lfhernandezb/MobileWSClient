@@ -18,7 +18,9 @@ import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 
 import org.apache.http.HttpResponse;
@@ -43,6 +45,7 @@ import org.simpleframework.xml.core.Persister;
 
 import cl.dsoft.carws.mobile.model.CarData;
 import cl.dsoft.mobile.db.CargaCombustible;
+import cl.dsoft.mobile.db.InfoSincro;
 import cl.dsoft.mobile.db.MantencionBaseHecha;
 import cl.dsoft.mobile.db.MantencionUsuario;
 import cl.dsoft.mobile.db.MantencionUsuarioHecha;
@@ -74,11 +77,13 @@ public class RestFulWebservice extends Activity {
         
         setContentView(R.layout.rest_ful_webservice);  
         
-        final Button GetServerData = (Button) findViewById(R.id.GetServerData);
+        final Button btnByIdUsuario = (Button) findViewById(R.id.ByIdUsuario);
         
-        final Button PutServerData = (Button) findViewById(R.id.PutServerData);
+        final Button btnPutServerData = (Button) findViewById(R.id.PutServerData);
         
-        final Button PopulateDB = (Button) findViewById(R.id.PopulateDB);
+        final Button btnPopulateDB = (Button) findViewById(R.id.PopulateDB);
+        
+        final Button btnByIdRedSocial = (Button) findViewById(R.id.ByIdRedSocial);
         
         final TextView uiUpdate = (TextView) findViewById(R.id.output);
         final TextView jsonParsed = (TextView) findViewById(R.id.jsonParsed);
@@ -104,7 +109,7 @@ public class RestFulWebservice extends Activity {
 			e1.printStackTrace();
 		}
                  
-        GetServerData.setOnClickListener(new OnClickListener() {
+        btnByIdUsuario.setOnClickListener(new OnClickListener() {
             
 			@Override
 			public void onClick(View arg0) {
@@ -128,7 +133,31 @@ public class RestFulWebservice extends Activity {
 		        	int timeoutSocket;
 		        	HttpGet getRequest;
 		        	StatusLine statusLine;
+		        	String url;
+		        	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
+		        	ArrayList<InfoSincro> list_is;
 		        	
+		        	Long idUsuario = Long.decode(serverText.getText().toString());
+		        	
+        			copyDataBaseFile();
+        			
+        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
+        			
+        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
+		        	
+		        	// busco la ultima sincronizacion Server to Phone
+					listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
+					
+					listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(idUsuario)));
+					listParameters.add(new AbstractMap.SimpleEntry<String, String>("sentido", String.valueOf(InfoSincro.tipoSincro.PHONE_TO_SERVER.getCode())));
+
+					list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
+					
+					String strLastSyncDate = "1900-01-01";
+					
+					if (!list_is.isEmpty()) {
+						strLastSyncDate = list_is.get(0).getFecha();
+					}
 		        	
 		            HttpParams httpParameters = new BasicHttpParams();
 		            
@@ -137,7 +166,139 @@ public class RestFulWebservice extends Activity {
 		            timeoutSocket = 5000;
 		            HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 		            httpClient = new DefaultHttpClient(httpParameters);
-		            getRequest = new HttpGet(serverURL + serverText.getText());
+		            
+		            //getRequest = new HttpGet(serverURL + serverText.getText());
+		            getRequest = new HttpGet(serverURL + String.valueOf(idUsuario) + "/" + strLastSyncDate);
+		            
+		            getRequest.addHeader("accept", "application/xml");      	
+		        	
+		        	response = httpClient.execute(getRequest);
+		            statusLine = response.getStatusLine();
+		            
+		            if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+		            	
+		            	Serializer serializer;
+		            	CarData carData;
+		            	
+		            	Statement stmt;
+		            	
+		                ByteArrayOutputStream out = new ByteArrayOutputStream();
+		                response.getEntity().writeTo(out);
+		                out.close();
+		                responseString = out.toString();
+		                
+		                uiUpdate.setText(responseString);
+		                
+		                serializer = new Persister();
+		                
+		                
+	        			carData = serializer.read(CarData.class, responseString);
+	        			
+	        			jsonParsed.setText(carData.getUsuarios().toString());
+	        			
+	        			//System.out.println(carData.getUsuarios());
+	        				        			
+	        	    	stmt = conn.createStatement();
+	        			
+	        			stmt.executeQuery("PRAGMA foreign_keys = on;");
+	        			
+	        			stmt.close();
+	        			
+	        	    	conn.setAutoCommit(false);
+		        	    	
+		        	    carData.save(conn);
+		        	    
+						InfoSincro is = new InfoSincro();
+						
+						is.setSentido((byte) InfoSincro.tipoSincro.PHONE_TO_SERVER.getCode());
+						is.setUsuarioIdUsuario(idUsuario);
+						is.setFecha(new Date());
+						
+						is.insert(conn);		        	    
+		        	    
+		        	    conn.commit();
+		        	    	
+		        		conn.close();
+		        		
+		        		conn = null;
+		                
+		            } else{
+		                //Closes the connection.
+		                response.getEntity().getContent().close();
+		                throw new IOException(statusLine.getReasonPhrase());
+		            }
+		        } catch (ClientProtocolException e) {
+		            //TODO Handle problems..
+		        	e.printStackTrace();
+		        } catch (IOException e) {
+		            //TODO Handle problems..
+		        	e.printStackTrace();
+		        } catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CarException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		        finally {
+		        	if (conn != null) {
+		        		try {
+		        			conn.rollback();
+							conn.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		        	}
+		        }
+			}
+        });    
+         
+        btnByIdRedSocial.setOnClickListener(new OnClickListener() {
+            
+			@Override
+			public void onClick(View arg0) {
+				/*
+				// utilizando AsyncTask
+				// WebServer Request URL
+				String serverURL = "http://192.168.1.110:8080/cl.dsoft.carws/rest/todo/byIdUsuario/1/1900-01-01";
+				
+				// Use AsyncTask execute Method To Prevent ANR Problem
+		        new RequestTask().execute(serverURL);
+		        */
+		        HttpClient httpClient;
+		        HttpResponse response;
+		        String responseString = null;
+		        Connection conn = null;
+		        
+		        String serverURL = "http://ptt-studio.bounceme.net:8080/cl.dsoft.carws/rest/todo/byIdRedSocial/";
+		        
+		        try {
+		        	int timeoutConnection;
+		        	int timeoutSocket;
+		        	HttpGet getRequest;
+		        	StatusLine statusLine;
+		        	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
+		        	ArrayList<InfoSincro> list_is;
+		        	
+		        	String token = "1";
+		        	
+		        	Long idRedSocial = 1L;
+		        	
+		            HttpParams httpParameters = new BasicHttpParams();
+		            
+		            timeoutConnection = 3000;
+		            HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+		            timeoutSocket = 5000;
+		            HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+		            httpClient = new DefaultHttpClient(httpParameters);
+		            
+		            //getRequest = new HttpGet(serverURL + serverText.getText());
+		            getRequest = new HttpGet(serverURL + String.valueOf(idRedSocial) + "/" + token);
+		            
 		            getRequest.addHeader("accept", "application/xml");      	
 		        	
 		        	response = httpClient.execute(getRequest);
@@ -182,6 +343,17 @@ public class RestFulWebservice extends Activity {
 		        	    	
 		        	    carData.save(conn);
 		        	    
+		        	    if (!carData.getUsuarios().isEmpty()) {
+		        	    
+							InfoSincro is = new InfoSincro();
+							
+							is.setSentido((byte) InfoSincro.tipoSincro.PHONE_TO_SERVER.getCode());
+							is.setUsuarioIdUsuario(carData.getUsuarios().get(0).getId());
+							is.setFecha(new Date());
+							
+							is.insert(conn);		        	    
+		        	    }
+		        	    
 		        	    conn.commit();
 		        	    	
 		        		conn.close();
@@ -222,8 +394,8 @@ public class RestFulWebservice extends Activity {
 		        }
 			}
         });    
-         
-        PutServerData.setOnClickListener(new OnClickListener() {
+
+        btnPutServerData.setOnClickListener(new OnClickListener() {
             
 			@Override
 			public void onClick(View arg0) {
@@ -253,11 +425,8 @@ public class RestFulWebservice extends Activity {
 		        	StringEntity entity;
 		        	
 		        	long idUsuario;
-		        	String fechaModificacion, url;
+		        	String url;
 		        	
-		        	idUsuario = 2L;
-		        	fechaModificacion = "1900-01-01";
-
 		        	HttpParams httpParameters = new BasicHttpParams();
 		            timeoutConnection = 3000;
 		            HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
@@ -273,7 +442,26 @@ public class RestFulWebservice extends Activity {
         			
         	    	// conn.setAutoCommit(false);
         			
-        			carData = new CarData(conn, idUsuario, fechaModificacion);
+		        	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
+		        	ArrayList<InfoSincro> list_is;
+		        	
+		        	idUsuario = Long.decode(serverText.getText().toString());
+		        	
+		        	// busco la ultima sincronizacion Phone to Server
+					listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
+					
+					listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(idUsuario)));
+					listParameters.add(new AbstractMap.SimpleEntry<String, String>("sentido", String.valueOf(InfoSincro.tipoSincro.PHONE_TO_SERVER.getCode())));
+
+					list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
+					
+					String strLastSyncDate = "1900-01-01";
+					
+					if (!list_is.isEmpty()) {
+						strLastSyncDate = list_is.get(0).getFecha();
+					}
+        			
+        			carData = new CarData(conn, idUsuario, strLastSyncDate);
 	        	    
 	        	    // conn.commit();
 	        	    	
@@ -332,7 +520,7 @@ public class RestFulWebservice extends Activity {
 			}
         });
         
-        PopulateDB.setOnClickListener(new View.OnClickListener() {
+        btnPopulateDB.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -461,6 +649,7 @@ public class RestFulWebservice extends Activity {
 			    	rec.setKm(180000);
 			    	rec.setTitulo("titulo");
 			    	rec.setDescripcion("descripcion");
+			    	rec.setFecha("2014-09-18");
 			    	
 			    	rec.insert(conn);
 			    	

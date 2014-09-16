@@ -7,8 +7,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -30,11 +32,26 @@ public class InfoSincro {
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    in.id_info_sincro AS id," +
-        "    strftime('%Y-%m-%d %H:%M:%S', in.fecha) AS fecha," +
-        "    in.sentido AS sentido," +
-        "    in.usuario_id_usuario AS usuario_id_usuario" +
-        "    FROM info_sincro in";
+        "    isc.id_info_sincro AS id," +
+        "    strftime('%Y-%m-%d %H:%M:%S', isc.fecha) AS fecha," +
+        "    isc.sentido AS sentido," +
+        "    isc.usuario_id_usuario AS usuario_id_usuario" +
+        "    FROM info_sincro isc";
+
+    public enum tipoSincro {
+    	SERVER_TO_PHONE((byte) 2),
+    	PHONE_TO_SERVER((byte) 1);
+    	
+    	private byte code;
+    	 
+    	private tipoSincro(byte c) {
+    		code = c;
+    	}
+     
+    	public byte getCode() {
+    		return code;
+    	}
+    }
 
     public InfoSincro() {
         _id = null;
@@ -80,6 +97,26 @@ public class InfoSincro {
         this._fecha = _fecha;
     }
     /**
+    * @param _fecha the _fecha to set as seconds from January 1, 1970, 00:00:00 GMT
+    */
+   public void setFecha(long _timeStamp) {
+       Date d;
+       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+       d = new Date((long)_timeStamp*1000);
+
+       this._fecha = formatter.format(d);
+   }
+   /**
+   * @param _fecha the _fecha to set as Date
+   */
+  public void setFecha(Date _fecha) {
+      
+      SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+      this._fecha = formatter.format(_fecha);
+  }
+    /**
      * @param _sentido the _sentido to set
      */
     public void setSentido(Byte _sentido) {
@@ -107,7 +144,7 @@ public class InfoSincro {
         InfoSincro ret = null;
         
         String str_sql = _str_sql +
-            "  WHERE in." + p_key + " = " + p_value +
+            "  WHERE isc." + p_key + " = " + p_value +
             "  LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -185,10 +222,13 @@ public class InfoSincro {
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
                 if (p.getKey().equals("id_info_sincro")) {
-                    array_clauses.add("in.id_info_sincro = " + p.getValue());
+                    array_clauses.add("isc.id_info_sincro = " + p.getValue());
                 }
-                else if (p.getKey().equals("usuario_id_usuario")) {
-                    array_clauses.add("in.usuario_id_usuario = " + p.getValue());
+                else if (p.getKey().equals("sentido")) {
+                    array_clauses.add("isc.sentido = " + p.getValue());
+                }
+                else if (p.getKey().equals("id_usuario")) {
+                    array_clauses.add("isc.usuario_id_usuario = " + p.getValue());
                 }
                 else {
                     throw new UnsupportedParameter("Parametro no soportado: " + p.getKey());
