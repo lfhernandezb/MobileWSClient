@@ -44,6 +44,7 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import cl.dsoft.carws.mobile.model.CarData;
+import cl.dsoft.mobile.db.Autenticacion;
 import cl.dsoft.mobile.db.CargaCombustible;
 import cl.dsoft.mobile.db.InfoSincro;
 import cl.dsoft.mobile.db.MantencionBaseHecha;
@@ -136,27 +137,29 @@ public class RestFulWebservice extends Activity {
 		        	String url;
 		        	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
 		        	ArrayList<InfoSincro> list_is;
+		        	InfoSincro is = null;
 		        	
 		        	Long idUsuario = Long.decode(serverText.getText().toString());
 		        	
-        			copyDataBaseFile();
+        			//copyDataBaseFile();
         			
         			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
         			
         			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
 		        	
-		        	// busco la ultima sincronizacion Server to Phone
+		        	// busco el registro de sincronizacion Server to Phone
 					listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
 					
 					listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(idUsuario)));
-					listParameters.add(new AbstractMap.SimpleEntry<String, String>("sentido", String.valueOf(InfoSincro.tipoSincro.PHONE_TO_SERVER.getCode())));
+					listParameters.add(new AbstractMap.SimpleEntry<String, String>("sentido", String.valueOf(InfoSincro.tipoSincro.SERVER_TO_PHONE.getCode())));
 
 					list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
 					
 					String strLastSyncDate = "1900-01-01";
 					
 					if (!list_is.isEmpty()) {
-						strLastSyncDate = list_is.get(0).getFecha();
+						is = list_is.get(0);
+						strLastSyncDate = is.getFecha();
 					}
 		        	
 		            HttpParams httpParameters = new BasicHttpParams();
@@ -208,13 +211,24 @@ public class RestFulWebservice extends Activity {
 		        	    	
 		        	    carData.save(conn);
 		        	    
-						InfoSincro is = new InfoSincro();
-						
-						is.setSentido((byte) InfoSincro.tipoSincro.PHONE_TO_SERVER.getCode());
-						is.setUsuarioIdUsuario(idUsuario);
-						is.setFecha(new Date());
-						
-						is.insert(conn);		        	    
+		        	    if (!carData.getUsuarios().isEmpty()) {
+			        	    
+		        	    	if (is == null) {
+								is = new InfoSincro();
+								
+								is.setSentido((byte) InfoSincro.tipoSincro.SERVER_TO_PHONE.getCode());
+								is.setUsuarioIdUsuario(carData.getUsuarios().get(0).getId());
+								is.setFecha(new Date());
+								
+								is.insert(conn);
+								
+		        	    	}
+		        	    	else {
+		        	    		is.setFecha(new Date());
+		        	    		is.update(conn);
+		        	    		
+		        	    	}
+		        	    }
 		        	    
 		        	    conn.commit();
 		        	    	
@@ -263,7 +277,7 @@ public class RestFulWebservice extends Activity {
 			public void onClick(View arg0) {
 				/*
 				// utilizando AsyncTask
-				// WebServer Request URL
+				// WebServer Request URL 
 				String serverURL = "http://192.168.1.110:8080/cl.dsoft.carws/rest/todo/byIdUsuario/1/1900-01-01";
 				
 				// Use AsyncTask execute Method To Prevent ANR Problem
@@ -284,7 +298,7 @@ public class RestFulWebservice extends Activity {
 		        	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
 		        	ArrayList<InfoSincro> list_is;
 		        	
-		        	String token = "1";
+		        	String token = serverText.getText().toString();
 		        	
 		        	Long idRedSocial = 1L;
 		        	
@@ -327,7 +341,7 @@ public class RestFulWebservice extends Activity {
 	        			
 	        			//System.out.println(carData.getUsuarios());
 	        			
-	        			copyDataBaseFile();
+	        			//copyDataBaseFile();
 	        			
 	        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
 	        			
@@ -345,15 +359,94 @@ public class RestFulWebservice extends Activity {
 		        	    
 		        	    if (!carData.getUsuarios().isEmpty()) {
 		        	    
-							InfoSincro is = new InfoSincro();
+							InfoSincro is;
+							Usuario u = carData.getUsuarios().get(0);
 							
-							is.setSentido((byte) InfoSincro.tipoSincro.PHONE_TO_SERVER.getCode());
-							is.setUsuarioIdUsuario(carData.getUsuarios().get(0).getId());
-							is.setFecha(new Date());
+				        	// busco el registro de sincronizacion Server to Phone
+							listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
 							
-							is.insert(conn);		        	    
+							listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(u.getId())));
+							listParameters.add(new AbstractMap.SimpleEntry<String, String>("sentido", String.valueOf(InfoSincro.tipoSincro.SERVER_TO_PHONE.getCode())));
+
+							list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
+							
+							if (!list_is.isEmpty()) {
+								
+								is = list_is.get(0);
+								is.setFecha(new Date());
+								
+								is.update(conn);		        	    
+								
+							}
+							else {
+								
+								is = new InfoSincro();
+								
+								is.setSentido((byte) InfoSincro.tipoSincro.SERVER_TO_PHONE.getCode());
+								is.setUsuarioIdUsuario(u.getId());
+								is.setFecha(new Date());
+								
+								is.insert(conn);
+							}
+
+							
 		        	    }
-		        	    
+		        	    else {
+		        	    	// invoco servicio de creacion de usuario
+		        	    	Long idComuna = 1L;
+		        	    	/*
+				            HttpParams httpParameters = new BasicHttpParams();
+				            
+				            timeoutConnection = 3000;
+				            HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+				            timeoutSocket = 5000;
+				            HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+				            httpClient = new DefaultHttpClient(httpParameters);
+				            */
+		        	    	serverURL = "http://ptt-studio.bounceme.net:8080/cl.dsoft.carws/rest/todo/createUser/";
+		        	    	
+				            //getRequest = new HttpGet(serverURL + serverText.getText());
+				            getRequest = new HttpGet(serverURL + String.valueOf(idRedSocial) + "/" + token + "/" + String.valueOf(idComuna));
+				            
+				            getRequest.addHeader("accept", "application/xml");      	
+				        	
+				        	response = httpClient.execute(getRequest);
+				            statusLine = response.getStatusLine();
+				            
+				            if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+				            	/*
+				            	Serializer serializer;
+				            	CarData carData;
+				            	String url;
+				            	Statement stmt;
+				            	*/
+				                out = new ByteArrayOutputStream();
+				                response.getEntity().writeTo(out);
+				                out.close();
+				                responseString = out.toString();
+				                
+				                //uiUpdate.setText(responseString);
+				                
+				                serializer = new Persister();
+				                
+				                
+			        			carData = serializer.read(CarData.class, responseString);
+			        			
+			        			Usuario u = carData.getUsuarios().get(0);
+			        			
+			        			u.insert(conn);
+			        			
+			        			Autenticacion a = new Autenticacion();
+			        			
+			        			a.setFecha(new Date());
+			        			a.setIdRedSocial(idRedSocial);
+			        			a.setToken(token);
+			        			a.setIdUsuario(u.getId());
+			        			
+			        			a.insert(conn);
+				            }
+		        	    	
+		        	    }
 		        	    conn.commit();
 		        	    	
 		        		conn.close();
@@ -462,6 +555,27 @@ public class RestFulWebservice extends Activity {
 					}
         			
         			carData = new CarData(conn, idUsuario, strLastSyncDate);
+        			
+        			InfoSincro is = null;
+        			
+					if (!list_is.isEmpty()) {
+						
+						is = list_is.get(0);
+						is.setFecha(new Date());
+						
+						is.update(conn);		        	    
+						
+					}
+					else {
+						
+						is = new InfoSincro();
+						
+						is.setSentido((byte) InfoSincro.tipoSincro.PHONE_TO_SERVER.getCode());
+						is.setUsuarioIdUsuario(idUsuario);
+						is.setFecha(new Date());
+						
+						is.insert(conn);
+					}
 	        	    
 	        	    // conn.commit();
 	        	    	

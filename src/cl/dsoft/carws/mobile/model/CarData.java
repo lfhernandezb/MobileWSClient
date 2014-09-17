@@ -266,59 +266,71 @@ public class CarData {
 	
 	public void save(java.sql.Connection conn) throws SQLException {
 		
-		for (cl.dsoft.mobile.db.Pais pais : this.getPaises()) {
-			
-			pais.save(conn);
+		if (this.getPaises() != null) {
+			for (cl.dsoft.mobile.db.Pais pais : this.getPaises()) {
+				
+				pais.save(conn);
+			}
 		}
-
-		for (cl.dsoft.mobile.db.Region region : this.getRegiones()) {
-			
-			region.save(conn);
+		if (this.getRegiones() != null) {
+			for (cl.dsoft.mobile.db.Region region : this.getRegiones()) {
+				
+				region.save(conn);
+			}
 		}
-
-		for (cl.dsoft.mobile.db.Comuna comuna : this.getComunas()) {
-			
-			comuna.save(conn);
+		if (this.getComunas() != null) {
+			for (cl.dsoft.mobile.db.Comuna comuna : this.getComunas()) {
+				
+				comuna.save(conn);
+			}
 		}
-
-		for (cl.dsoft.mobile.db.Usuario usuario : this.getUsuarios()) {
-			
-			usuario.save(conn);
+		if (this.getUsuarios() != null) {
+			for (cl.dsoft.mobile.db.Usuario usuario : this.getUsuarios()) {
+				
+				usuario.save(conn);
+			}
 		}
-
-		for (cl.dsoft.mobile.db.Vehiculo vehiculo : this.getVehiculos()) {
-			
-			vehiculo.save(conn);
+		if (this.getVehiculos() != null) {
+			for (cl.dsoft.mobile.db.Vehiculo vehiculo : this.getVehiculos()) {
+				
+				vehiculo.save(conn);
+			}
 		}
-	
-		for (cl.dsoft.mobile.db.MantencionBaseHecha mantencionBaseHecha : this.getMantencionBaseHechas()) {
-			
-			mantencionBaseHecha.save(conn);
+		if (this.getMantencionBaseHechas() != null) {
+			for (cl.dsoft.mobile.db.MantencionBaseHecha mantencionBaseHecha : this.getMantencionBaseHechas()) {
+				
+				mantencionBaseHecha.save(conn);
+			}
 		}
-
-		for (cl.dsoft.mobile.db.MantencionUsuario mantencionUsuario : this.getMantencionUsuarios()) {
-			
-			mantencionUsuario.save(conn);
+		if (this.getMantencionUsuarios() != null) {
+			for (cl.dsoft.mobile.db.MantencionUsuario mantencionUsuario : this.getMantencionUsuarios()) {
+				
+				mantencionUsuario.save(conn);
+			}
 		}
-
-		for (cl.dsoft.mobile.db.MantencionUsuarioHecha mantencionUsuarioHecha : this.getMantencionUsuarioHechas()) {
-			
-			mantencionUsuarioHecha.save(conn);
+		if (this.getMantencionUsuarioHechas() != null) {
+			for (cl.dsoft.mobile.db.MantencionUsuarioHecha mantencionUsuarioHecha : this.getMantencionUsuarioHechas()) {
+				
+				mantencionUsuarioHecha.save(conn);
+			}
 		}
-
-		for (cl.dsoft.mobile.db.Recordatorio recordatorio : this.getRecordatorios()) {
-			
-			recordatorio.save(conn);
+		if (this.getRecordatorios() != null) {
+			for (cl.dsoft.mobile.db.Recordatorio recordatorio : this.getRecordatorios()) {
+				
+				recordatorio.save(conn);
+			}
 		}
-
-		for (cl.dsoft.mobile.db.CargaCombustible rendimiento : this.getCargaCombustibles()) {
-			
-			rendimiento.save(conn);
+		if (this.getCargaCombustibles() != null) {
+			for (cl.dsoft.mobile.db.CargaCombustible rendimiento : this.getCargaCombustibles()) {
+				
+				rendimiento.save(conn);
+			}
 		}
-
-		for (cl.dsoft.mobile.db.Reparacion reparacion : this.getReparaciones()) {
-			
-			reparacion.save(conn);
+		if (this.getReparaciones() != null) {
+			for (cl.dsoft.mobile.db.Reparacion reparacion : this.getReparaciones()) {
+				
+				reparacion.save(conn);
+			}
 		}
 	}
 }
