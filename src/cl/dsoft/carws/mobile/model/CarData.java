@@ -10,6 +10,7 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Order;
 import org.simpleframework.xml.Root;
 
+import cl.dsoft.mobile.db.Autenticacion;
 import cl.dsoft.mobile.db.CargaCombustible;
 import cl.dsoft.mobile.db.Comuna;
 import cl.dsoft.mobile.db.MantencionBaseHecha;
@@ -24,34 +25,36 @@ import cl.dsoft.mobile.db.Usuario;
 import cl.dsoft.mobile.db.Vehiculo;
 
 @Root(name = "CarData")
-@Order(elements={"paises", "regiones", "comunas", "usuarios", "vehiculos", "mantencionBaseHechas", "mantencionUsuarios", "mantencionUsuarioHechas", "recordatorios", "cargaCombustibles", "reparaciones"})
+@Order(elements={"paises", "regiones", "comunas", "usuarios", "autenticaciones", "vehiculos", "mantencionBaseHechas", "mantencionUsuarios", "mantencionUsuarioHechas", "recordatorios", "cargaCombustibles", "reparaciones"})
 //If you want you can define the order in which the fields are written
 //Optional
 //@Order(elements = { "usuarios", "vehiculos", "mantencionUsuarios", "mantencionUsuarioHechas", "recordatorios", "rendimientos", "reparaciones" })
 public class CarData {
 
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.Pais> paises;
+	protected ArrayList<Pais> paises;
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.Region> regiones;
+	protected ArrayList<Region> regiones;
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.Comuna> comunas;
+	protected ArrayList<Comuna> comunas;
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.Usuario> usuarios;
+	protected ArrayList<Usuario> usuarios;
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.Vehiculo> vehiculos;
+	protected ArrayList<Autenticacion> autenticaciones;
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.MantencionBaseHecha> mantencionBaseHechas;
+	protected ArrayList<Vehiculo> vehiculos;
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.MantencionUsuario> mantencionUsuarios;
+	protected ArrayList<MantencionBaseHecha> mantencionBaseHechas;
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.MantencionUsuarioHecha> mantencionUsuarioHechas;
+	protected ArrayList<MantencionUsuario> mantencionUsuarios;
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.Recordatorio> recordatorios;
+	protected ArrayList<MantencionUsuarioHecha> mantencionUsuarioHechas;
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.CargaCombustible> cargaCombustibles;
+	protected ArrayList<Recordatorio> recordatorios;
 	@ElementList(required=false)
-	protected ArrayList<cl.dsoft.mobile.db.Reparacion> reparaciones;
+	protected ArrayList<CargaCombustible> cargaCombustibles;
+	@ElementList(required=false)
+	protected ArrayList<Reparacion> reparaciones;
 	
 	public CarData() {
 
@@ -59,6 +62,7 @@ public class CarData {
 		this.regiones = null;
 		this.comunas = null;
 		this.usuarios = null;
+		this.autenticaciones = null;
 		this.vehiculos = null;
 		this.mantencionBaseHechas = null;
 		this.mantencionUsuarios = null;
@@ -98,6 +102,8 @@ public class CarData {
 			
 			this.usuarios = Usuario.seek(conn, listParameters, null, null, 0, 1);
 			
+			this.autenticaciones = Autenticacion.seek(conn, listParameters, null, null, 0, 1);
+			
 			this.vehiculos = Vehiculo.seek(conn, listParameters, null, null, 0, 1);
 			
 			
@@ -111,57 +117,71 @@ public class CarData {
 	/**
 	 * @return the paises
 	 */
-	public ArrayList<cl.dsoft.mobile.db.Pais> getPaises() {
+	public ArrayList<Pais> getPaises() {
 		return paises;
 	}
 
 	/**
 	 * @param paises the paises to set
 	 */
-	public void setPaises(ArrayList<cl.dsoft.mobile.db.Pais> paises) {
+	public void setPaises(ArrayList<Pais> paises) {
 		this.paises = paises;
 	}
 
 	/**
 	 * @return the regiones
 	 */
-	public ArrayList<cl.dsoft.mobile.db.Region> getRegiones() {
+	public ArrayList<Region> getRegiones() {
 		return regiones;
 	}
 
 	/**
 	 * @param regiones the regiones to set
 	 */
-	public void setRegiones(ArrayList<cl.dsoft.mobile.db.Region> regiones) {
+	public void setRegiones(ArrayList<Region> regiones) {
 		this.regiones = regiones;
 	}
 
 	/**
 	 * @return the comunas
 	 */
-	public ArrayList<cl.dsoft.mobile.db.Comuna> getComunas() {
+	public ArrayList<Comuna> getComunas() {
 		return comunas;
 	}
 
 	/**
 	 * @param comunas the comunas to set
 	 */
-	public void setComunas(ArrayList<cl.dsoft.mobile.db.Comuna> comunas) {
+	public void setComunas(ArrayList<Comuna> comunas) {
 		this.comunas = comunas;
 	}
 
 	/**
 	 * @return the usuarios
 	 */
-	public ArrayList<cl.dsoft.mobile.db.Usuario> getUsuarios() {
+	public ArrayList<Usuario> getUsuarios() {
 		return usuarios;
 	}
 
 	/**
 	 * @param usuarios the usuarios to set
 	 */
-	public void setUsuarios(ArrayList<cl.dsoft.mobile.db.Usuario> usuarios) {
+	public void setUsuarios(ArrayList<Usuario> usuarios) {
 		this.usuarios = usuarios;
+	}
+
+	/**
+	 * @return the autenticaciones
+	 */
+	public ArrayList<Autenticacion> getAutenticaciones() {
+		return autenticaciones;
+	}
+
+	/**
+	 * @param autenticaciones the autenticaciones to set
+	 */
+	public void setAutenticaciones(ArrayList<Autenticacion> autenticaciones) {
+		this.autenticaciones = autenticaciones;
 	}
 
 	/**
@@ -267,67 +287,73 @@ public class CarData {
 	public void save(java.sql.Connection conn) throws SQLException {
 		
 		if (this.getPaises() != null) {
-			for (cl.dsoft.mobile.db.Pais pais : this.getPaises()) {
+			for (Pais pais : this.getPaises()) {
 				
 				pais.save(conn);
 			}
 		}
 		if (this.getRegiones() != null) {
-			for (cl.dsoft.mobile.db.Region region : this.getRegiones()) {
+			for (Region region : this.getRegiones()) {
 				
 				region.save(conn);
 			}
 		}
 		if (this.getComunas() != null) {
-			for (cl.dsoft.mobile.db.Comuna comuna : this.getComunas()) {
+			for (Comuna comuna : this.getComunas()) {
 				
 				comuna.save(conn);
 			}
 		}
 		if (this.getUsuarios() != null) {
-			for (cl.dsoft.mobile.db.Usuario usuario : this.getUsuarios()) {
+			for (Usuario usuario : this.getUsuarios()) {
 				
 				usuario.save(conn);
 			}
 		}
+		if (this.getAutenticaciones() != null) {
+			for (Autenticacion autenticacion : this.getAutenticaciones()) {
+				
+				autenticacion.save(conn);
+			}
+		}
 		if (this.getVehiculos() != null) {
-			for (cl.dsoft.mobile.db.Vehiculo vehiculo : this.getVehiculos()) {
+			for (Vehiculo vehiculo : this.getVehiculos()) {
 				
 				vehiculo.save(conn);
 			}
 		}
 		if (this.getMantencionBaseHechas() != null) {
-			for (cl.dsoft.mobile.db.MantencionBaseHecha mantencionBaseHecha : this.getMantencionBaseHechas()) {
+			for (MantencionBaseHecha mantencionBaseHecha : this.getMantencionBaseHechas()) {
 				
 				mantencionBaseHecha.save(conn);
 			}
 		}
 		if (this.getMantencionUsuarios() != null) {
-			for (cl.dsoft.mobile.db.MantencionUsuario mantencionUsuario : this.getMantencionUsuarios()) {
+			for (MantencionUsuario mantencionUsuario : this.getMantencionUsuarios()) {
 				
 				mantencionUsuario.save(conn);
 			}
 		}
 		if (this.getMantencionUsuarioHechas() != null) {
-			for (cl.dsoft.mobile.db.MantencionUsuarioHecha mantencionUsuarioHecha : this.getMantencionUsuarioHechas()) {
+			for (MantencionUsuarioHecha mantencionUsuarioHecha : this.getMantencionUsuarioHechas()) {
 				
 				mantencionUsuarioHecha.save(conn);
 			}
 		}
 		if (this.getRecordatorios() != null) {
-			for (cl.dsoft.mobile.db.Recordatorio recordatorio : this.getRecordatorios()) {
+			for (Recordatorio recordatorio : this.getRecordatorios()) {
 				
 				recordatorio.save(conn);
 			}
 		}
 		if (this.getCargaCombustibles() != null) {
-			for (cl.dsoft.mobile.db.CargaCombustible rendimiento : this.getCargaCombustibles()) {
+			for (CargaCombustible rendimiento : this.getCargaCombustibles()) {
 				
 				rendimiento.save(conn);
 			}
 		}
 		if (this.getReparaciones() != null) {
-			for (cl.dsoft.mobile.db.Reparacion reparacion : this.getReparaciones()) {
+			for (Reparacion reparacion : this.getReparaciones()) {
 				
 				reparacion.save(conn);
 			}

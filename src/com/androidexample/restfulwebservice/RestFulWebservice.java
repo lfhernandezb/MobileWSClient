@@ -171,7 +171,7 @@ public class RestFulWebservice extends Activity {
 		            httpClient = new DefaultHttpClient(httpParameters);
 		            
 		            //getRequest = new HttpGet(serverURL + serverText.getText());
-		            getRequest = new HttpGet(serverURL + String.valueOf(idUsuario) + "/" + strLastSyncDate);
+		            getRequest = new HttpGet(serverURL + String.valueOf(idUsuario) + "/" + URLEncoder.encode(strLastSyncDate));
 		            
 		            getRequest.addHeader("accept", "application/xml");      	
 		        	
