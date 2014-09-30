@@ -249,6 +249,9 @@ public class Autenticacion {
                 else if (p.getKey().equals("id_usuario")) {
                     array_clauses.add("au.id_usuario = " + p.getValue());
                 }
+                else if (p.getKey().equals("token")) {
+                    array_clauses.add("au.token = '" + p.getValue() + "'");
+                }
                 else if (p.getKey().equals("mas reciente")) {
                     array_clauses.add("au.fecha_modificacion > datetime('" + p.getValue() + "', 'localtime')");
                 }
