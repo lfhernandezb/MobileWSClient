@@ -347,7 +347,7 @@ public class Vehiculo {
     }
 
     
-    public static ArrayList<Vehiculo> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws UnsupportedParameter, SQLException {
+    public static ArrayList<Vehiculo> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws UnsupportedParameterException, SQLException {
         Statement stmt = null;
         ResultSet rs = null;
         String str_sql;
@@ -394,7 +394,7 @@ public class Vehiculo {
                     array_clauses.add("ve.borrado = 'true'");
                 }
                 else {
-                    throw new UnsupportedParameter("Parametro no soportado: " + p.getKey());
+                    throw new UnsupportedParameterException("Parametro no soportado: " + p.getKey());
                 }
             }
                                 
@@ -442,7 +442,7 @@ public class Vehiculo {
             
             throw ex;
         }
-        catch (UnsupportedParameter ex) {
+        catch (UnsupportedParameterException ex) {
             throw ex;
         }
         finally {
@@ -889,109 +889,160 @@ public class Vehiculo {
 			   "]";
     }
 
-    public ArrayList<MantencionBaseHecha> getMantencionesBasePendientes(Connection p_conn) throws SQLException, UnsupportedParameter, ParseException {
+	private MantencionBaseHecha getMantencionBasePendiente(Connection conn, MantencionBase mb) throws UnsupportedParameter, SQLException, ParseException
+	{
+		MantencionBaseHecha mbh = null;
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Integer n;
+        Boolean bFound = false;
+        ArrayList<AbstractMap.SimpleEntry<String, String>> parametros;
+        ArrayList<MantencionBaseHecha> list_mbh;
+    	Integer kmInicial;
+    	Date dInicial, dFinal;
+    	DateTime dtInicial, dtFinal;
+        
+        parametros = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
+        
+		// encuentro ultima mantencion hecha de este tipo
+		parametros.clear();
+		
+		parametros.add(new AbstractMap.SimpleEntry<String, String>("id_mantencion_base", String.valueOf(mb.getId())));
+		
+		list_mbh = MantencionBaseHecha.seek(conn, parametros, "fecha", "DESC", 0, 1);		
+			
+		if (mb.getDependeKm() && mb.getKmEntreMantenciones() != null && mb.getKmEntreMantenciones() > 0) {
+			
+			kmInicial = 0;
+			
+			if (list_mbh.size() > 0) {
+    			
+    			kmInicial = list_mbh.get(0).getKm();
+    		}
+
+    		n = (this.getKm() - kmInicial) / mb.getKmEntreMantenciones();
+    		
+    		if (n > 0) {
+    			// hay mantencion pendiente, o bien no la ha informado
+    			mbh = new MantencionBaseHecha();
+    			
+    			mbh.setIdMantencionBase(mb.getId());
+    			mbh.setIdVehiculo(this.getIdVehiculo());
+    			mbh.setIdUsuario(this.getIdUsuario());
+
+    			mbh.setKm(kmInicial + n * mb.getKmEntreMantenciones());
+    			//mbh.setFecha(formatter.format(new Date()));
+    			
+    			bFound = true;
+    		}
+		}
+
+		if (!bFound && mb.getMesesEntreMantenciones() != null && mb.getMesesEntreMantenciones() > 0) {
+			
+	        formatter = new SimpleDateFormat("yyyy-MM-dd");
+    		
+			dInicial = formatter.parse(this.getAnio().toString() + "-01-01"); // anio de compra
+			dFinal = new Date(); // now
+			    			
+			if (list_mbh.size() > 0) {
+    			
+				dInicial = list_mbh.get(0).getFechaAsDate();
+    		}
+			
+			dtInicial = new DateTime(dInicial);
+			dtFinal = new DateTime(dFinal);
+			
+			Months d = Months.monthsBetween(dtInicial, dtFinal);
+    		
+    		n = d.getMonths() / mb.getMesesEntreMantenciones();
+    		
+    		if (n > 0) {
+    			// hay mantencion pendiente, o bien no la ha informado
+    			mbh = new MantencionBaseHecha();
+    			
+    			mbh.setIdMantencionBase(mb.getId());
+    			mbh.setIdVehiculo(this.getIdVehiculo());
+    			mbh.setIdUsuario(this.getIdUsuario());
+
+    			mbh.setFecha(dtInicial.plusMonths(n * mb.getMesesEntreMantenciones()).toDate());
+    			
+    			bFound = true;
+    		}
+		}
+		
+		return mbh;
+		
+	}
+
+    public ArrayList<MantencionBaseHecha> getMantencionesBasePendientes(Connection conn) throws SQLException, UnsupportedParameter, ParseException {
     	
     	ArrayList<MantencionBaseHecha> ret;
     	ArrayList<MantencionBase> list_mb;
     	ArrayList<AbstractMap.SimpleEntry<String, String>> parametros;
-    	Integer kmInicial;
-    	Date dInicial, dFinal;
-    	DateTime dtInicial, dtFinal;
     	String traccion, combustible;
     	
-    	traccion = Traccion.getById(p_conn, this.getIdTraccion().toString()).getDescripcion();
-    	combustible = Combustible.getById(p_conn, this.getIdCombustible().toString()).getDescripcion();
+    	traccion = Traccion.getById(conn, this.getIdTraccion().toString()).getDescripcion();
+    	combustible = Combustible.getById(conn, this.getIdCombustible().toString()).getDescripcion();
     	
     	parametros = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
     	
     	ret = new ArrayList<MantencionBaseHecha>();
     	
+    	// busco primeramente los cambios...
     	parametros.add(new AbstractMap.SimpleEntry<String, String>("traccion", traccion));
     	parametros.add(new AbstractMap.SimpleEntry<String, String>("combustible", combustible));
+    	parametros.add(new AbstractMap.SimpleEntry<String, String>("cambio", null));
     	
-    	list_mb = MantencionBase.seek(p_conn, parametros, null, null, 0, 10000);
+    	list_mb = MantencionBase.seek(conn, parametros, null, null, 0, 10000);
     	
     	for (MantencionBase mb : list_mb) {
     		
-    		ArrayList<MantencionBaseHecha> list_mbh;
-    		MantencionBaseHecha mbh; // = new MantencionBaseHecha();
-    		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    		Integer n;
-            Boolean bFound = false;
-            
-    		// encuentro ultima mantencion hecha de este tipo
-    		parametros.clear();
-    		
-    		parametros.add(new AbstractMap.SimpleEntry<String, String>("id_mantencion_base", mb.getId().toString()));
-    		
-    		list_mbh = MantencionBaseHecha.seek(p_conn, parametros, "fecha", "DESC", 0, 1);
-    		
-			mbh = new MantencionBaseHecha();
-			
-			mbh.setIdMantencionBase(mb.getId());
-			mbh.setIdVehiculo(this.getIdVehiculo());
-			mbh.setIdUsuario(this.getIdUsuario());
-    		
-    			
-    		if (mb.getDependeKm() && mb.getKmEntreMantenciones() != null && mb.getKmEntreMantenciones() > 0) {
-    			
-    			kmInicial = 0;
-    			
-    			if (list_mbh.size() > 0) {
-        			
-        			kmInicial = list_mbh.get(0).getKm();
-        		}
+    		MantencionBaseHecha mbh = getMantencionBasePendiente(conn, mb);
 
-	    		n = (this.getKm() - kmInicial) / mb.getKmEntreMantenciones();
-	    		
-	    		if (n > 0) {
-	    			// hay mantencion pendiente, o bien no la ha informado
-	    			mbh.setKm(kmInicial + n * mb.getKmEntreMantenciones());
-	    			//mbh.setFecha(formatter.format(new Date()));
-	    			
-	    			ret.add(mbh);
-	    			
-	    			bFound = true;
-	    		}
+    		if (mbh == null) {
+    			// no hay cambio pendiente... hay revision asociada?
+    			CambioRevision cr = CambioRevision.getByIdCambio(conn, String.valueOf(mb.getId()));
+    			
+    			System.out.println("cr " + cr.toString());
+    			
+    			if (cr != null) {
+    				if (cr.getIdRevision() != 0) {
+    					MantencionBase mbb = MantencionBase.getById(conn, String.valueOf(cr.getIdRevision()));
+    					
+    					System.out.println("mbb " + mbb.toString());
+    					
+    					mbh = getMantencionBasePendiente(conn, mbb);
+    				}
+    			}
     		}
-
-    		if (!bFound && mb.getMesesEntreMantenciones() != null && mb.getMesesEntreMantenciones() > 0) {
-    			
-    	        formatter = new SimpleDateFormat("yyyy-MM-dd");
-        		
-    			dInicial = formatter.parse(this.getAnio().toString() + "-01-01"); // anio de compra
-    			dFinal = new Date(); // now
-    			    			
-    			if (list_mbh.size() > 0) {
-        			
-    				dInicial = list_mbh.get(0).getFechaAsDate();
-        		}
-    			
-    			dtInicial = new DateTime(dInicial);
-    			dtFinal = new DateTime(dFinal);
-    			
-    			Months d = Months.monthsBetween(dtInicial, dtFinal);
-	    		
-	    		n = d.getMonths() / mb.getMesesEntreMantenciones();
-	    		
-	    		if (n > 0) {
-	    			// hay mantencion pendiente, o bien no la ha informado
-	    			mbh.setFecha(dtInicial.plusMonths(n * mb.getMesesEntreMantenciones()).toDate());
-	    			
-	    			ret.add(mbh);
-	    			
-	    			bFound = true;
-	    		}
+    		
+    		if (mbh != null) {
+    			ret.add(mbh);
     		}
-
-    			
-    		
-
     		
     		
-    	}
+    	} // end for
     	
-		return ret;
+    	// ahora busco las revisiones que no tienen cambio asociado
+    	
+    	parametros.clear();
+    	
+    	parametros.add(new AbstractMap.SimpleEntry<String, String>("traccion", traccion));
+    	parametros.add(new AbstractMap.SimpleEntry<String, String>("combustible", combustible));
+    	parametros.add(new AbstractMap.SimpleEntry<String, String>("solo revision", null));
+    	
+    	list_mb = MantencionBase.seek(conn, parametros, null, null, 0, 10000);
+    	
+    	for (MantencionBase mb : list_mb) {
+    		
+    		MantencionBaseHecha mbh = getMantencionBasePendiente(conn, mb);
+
+    		if (mbh != null) {
+    			ret.add(mbh);
+    		}
+    		
+    	} // end for
+
+    	return ret;
     	
     }
 

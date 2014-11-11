@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +53,7 @@ import cl.dsoft.mobile.db.MantencionUsuario;
 import cl.dsoft.mobile.db.MantencionUsuarioHecha;
 import cl.dsoft.mobile.db.Recordatorio;
 import cl.dsoft.mobile.db.Reparacion;
+import cl.dsoft.mobile.db.UnsupportedParameter;
 import cl.dsoft.mobile.db.Usuario;
 import cl.dsoft.mobile.db.Vehiculo;
 import android.os.AsyncTask;
@@ -142,18 +144,18 @@ public class RestFulWebservice extends Activity {
 		        	Long idUsuario = Long.decode(serverText.getText().toString());
 		        	
         			//copyDataBaseFile();
-        			
-        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
-        			
-        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
-		        	
+        					        	
 		        	// busco el registro de sincronizacion Server to Phone
 					listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
 					
 					listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(idUsuario)));
 					listParameters.add(new AbstractMap.SimpleEntry<String, String>("sentido", String.valueOf(InfoSincro.tipoSincro.SERVER_TO_PHONE.getCode())));
 
-					list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
+        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
+        			
+        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());	        			
+
+        			list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
 					
 					String strLastSyncDate = "1900-01-01";
 					
@@ -194,13 +196,12 @@ public class RestFulWebservice extends Activity {
 		                
 		                serializer = new Persister();
 		                
-		                
 	        			carData = serializer.read(CarData.class, responseString);
 	        			
 	        			jsonParsed.setText(carData.getUsuarios().toString());
 	        			
 	        			//System.out.println(carData.getUsuarios());
-	        				        			
+	        				        				        			
 	        	    	stmt = conn.createStatement();
 	        			
 	        			stmt.executeQuery("PRAGMA foreign_keys = on;");
@@ -231,16 +232,17 @@ public class RestFulWebservice extends Activity {
 		        	    }
 		        	    
 		        	    conn.commit();
-		        	    	
-		        		conn.close();
-		        		
-		        		conn = null;
-		                
+		        	    			                
 		            } else{
 		                //Closes the connection.
 		                response.getEntity().getContent().close();
 		                throw new IOException(statusLine.getReasonPhrase());
 		            }
+		            
+	        		conn.close();
+	        		
+	        		conn = null;
+
 		        } catch (ClientProtocolException e) {
 		            //TODO Handle problems..
 		        	e.printStackTrace();
@@ -259,8 +261,21 @@ public class RestFulWebservice extends Activity {
 				}
 		        finally {
 		        	if (conn != null) {
-		        		try {
-		        			conn.rollback();
+	        			try {
+							if (!conn.getAutoCommit()) {
+								try {
+									conn.rollback();
+								} catch (SQLException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+	        			
+						try {
 							conn.close();
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
@@ -268,6 +283,8 @@ public class RestFulWebservice extends Activity {
 						}
 		        	}
 		        }
+		        
+		        System.gc();
 			}
         });    
          
@@ -342,56 +359,10 @@ public class RestFulWebservice extends Activity {
 	        			//System.out.println(carData.getUsuarios());
 	        			
 	        			//copyDataBaseFile();
-	        			
-	        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
-	        			
-	        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
-	        			
-	        	    	stmt = conn.createStatement();
-	        			
-	        			stmt.executeQuery("PRAGMA foreign_keys = on;");
-	        			
-	        			stmt.close();
-	        			
-	        	    	conn.setAutoCommit(false);
-		        	    	
-		        	    carData.save(conn);
+	        					        	    	
+		        	    //carData.save(conn);
 		        	    
-		        	    if (!carData.getUsuarios().isEmpty()) {
-		        	    
-							InfoSincro is;
-							Usuario u = carData.getUsuarios().get(0);
-							
-				        	// busco el registro de sincronizacion Server to Phone
-							listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
-							
-							listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(u.getId())));
-							listParameters.add(new AbstractMap.SimpleEntry<String, String>("sentido", String.valueOf(InfoSincro.tipoSincro.SERVER_TO_PHONE.getCode())));
-
-							list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
-							
-							if (!list_is.isEmpty()) {
-								
-								is = list_is.get(0);
-								is.setFecha(new Date());
-								
-								is.update(conn);		        	    
-								
-							}
-							else {
-								
-								is = new InfoSincro();
-								
-								is.setSentido((byte) InfoSincro.tipoSincro.SERVER_TO_PHONE.getCode());
-								is.setUsuarioIdUsuario(u.getId());
-								is.setFecha(new Date());
-								
-								is.insert(conn);
-							}
-
-							
-		        	    }
-		        	    else {
+		        	    if (carData.getUsuarios().isEmpty()) {
 		        	    	// invoco servicio de creacion de usuario
 		        	    	Long idComuna = 1L;
 		        	    	/*
@@ -432,32 +403,71 @@ public class RestFulWebservice extends Activity {
 				                
 			        			carData = serializer.read(CarData.class, responseString);
 			        			
-			        			Usuario u = carData.getUsuarios().get(0);
-			        			
-			        			u.insert(conn);
-			        			
-			        			Autenticacion a = new Autenticacion();
-			        			
-			        			a.setFecha(new Date());
-			        			a.setIdRedSocial(idRedSocial);
-			        			a.setToken(token);
-			        			a.setIdUsuario(u.getId());
-			        			
-			        			a.insert(conn);
+				            }
+				            else {
+				            	response.getEntity().getContent().close();
+				            	throw new IOException(statusLine.getReasonPhrase());
 				            }
 		        	    	
 		        	    }
+		        	    
+	        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
+	        			
+	        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
+	        			
+	        	    	stmt = conn.createStatement();
+	        			
+	        			stmt.executeQuery("PRAGMA foreign_keys = on;");
+	        			
+	        			stmt.close();
+	        			
+	        	    	conn.setAutoCommit(false);
+
+	        	    	carData.save(conn);
+		        	    
+		        	    Usuario u = carData.getUsuarios().get(0);
+		        	    
+						InfoSincro is;
+						
+			        	// busco el registro de sincronizacion Server to Phone
+						listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
+						
+						listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(u.getId())));
+						listParameters.add(new AbstractMap.SimpleEntry<String, String>("sentido", String.valueOf(InfoSincro.tipoSincro.SERVER_TO_PHONE.getCode())));
+
+						list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
+						
+						if (!list_is.isEmpty()) {
+							
+							is = list_is.get(0);
+							is.setFecha(new Date());
+							
+							is.update(conn);		        	    
+							
+						}
+						else {
+							
+							is = new InfoSincro();
+							
+							is.setSentido((byte) InfoSincro.tipoSincro.SERVER_TO_PHONE.getCode());
+							is.setUsuarioIdUsuario(u.getId());
+							is.setFecha(new Date());
+							
+							is.insert(conn);
+						}
+
 		        	    conn.commit();
-		        	    	
-		        		conn.close();
-		        		
-		        		conn = null;
-		                
+		        	    			                
 		            } else{
 		                //Closes the connection.
 		                response.getEntity().getContent().close();
 		                throw new IOException(statusLine.getReasonPhrase());
 		            }
+		            
+	        		conn.close();
+	        		
+	        		conn = null;
+		            
 		        } catch (ClientProtocolException e) {
 		            //TODO Handle problems..
 		        	e.printStackTrace();
@@ -476,8 +486,21 @@ public class RestFulWebservice extends Activity {
 				}
 		        finally {
 		        	if (conn != null) {
-		        		try {
-		        			conn.rollback();
+	        			try {
+							if (!conn.getAutoCommit()) {
+								try {
+									conn.rollback();
+								} catch (SQLException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+	        			
+						try {
 							conn.close();
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
@@ -485,7 +508,10 @@ public class RestFulWebservice extends Activity {
 						}
 		        	}
 		        }
+		        
+		        System.gc();
 			}
+			
         });    
 
         btnPutServerData.setOnClickListener(new OnClickListener() {
@@ -528,11 +554,7 @@ public class RestFulWebservice extends Activity {
 		            httpClient = new DefaultHttpClient(httpParameters);
 		            putRequest = new HttpPut(serverURL);
 		            putRequest.addHeader("content-type", "application/xml");
-		            
-        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
-        			
-        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
-        			
+		                    			
         	    	// conn.setAutoCommit(false);
         			
 		        	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
@@ -546,7 +568,11 @@ public class RestFulWebservice extends Activity {
 					listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(idUsuario)));
 					listParameters.add(new AbstractMap.SimpleEntry<String, String>("sentido", String.valueOf(InfoSincro.tipoSincro.PHONE_TO_SERVER.getCode())));
 
-					list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
+        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
+        			
+        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
+
+        			list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
 					
 					String strLastSyncDate = "1900-01-01";
 					
@@ -601,7 +627,7 @@ public class RestFulWebservice extends Activity {
 		                
 		            } else{
 		                //Closes the connection.
-		                
+		            	response.getEntity().getContent().close();
 		                throw new IOException(statusLine.getReasonPhrase());
 		            }
 		        } catch (ClientProtocolException e) {
@@ -622,8 +648,21 @@ public class RestFulWebservice extends Activity {
 				}
 		        finally {
 		        	if (conn != null) {
-		        		try {
-		        			//conn.rollback();
+	        			try {
+							if (!conn.getAutoCommit()) {
+								try {
+									conn.rollback();
+								} catch (SQLException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+	        			
+						try {
 							conn.close();
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
@@ -631,6 +670,8 @@ public class RestFulWebservice extends Activity {
 						}
 		        	}
 		        }
+		        
+		        System.gc();
 			}
         });
         
@@ -694,16 +735,17 @@ public class RestFulWebservice extends Activity {
 			    	
 			    	ve.insert(conn);
 			    	
-			    	System.out.println(v.toString());
+			    	System.out.println(ve.toString());
 			    	
 			    	//System.out.println(v.toJSON());
 			    	
 			    	ve.setAnio(2012);
 			    	ve.setKm(1500);
+			    	ve.setAireAcondicionado(true);
 			    	
 			    	ve.update(conn);
 
-			    	System.out.println(v.toString());
+			    	System.out.println(ve.toString());
 			    	
 			    	//System.out.println(v.toJSON());
 			    	
@@ -859,6 +901,12 @@ public class RestFulWebservice extends Activity {
 			    	
 			    	cc.insert(conn);
 			    	
+			    	list_mbh = ve.getMantencionesBasePendientes(conn);
+			    	
+			    	for (MantencionBaseHecha mbhh : list_mbh) {
+			    		System.out.println(mbhh.toString());
+			    	}
+			    	
 			    	//v.setBorrado(true); 
 			    	
 			    	conn.commit();
@@ -866,6 +914,12 @@ public class RestFulWebservice extends Activity {
 					
 					
 				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UnsupportedParameter e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
@@ -879,6 +933,8 @@ public class RestFulWebservice extends Activity {
 						}
 					}
 				}
+				
+				System.gc();
 			}
 		});
         
