@@ -18,7 +18,7 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.xml.sax.InputSource;
 
-import cl.dsoft.carws.mobile.model.CarData;
+import cl.dsoft.car.mobile.model.CarData;
 import android.os.AsyncTask;
 
 public class RequestTask extends AsyncTask<String, String, String>{

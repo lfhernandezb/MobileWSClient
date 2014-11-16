@@ -44,25 +44,25 @@ import org.json.JSONObject;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import cl.dsoft.carws.mobile.model.CarData;
-import cl.dsoft.mobile.db.Autenticacion;
-import cl.dsoft.mobile.db.CargaCombustible;
-import cl.dsoft.mobile.db.InfoSincro;
-import cl.dsoft.mobile.db.MantencionBaseHecha;
-import cl.dsoft.mobile.db.MantencionUsuario;
-import cl.dsoft.mobile.db.MantencionUsuarioHecha;
-import cl.dsoft.mobile.db.Recordatorio;
-import cl.dsoft.mobile.db.Reparacion;
-import cl.dsoft.mobile.db.UnsupportedParameter;
-import cl.dsoft.mobile.db.Usuario;
-import cl.dsoft.mobile.db.Vehiculo;
+import cl.dsoft.car.mobile.model.CarData;
+import cl.dsoft.car.mobile.db.Autenticacion;
+import cl.dsoft.car.mobile.db.CargaCombustible;
+import cl.dsoft.car.mobile.db.InfoSincro;
+import cl.dsoft.car.mobile.db.MantencionBaseHecha;
+import cl.dsoft.car.mobile.db.MantencionUsuario;
+import cl.dsoft.car.mobile.db.MantencionUsuarioHecha;
+import cl.dsoft.car.mobile.db.Recordatorio;
+import cl.dsoft.car.mobile.db.Reparacion;
+import cl.dsoft.car.mobile.db.Log;
+import cl.dsoft.car.misc.UnsupportedParameterException;
+import cl.dsoft.car.mobile.db.Usuario;
+import cl.dsoft.car.mobile.model.VehiculoModelo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContextWrapper;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -711,11 +711,15 @@ public class RestFulWebservice extends Activity {
 			    	//c.insert(conn);
 			    	
 			    	
-			    	Usuario u = new Usuario();
+			    	//Usuario u = new Usuario();
+			    	
+			    	Long idUsuario = Long.decode(serverText.getText().toString());
+			    	
+			    	Usuario u = Usuario.getById(conn, String.valueOf(idUsuario));
 			    	
 			    	u.setIdComuna(1L);
 			    	
-			    	u.insert(conn);
+			    	u.update(conn);
 			    	
 			    	u.setNombre("Bonifacio");
 			    	u.setHombre(true);
@@ -724,7 +728,7 @@ public class RestFulWebservice extends Activity {
 			    	
 			    	System.out.println(u.toString());
 			    	
-			    	Vehiculo ve = new Vehiculo();
+			    	VehiculoModelo ve = new VehiculoModelo();
 			    	
 			    	ve.setIdUsuario(u.getId());
 			    	ve.setIdModelo(8057399L);
@@ -766,7 +770,7 @@ public class RestFulWebservice extends Activity {
 			    	
 			    	//mu.setIdMantencionUsuario(1L);
 			    	mu.setIdUsuario(u.getId());
-			    	mu.setIdVehiculo(ve.getIdVehiculo());
+			    	//mu.setIdVehiculo(ve.getIdVehiculo());
 			    	mu.setNombre("Lavado Tapiz");
 			    	mu.setDescripcion("Lavado tapiz completo");
 			    	mu.setDependeKm(true);
@@ -901,6 +905,18 @@ public class RestFulWebservice extends Activity {
 			    	
 			    	cc.insert(conn);
 			    	
+			    	Log log = new Log();
+			    	
+			    	log.setDescripcion("Prueba");
+			    	log.setIdModelo(ve.getIdModelo());
+			    	log.setIdUsuario(u.getId());
+			    	log.setIdVehiculo(ve.getIdVehiculo());
+			    	log.setKm(ve.getKm());
+			    	log.setLatitud(-33.5135273);
+			    	log.setLongitud(-70.6062983);
+			    	
+			    	log.insert(conn);
+			    	
 			    	list_mbh = ve.getMantencionesBasePendientes(conn);
 			    	
 			    	for (MantencionBaseHecha mbhh : list_mbh) {
@@ -916,7 +932,7 @@ public class RestFulWebservice extends Activity {
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (UnsupportedParameter e) {
+				} catch (UnsupportedParameterException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ParseException e) {
