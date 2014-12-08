@@ -54,6 +54,7 @@ import cl.dsoft.car.mobile.db.MantencionUsuarioHecha;
 import cl.dsoft.car.mobile.db.Recordatorio;
 import cl.dsoft.car.mobile.db.Reparacion;
 import cl.dsoft.car.mobile.db.Log;
+import cl.dsoft.car.mobile.db.SeguroVehiculo;
 import cl.dsoft.car.misc.UnsupportedParameterException;
 import cl.dsoft.car.mobile.db.Usuario;
 import cl.dsoft.car.mobile.model.VehiculoModelo;
@@ -61,8 +62,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -713,10 +717,52 @@ public class RestFulWebservice extends Activity {
 			    	
 			    	//Usuario u = new Usuario();
 			    	
-			    	Long idUsuario = Long.decode(serverText.getText().toString());
+			    	String strIdUsuario = serverText.getText().toString();
+			    	
+			    	if (strIdUsuario.equals("")) {
+	                    // no se indica idUsuario
+	                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(v.getContext());
+
+	                    dlgAlert.setMessage("Debe ingresar idUsuario");
+	                    dlgAlert.setTitle("Error");
+	                    dlgAlert.setPositiveButton("OK", null);
+	                    dlgAlert.setCancelable(true);
+	                    dlgAlert.create().show();
+
+	                    dlgAlert.setPositiveButton("Ok",
+	                        new DialogInterface.OnClickListener() {
+	                            public void onClick(DialogInterface dialog, int which) {
+
+	                        }
+	                    });
+	                    
+	                    return;
+			    	}
+			    	
+			    	Long idUsuario = Long.decode(strIdUsuario);
 			    	
 			    	Usuario u = Usuario.getById(conn, String.valueOf(idUsuario));
 			    	
+			    	if (u == null) {
+	                    // no existe el usuario
+	                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(v.getContext());
+
+	                    dlgAlert.setMessage("No existe el usuario con Id " + strIdUsuario);
+	                    dlgAlert.setTitle("Error");
+	                    dlgAlert.setPositiveButton("OK", null);
+	                    dlgAlert.setCancelable(true);
+	                    dlgAlert.create().show();
+
+	                    dlgAlert.setPositiveButton("Ok",
+	                        new DialogInterface.OnClickListener() {
+	                            public void onClick(DialogInterface dialog, int which) {
+
+	                        }
+	                    });
+	                    
+	                    return;
+			    	}
+
 			    	u.setIdComuna(1L);
 			    	
 			    	u.update(conn);
@@ -907,16 +953,25 @@ public class RestFulWebservice extends Activity {
 			    	
 			    	Log log = new Log();
 			    	
-			    	log.setDescripcion("Prueba");
-			    	log.setIdModelo(ve.getIdModelo());
+			    	log.setData("Prueba");
 			    	log.setIdUsuario(u.getId());
-			    	log.setIdVehiculo(ve.getIdVehiculo());
-			    	log.setKm(ve.getKm());
 			    	log.setLatitud(-33.5135273);
 			    	log.setLongitud(-70.6062983);
 			    	
 			    	log.insert(conn);
 			    	
+			    	SeguroVehiculo sv = new SeguroVehiculo();
+			    	
+			    	sv.setDiaVencimiento((short) 15);
+			    	sv.setMesVencimiento((short) 6);
+			    	sv.setIdCiaSeguros(2);
+			    	sv.setIdUsuario(u.getId());
+			    	sv.setIdVehiculo(ve.getIdVehiculo());
+			    	sv.setObservaciones("Seguro con 5 UF deducible");
+			    	sv.setPoliza("234567");
+			    	
+			    	sv.insert(conn);
+			    				    	
 			    	list_mbh = ve.getMantencionesBasePendientes(conn);
 			    	
 			    	for (MantencionBaseHecha mbhh : list_mbh) {
@@ -938,7 +993,10 @@ public class RestFulWebservice extends Activity {
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} 
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				finally {
 					if (conn != null) {
 						try {
