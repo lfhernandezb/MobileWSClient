@@ -962,16 +962,16 @@ public class RestFulWebservice extends Activity {
 			    	
 			    	SeguroVehiculo sv = new SeguroVehiculo();
 			    	
-			    	sv.setDiaVencimiento((short) 15);
-			    	sv.setMesVencimiento((short) 6);
+			    	sv.setFechaVencimiento("2015-03-31");
 			    	sv.setIdCiaSeguros(2);
 			    	sv.setIdUsuario(u.getId());
 			    	sv.setIdVehiculo(ve.getIdVehiculo());
 			    	sv.setObservaciones("Seguro con 5 UF deducible");
 			    	sv.setPoliza("234567");
+			    	sv.setIdTipoSeguro(2);
 			    	
 			    	sv.insert(conn);
-			    				    	
+			    			    	
 			    	list_mbh = ve.getMantencionesBasePendientes(conn);
 			    	
 			    	for (MantencionBaseHecha mbhh : list_mbh) {
