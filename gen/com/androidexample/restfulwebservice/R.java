@@ -16,10 +16,13 @@ public final class R {
     public static final class id {
         public static final int ByIdRedSocial=0x7f060004;
         public static final int ByIdUsuario=0x7f060001;
+        public static final int ExecSentence=0x7f060007;
+        public static final int GetPendMaint=0x7f060006;
         public static final int PopulateDB=0x7f060003;
         public static final int PutServerData=0x7f060002;
-        public static final int jsonParsed=0x7f060006;
-        public static final int output=0x7f060005;
+        public static final int TestMaint=0x7f060005;
+        public static final int jsonParsed=0x7f060009;
+        public static final int output=0x7f060008;
         public static final int serverText=0x7f060000;
     }
     public static final class layout {

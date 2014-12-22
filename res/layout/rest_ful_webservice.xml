@@ -41,6 +41,7 @@
         android:id="@+id/PopulateDB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:clickable="true"
         android:cursorVisible="true"
         android:paddingTop="10px"
@@ -50,10 +51,32 @@
         android:id="@+id/ByIdRedSocial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:clickable="true"
         android:cursorVisible="true"
         android:paddingTop="10px"
         android:text="WS ByIdRedSocial" />
+
+    <Button
+        android:id="@+id/TestMaint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Test Maint" />
+
+    <Button
+        android:id="@+id/GetPendMaint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Get Pend Maint" />
+
+    <Button
+        android:id="@+id/ExecSentence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Exec Sentence" />
     
     <TextView
         android:paddingTop="20px"

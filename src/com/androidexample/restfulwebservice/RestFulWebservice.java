@@ -45,6 +45,7 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import cl.dsoft.car.mobile.model.CarData;
+import cl.dsoft.car.mobile.model.MantencionBaseHechaModelo;
 import cl.dsoft.car.mobile.db.Autenticacion;
 import cl.dsoft.car.mobile.db.CargaCombustible;
 import cl.dsoft.car.mobile.db.InfoSincro;
@@ -92,7 +93,14 @@ public class RestFulWebservice extends Activity {
         
         final Button btnByIdRedSocial = (Button) findViewById(R.id.ByIdRedSocial);
         
+        final Button btnTestMaint = (Button) findViewById(R.id.TestMaint);
+        
+        final Button btnGetPendMaint = (Button) findViewById(R.id.GetPendMaint);
+        
+        final Button btnExecSentence = (Button) findViewById(R.id.ExecSentence);
+        
         final TextView uiUpdate = (TextView) findViewById(R.id.output);
+        
         final TextView jsonParsed = (TextView) findViewById(R.id.jsonParsed);
         
         final EditText serverText = (EditText) findViewById(R.id.serverText);
@@ -133,7 +141,8 @@ public class RestFulWebservice extends Activity {
 		        String responseString = null;
 		        Connection conn = null;
 		        
-		        String serverURL = "http://ptt-studio.bounceme.net:8080/cl.dsoft.carws/rest/todo/byIdUsuario/";
+		        //String serverURL = "http://ptt-studio.bounceme.net:8081/cl.dsoft.carws/rest/todo/byIdUsuario/";
+		        String serverURL = "http://www.manadachile.cl:8080/cl.dsoft.carws/rest/todo/byIdUsuario/";
 		        
 		        try {
 		        	int timeoutConnection;
@@ -155,9 +164,7 @@ public class RestFulWebservice extends Activity {
 					listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(idUsuario)));
 					listParameters.add(new AbstractMap.SimpleEntry<String, String>("sentido", String.valueOf(InfoSincro.tipoSincro.SERVER_TO_PHONE.getCode())));
 
-        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
-        			
-        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());	        			
+        			conn = DBHelper.getConnection(getApplicationContext());      			
 
         			list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
 					
@@ -309,7 +316,7 @@ public class RestFulWebservice extends Activity {
 		        String responseString = null;
 		        Connection conn = null;
 		        
-		        String serverURL = "http://ptt-studio.bounceme.net:8080/cl.dsoft.carws/rest/todo/byIdRedSocial/";
+		        String serverURL = "http://ptt-studio.bounceme.net:8081/cl.dsoft.carws/rest/todo/byIdRedSocial/";
 		        
 		        try {
 		        	int timeoutConnection;
@@ -378,7 +385,7 @@ public class RestFulWebservice extends Activity {
 				            HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 				            httpClient = new DefaultHttpClient(httpParameters);
 				            */
-		        	    	serverURL = "http://ptt-studio.bounceme.net:8080/cl.dsoft.carws/rest/todo/createUser/";
+		        	    	serverURL = "http://ptt-studio.bounceme.net:8081/cl.dsoft.carws/rest/todo/createUser/";
 		        	    	
 				            //getRequest = new HttpGet(serverURL + serverText.getText());
 				            getRequest = new HttpGet(serverURL + String.valueOf(idRedSocial) + "/" + token + "/" + String.valueOf(idComuna));
@@ -415,10 +422,8 @@ public class RestFulWebservice extends Activity {
 		        	    	
 		        	    }
 		        	    
-	        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
-	        			
-	        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
-	        			
+		        	    conn = DBHelper.getConnection(getApplicationContext());
+		        	    
 	        	    	stmt = conn.createStatement();
 	        			
 	        			stmt.executeQuery("PRAGMA foreign_keys = on;");
@@ -535,7 +540,7 @@ public class RestFulWebservice extends Activity {
 		        String responseString = null;
 		        Connection conn = null;
 		        
-		        String serverURL = "http://ptt-studio.bounceme.net:8080/cl.dsoft.carws/rest/todo/receive";
+		        String serverURL = "http://ptt-studio.bounceme.net:8081/cl.dsoft.carws/rest/todo/receive";
 		        
 		        try {
 		        	int timeoutConnection;
@@ -572,10 +577,8 @@ public class RestFulWebservice extends Activity {
 					listParameters.add(new AbstractMap.SimpleEntry<String, String>("id_usuario", String.valueOf(idUsuario)));
 					listParameters.add(new AbstractMap.SimpleEntry<String, String>("sentido", String.valueOf(InfoSincro.tipoSincro.PHONE_TO_SERVER.getCode())));
 
-        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
-        			
-        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
-
+					conn = DBHelper.getConnection(getApplicationContext());
+					
         			list_is = InfoSincro.seek(conn, listParameters, "isc.fecha", "DESC", 0, 1);
 					
 					String strLastSyncDate = "1900-01-01";
@@ -695,9 +698,7 @@ public class RestFulWebservice extends Activity {
 					//conn = DriverManager.getConnection("jdbc:sqldroid:" + "/data/data/cl.dsoft.dbtest/databases/" + "car.db3");
 					String url;
 					
-        			url = "jdbc:sqldroid:" + getApplicationContext().getFilesDir().getAbsolutePath() + "/car.db3";
-        			
-        			conn = new org.sqldroid.SQLDroidDriver().connect(url , new Properties());
+					conn = DBHelper.getConnection(getApplicationContext());
 					
 			    	conn.setAutoCommit(false);
 			    	
@@ -976,6 +977,11 @@ public class RestFulWebservice extends Activity {
 			    	
 			    	for (MantencionBaseHecha mbhh : list_mbh) {
 			    		System.out.println(mbhh.toString());
+			    		
+			    		mbhh.setFecha(new Date());
+			    		mbhh.setCosto(50000);
+			    		
+			    		mbhh.insert(conn);
 			    	}
 			    	
 			    	//v.setBorrado(true); 
@@ -1012,7 +1018,334 @@ public class RestFulWebservice extends Activity {
 			}
 		});
         
-    }
+        btnTestMaint.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Connection conn = null;
+			  
+				try {
+					int i;
+			        
+					ArrayList<MantencionBaseHecha> list_mbh;
+					
+					//Class.forName("org.sqldroid.SQLDroidDriver");
+					//conn = DriverManager.getConnection("jdbc:sqldroid:" + "/data/data/cl.dsoft.dbtest/databases/" + "car.db3");
+					String url;
+					
+					conn = DBHelper.getConnection(getApplicationContext());
+					
+			    	conn.setAutoCommit(false);
+			    	
+			    	conn.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+			    	
+			    	//marca = Marca.getById(conn, "1");
+			    	
+			    	//Log.e("CLAC", "Nombre=" + marca.get_descripcion());
+			    	
+			    	//c = new Combustible();
+			    	
+			    	//c.set_id((byte) 101);
+			    	//c.set_descripcion("gas");
+			    	
+			    	//c.insert(conn);
+			    	
+			    	
+			    	//Usuario u = new Usuario();
+			    	
+			    	String strIdUsuario = serverText.getText().toString();
+			    	
+			    	if (strIdUsuario.equals("")) {
+	                    // no se indica idUsuario
+	                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(v.getContext());
+
+	                    dlgAlert.setMessage("Debe ingresar idUsuario");
+	                    dlgAlert.setTitle("Error");
+	                    dlgAlert.setPositiveButton("OK", null);
+	                    dlgAlert.setCancelable(true);
+	                    dlgAlert.create().show();
+
+	                    dlgAlert.setPositiveButton("Ok",
+	                        new DialogInterface.OnClickListener() {
+	                            public void onClick(DialogInterface dialog, int which) {
+
+	                        }
+	                    });
+	                    
+	                    return;
+			    	}
+			    	
+			    	Long idUsuario = Long.decode(strIdUsuario);
+			    	
+			    	Usuario u = Usuario.getById(conn, String.valueOf(idUsuario));
+			    	
+			    	if (u == null) {
+	                    // no existe el usuario
+	                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(v.getContext());
+
+	                    dlgAlert.setMessage("No existe el usuario con Id " + strIdUsuario);
+	                    dlgAlert.setTitle("Error");
+	                    dlgAlert.setPositiveButton("OK", null);
+	                    dlgAlert.setCancelable(true);
+	                    dlgAlert.create().show();
+
+	                    dlgAlert.setPositiveButton("Ok",
+	                        new DialogInterface.OnClickListener() {
+	                            public void onClick(DialogInterface dialog, int which) {
+
+	                        }
+	                    });
+	                    
+	                    return;
+			    	}
+
+			    	System.out.println(u.toString());
+			    	
+			    	VehiculoModelo ve = new VehiculoModelo();
+			    	
+			    	ve.setIdUsuario(u.getId());
+			    	ve.setIdModelo(8057399L);
+			    	ve.setIdTipoTransmision((byte) 2);
+			    	ve.setIdCombustible((byte) 2);
+			    	ve.setIdTraccion((byte) 3);
+			    	ve.setAlias("Toco");
+			    	
+			    	ve.insert(conn);
+			    				    	
+			    	ve.setAnio(2012);
+			    	ve.setKm(115000);
+			    	ve.setAireAcondicionado(true);
+			    	
+			    	ve.update(conn);
+
+			    	System.out.println(ve.toString());
+			    				    			    	
+			    	System.out.println("Mantenciones pendientes antes");
+			    	
+			    	list_mbh = ve.getMantencionesBasePendientes(conn);
+			    	
+			    	for (MantencionBaseHecha mbhh : list_mbh) {
+			    		System.out.println(mbhh.toString());
+			    		
+			    		if (mbhh.getIdMantencionBase() == 2) {
+			    			// cambio de aceite
+				    		mbhh.setFecha(new Date());
+				    		mbhh.setCosto(50000);
+				    		mbhh.setKm(110000);
+				    		mbhh.insert(conn);
+			    		}
+			    		
+			    	}
+			    				    	
+			    	conn.commit();
+			    	
+			    	System.out.println("Mantenciones pendientes despues");
+
+			    	list_mbh = ve.getMantencionesBasePendientes(conn);
+			    	
+			    	for (MantencionBaseHecha mbhh : list_mbh) {
+			    		System.out.println(mbhh.toString());
+			    		
+			    	}
+					
+			    	System.out.println("Mantenciones base hechas");
+			    	
+			    	ArrayList<MantencionBaseHechaModelo> list_mbhm = MantencionBaseHechaModelo.seeks(conn, new ArrayList<AbstractMap.SimpleEntry<String, String>>(), null, null, 0, 10000);
+			    	
+			    	for (MantencionBaseHechaModelo mbhm : list_mbhm) {
+			    		System.out.println(mbhm.toString());
+			    		
+			    	}
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UnsupportedParameterException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				finally {
+					if (conn != null) {
+						try {
+							conn.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				
+				System.gc();
+			}
+		});
+
+        btnGetPendMaint.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Connection conn = null;
+			  
+				try {
+					int i;
+			        
+					ArrayList<MantencionBaseHecha> list_mbh;
+					
+					//Class.forName("org.sqldroid.SQLDroidDriver");
+					//conn = DriverManager.getConnection("jdbc:sqldroid:" + "/data/data/cl.dsoft.dbtest/databases/" + "car.db3");
+					String url;
+					
+					conn = DBHelper.getConnection(getApplicationContext());
+								    	
+			    	String strIdUsuario = serverText.getText().toString();
+			    	
+			    	if (strIdUsuario.equals("")) {
+	                    // no se indica idUsuario
+	                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(v.getContext());
+
+	                    dlgAlert.setMessage("Debe ingresar idUsuario");
+	                    dlgAlert.setTitle("Error");
+	                    dlgAlert.setPositiveButton("OK", null);
+	                    dlgAlert.setCancelable(true);
+	                    dlgAlert.create().show();
+
+	                    dlgAlert.setPositiveButton("Ok",
+	                        new DialogInterface.OnClickListener() {
+	                            public void onClick(DialogInterface dialog, int which) {
+
+	                        }
+	                    });
+	                    
+	                    return;
+			    	}
+			    	
+			    	Long idUsuario = Long.decode(strIdUsuario);
+			    	
+			    	Usuario u = Usuario.getById(conn, String.valueOf(idUsuario));
+			    	
+			    	if (u == null) {
+	                    // no existe el usuario
+	                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(v.getContext());
+
+	                    dlgAlert.setMessage("No existe el usuario con Id " + strIdUsuario);
+	                    dlgAlert.setTitle("Error");
+	                    dlgAlert.setPositiveButton("OK", null);
+	                    dlgAlert.setCancelable(true);
+	                    dlgAlert.create().show();
+
+	                    dlgAlert.setPositiveButton("Ok",
+	                        new DialogInterface.OnClickListener() {
+	                            public void onClick(DialogInterface dialog, int which) {
+
+	                        }
+	                    });
+	                    
+	                    return;
+			    	}
+
+			    	System.out.println(u.toString());
+			    	
+			    	VehiculoModelo ve = new VehiculoModelo();
+			    	
+			    	ve.setIdUsuario(u.getId());
+			    	ve.setIdVehiculo(1418441521874L);
+			    	
+			    	ve.load(conn);
+			    				    	
+			    	System.out.println(ve.toString());
+			    				    			    	
+			    	System.out.println("Mantenciones pendientes");
+			    	
+			    	list_mbh = ve.getMantencionesBasePendientes(conn);
+			    	
+			    	for (MantencionBaseHecha mbhh : list_mbh) {
+			    		System.out.println(mbhh.toString());
+			    		
+			    	}
+			    				    						
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UnsupportedParameterException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				finally {
+					if (conn != null) {
+						try {
+							conn.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				
+				System.gc();
+			}
+		});
+
+        btnExecSentence.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Connection conn = null;
+			  
+				try {
+					int i;
+			        
+					ArrayList<MantencionBaseHecha> list_mbh;
+					
+					//Class.forName("org.sqldroid.SQLDroidDriver");
+					//conn = DriverManager.getConnection("jdbc:sqldroid:" + "/data/data/cl.dsoft.dbtest/databases/" + "car.db3");
+					String url;
+					
+					conn = DBHelper.getConnection(getApplicationContext());
+								    	
+			    	String sentence = serverText.getText().toString();
+			    	
+		            Statement stmt = conn.createStatement();
+		            
+		            stmt.executeUpdate(sentence);
+			    	
+			    	
+			    				    						
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				finally {
+					if (conn != null) {
+						try {
+							conn.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				
+				System.gc();
+			}
+		});
+}
     
     
 	private void copyDataBaseFile() throws CarException, FileNotFoundException, IOException {
