@@ -78,6 +78,20 @@
         android:layout_gravity="center_horizontal"
         android:text="Exec Sentence" />
     
+    <Button
+        android:id="@+id/TestOpenDB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Test Open DB" />
+    
+    <Button
+        android:id="@+id/TestKm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Test Km" />
+    
     <TextView
         android:paddingTop="20px"
         android:textStyle="bold"

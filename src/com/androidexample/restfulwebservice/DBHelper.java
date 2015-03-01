@@ -16,7 +16,7 @@ import android.content.Context;
  */
 public class DBHelper {
 	public static Connection getConnection(Context context) throws SQLException {
-		String url = "jdbc:sqldroid:" + context.getFilesDir().getAbsolutePath() + "/car.db3";
+		String url = "jdbc:sqldroid:" + context.getFilesDir().getAbsolutePath() + "/car.db3?timeout=20";
 		
 		return DBDriver.getInstance().getDriver().connect(url , new Properties());	        			
 
