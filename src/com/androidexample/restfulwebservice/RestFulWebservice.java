@@ -1572,7 +1572,7 @@ public class RestFulWebservice extends Activity {
 			    	
 			    	vm.load(conn);
 			    	
-			    	vm.setIdPerfilUso(2L);
+			    	vm.setKmAnuales(10000);
 
 			    	System.out.println("1: " + vm.toString());
 			    	
