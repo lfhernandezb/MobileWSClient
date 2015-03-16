@@ -52,18 +52,21 @@ import cl.dsoft.car.mobile.db.InfoSincro;
 import cl.dsoft.car.mobile.db.MantencionBaseHecha;
 import cl.dsoft.car.mobile.db.MantencionUsuario;
 import cl.dsoft.car.mobile.db.MantencionUsuarioHecha;
+import cl.dsoft.car.mobile.db.Proveedor;
 import cl.dsoft.car.mobile.db.Recordatorio;
 import cl.dsoft.car.mobile.db.Reparacion;
 import cl.dsoft.car.mobile.db.Log;
+import cl.dsoft.car.mobile.db.RespuestaProveedor;
 import cl.dsoft.car.mobile.db.SeguroVehiculo;
 import cl.dsoft.car.mobile.db.Vehiculo;
 import cl.dsoft.car.misc.MyCarException;
 import cl.dsoft.car.misc.UnsupportedParameterException;
 import cl.dsoft.car.mobile.db.Usuario;
 import cl.dsoft.car.mobile.model.VehiculoModelo;
+import cl.dsoft.car.mobile.model.RespuestaProveedorData;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.annotation.SuppressLint;
+//import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -105,6 +108,8 @@ public class RestFulWebservice extends Activity {
         
         final Button btnTestKm = (Button) findViewById(R.id.TestKm);
         
+        final Button btnTestProvider = (Button) findViewById(R.id.TestProviders);
+        
         final TextView uiUpdate = (TextView) findViewById(R.id.output);
         
         final TextView jsonParsed = (TextView) findViewById(R.id.jsonParsed);
@@ -129,6 +134,9 @@ public class RestFulWebservice extends Activity {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+        
+        //final String strServer = "http://ptt-studio.bounceme.net:8081/cl.dsoft.carws/rest/todo/";
+        final String strServer = "http://ptt-studio.bounceme.net:8081/cl.dsoft.carws2/";
                  
         btnByIdUsuario.setOnClickListener(new OnClickListener() {
             
@@ -147,7 +155,7 @@ public class RestFulWebservice extends Activity {
 		        String responseString = null;
 		        Connection conn = null;
 		        
-		        String serverURL = "http://ptt-studio.bounceme.net:8081/cl.dsoft.carws/rest/todo/byIdUsuario/";
+		        String serverURL = strServer + "byIdUsuario/";
 		        //String serverURL = "http://www.manadachile.cl:8080/cl.dsoft.carws/rest/todo/byIdUsuario/";
 		        
 		        try {
@@ -326,7 +334,7 @@ public class RestFulWebservice extends Activity {
 		        String responseString = null;
 		        Connection conn = null;
 		        
-		        String serverURL = "http://ptt-studio.bounceme.net:8081/cl.dsoft.carws/rest/todo/byIdRedSocial/";
+		        String serverURL = strServer + "byIdRedSocial/";
 		        
 		        try {
 		        	int timeoutConnection;
@@ -554,7 +562,7 @@ public class RestFulWebservice extends Activity {
 		        String responseString = null;
 		        Connection conn = null;
 		        
-		        String serverURL = "http://ptt-studio.bounceme.net:8081/cl.dsoft.carws/rest/todo/receive";
+		        String serverURL = strServer + "receive";
 		        
 		        try {
 		        	int timeoutConnection;
@@ -1624,6 +1632,151 @@ public class RestFulWebservice extends Activity {
 			}
 		});
 
+        btnTestProvider.setOnClickListener(new OnClickListener() {
+            
+			@Override
+			public void onClick(View arg0) {
+				/*
+				// utilizando AsyncTask
+				// WebServer Request URL
+				String serverURL = "http://192.168.1.110:8080/cl.dsoft.carws/rest/todo/byIdUsuario/1/1900-01-01";
+				
+				// Use AsyncTask execute Method To Prevent ANR Problem
+		        new RequestTask().execute(serverURL);
+		        */
+		        HttpClient httpClient;
+		        HttpResponse response;
+		        String responseString = null;
+		        Connection conn = null;
+		        
+		        String serverURL = strServer + "getProveedores";
+		        //String serverURL = "http://www.manadachile.cl:8080/cl.dsoft.carws/rest/todo/byIdUsuario/";
+		        
+		        try {
+		        	int timeoutConnection;
+		        	int timeoutSocket;
+		        	HttpGet getRequest;
+		        	StatusLine statusLine;
+		        	String url;
+		        	ArrayList<AbstractMap.SimpleEntry<String, String>> listParameters;
+		        	ArrayList<InfoSincro> list_is;
+		        	InfoSincro is = null;
+		        	
+		            HttpParams httpParameters = new BasicHttpParams();
+		            
+		            timeoutConnection = 10000;
+		            HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+		            timeoutSocket = 20000;
+		            HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+		            httpClient = new DefaultHttpClient(httpParameters);
+		            
+		            //getRequest = new HttpGet(serverURL + serverText.getText());
+		            getRequest = new HttpGet(serverURL + "/2/1418441521874/2/0/0");
+		            
+		            getRequest.addHeader("accept", "application/xml");      	
+		        	
+		        	response = httpClient.execute(getRequest);
+		            statusLine = response.getStatusLine();
+		            
+		            if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+		            	
+		            	Serializer serializer;
+		            	RespuestaProveedorData rpData;
+		            	
+		            	Statement stmt;
+		            	
+		                ByteArrayOutputStream out = new ByteArrayOutputStream();
+		                response.getEntity().writeTo(out);
+		                out.close();
+		                responseString = out.toString();
+		                
+		                uiUpdate.setText(responseString);
+		                
+		                serializer = new Persister();
+		                
+		                rpData = serializer.read(RespuestaProveedorData.class, responseString);
+	        			
+	        			//jsonParsed.setText(carData.getUsuarios().toString());
+	        			
+	        			//System.out.println(carData.getUsuarios());
+	        				        				        			
+	        	    	stmt = conn.createStatement();
+	        			
+	        			stmt.executeQuery("PRAGMA foreign_keys = on;");
+	        			
+	        			stmt.close();
+	        			
+	        	    	conn.setAutoCommit(false);
+		        	    	
+	        	    	rpData.save(conn);
+		        	    
+		        	    if (!rpData.isEmpty()) {
+			        	    
+		        	    	for (Proveedor p : rpData.) {
+		        	    		
+		        	    	}
+		        	    }
+		        	    
+		        	    conn.commit();
+		        	    
+		        	    conn.setAutoCommit(true);
+		        	    			                
+		            } else{
+		                //Closes the connection.
+		                response.getEntity().getContent().close();
+		                throw new IOException(statusLine.getReasonPhrase());
+		            }
+		            
+	        		conn.close();
+	        		
+	        		conn = null;
+
+		        } catch (ClientProtocolException e) {
+		            //TODO Handle problems..
+		        	e.printStackTrace();
+		        } catch (IOException e) {
+		            //TODO Handle problems..
+		        	e.printStackTrace();
+		        } catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CarException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		        finally {
+		        	if (conn != null) {
+	        			try {
+							if (!conn.getAutoCommit()) {
+								try {
+									conn.rollback();
+									
+									conn.setAutoCommit(true);
+								} catch (SQLException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+	        			
+						try {
+							conn.close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		        	}
+		        }
+		        
+		        System.gc();
+			}
+        });    
 }
     
     

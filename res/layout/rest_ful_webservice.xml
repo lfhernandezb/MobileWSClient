@@ -92,6 +92,13 @@
         android:layout_gravity="center_horizontal"
         android:text="Test Km" />
     
+    <Button
+        android:id="@+id/TestProviders"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Proveedores" />
+    
     <TextView
         android:paddingTop="20px"
         android:textStyle="bold"

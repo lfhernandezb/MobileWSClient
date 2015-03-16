@@ -23,8 +23,9 @@ public final class R {
         public static final int TestKm=0x7f060009;
         public static final int TestMaint=0x7f060005;
         public static final int TestOpenDB=0x7f060008;
-        public static final int jsonParsed=0x7f06000b;
-        public static final int output=0x7f06000a;
+        public static final int TestProviders=0x7f06000a;
+        public static final int jsonParsed=0x7f06000c;
+        public static final int output=0x7f06000b;
         public static final int serverText=0x7f060000;
     }
     public static final class layout {
